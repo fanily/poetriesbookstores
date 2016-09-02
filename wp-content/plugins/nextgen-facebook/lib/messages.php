@@ -55,22 +55,13 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 				if ( strpos( $idx, 'tooltip-meta-' ) === 0 ) {
 					switch ( $idx ) {
 						case 'tooltip-meta-sharing_url':
-							$text = 'A custom sharing URL used in the Facebook / Open Graph, Pinterest Rich Pin meta tags and social sharing buttons. The default sharing URL may be influenced by settings from supported SEO plugins. Please make sure any custom URL you enter here is functional and redirects correctly.';
-						 	break;
-						case 'tooltip-meta-schema_is_main':
-							$text = 'Select if this Schema markup describes the <em>main entity</em> for this webpage.';
-						 	break;
-						case 'tooltip-meta-schema_type':
-							$text = 'The Schema type is used to declare the item type for Schema JSON-LD markup and/or meta tags in webpage headers.';
+							$text = __( 'A custom sharing URL used for the Facebook / Open Graph / Pinterest Rich Pin meta tags, Schema markup, and (optional) social sharing buttons.', 'nextgen-facebook' ).' '.__( 'Please make sure any custom URL you enter here is functional and redirects correctly.', 'nextgen-facebook' );
 						 	break;
 						case 'tooltip-meta-schema_title':
-							$text = 'A custom name / title for the Schema item type "name" JSON-LD property.';
-						 	break;
-						case 'tooltip-meta-schema_headline':
-							$text = 'A custom headline for the Schema Article "headline" JSON-LD property. The custom headline field is disabled for all non-Article item types.';
+							$text = __( 'A custom name / title for the Schema item type\'s name property.', 'nextgen-facebook' );
 						 	break;
 						case 'tooltip-meta-schema_desc':
-							$text = 'A custom description for the Schema meta tag and item type "description" JSON-LD property.';
+							$text = __( 'A custom description for the Schema item type\'s description property.', 'nextgen-facebook' );
 						 	break;
 						case 'tooltip-meta-og_title':
 							$text = __( 'A custom title for the Facebook / Open Graph, Pinterest Rich Pin, and Twitter Card meta tags (all Twitter Card formats).', 'nextgen-facebook' );
@@ -125,7 +116,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = __( 'The maximum number of images to include in the Google / Schema meta tags and JSON-LD markup.', 'nextgen-facebook' );
 						 	break;
 						default:
-							$text = apply_filters( $lca.'_messages_tooltip_user', $text, $idx, $info );
+							$text = apply_filters( $lca.'_messages_tooltip_meta', $text, $idx, $info );
 							break;
 					}	// end of tooltip-user switch
 				/*
@@ -155,13 +146,14 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$def_dimensions = $this->p->opt->get_defaults( 'og_img_width' ).'x'.
 								$this->p->opt->get_defaults( 'og_img_height' ).' '.
 								( $this->p->opt->get_defaults( 'og_img_crop' ) == 0 ? 'uncropped' : 'cropped' );
+
 							$text = 'The image dimensions used in the Facebook / Open Graph meta tags (the default dimensions are '.$def_dimensions.'). '.$fb_recommends.' Note that images in the WordPress Media Library and/or NextGEN Gallery must be larger than your chosen image dimensions.';
 							break;
 						case 'tooltip-og_def_img_id':
 							$text = 'An image ID and media library for your default / fallback website image. The default image ID will be used for index / archive pages, and as a fallback for Posts / Pages that do not have a suitable image featured, attached, or in their content.';
 							break;
 						case 'tooltip-og_def_img_url':
-							$text = 'You can enter a default image URL (including the http:// prefix) instead of choosing a default image ID &mdash; if a default image ID is specified, the default image URL option is disabled. The default image URL option allows you to <strong>use an image outside of a managed collection (WordPress Media Library or NextGEN Gallery), and/or a smaller logo style image</strong>. The image should be at least '.$this->p->cf['head']['min']['og_img_width'].'x'.$this->p->cf['head']['min']['og_img_height'].' or more in width and height. The default image ID or URL is used for index / archive pages, and as a fallback for Posts and Pages that do not have a suitable image featured, attached, or in their content.';
+							$text = 'You can enter a default image URL (including the http:// prefix) instead of choosing a default image ID &mdash; if a default image ID is specified, the default image URL option is disabled. The default image URL option allows you to <strong>use an image outside of a managed collection (WordPress Media Library or NextGEN Gallery), and/or a smaller logo style image</strong>. The image should be at least '.$this->p->cf['head']['limit_min']['og_img_width'].'x'.$this->p->cf['head']['limit_min']['og_img_height'].' or more in width and height. The default image ID or URL is used for index / archive pages, and as a fallback for Posts and Pages that do not have a suitable image featured, attached, or in their content.';
 							break;
 						case 'tooltip-og_def_img_on_index':
 							$text = 'Check this option to force the default image on index webpages (<strong>non-static</strong> homepage, archives, categories). If this option is <em>checked</em>, but a Default Image ID or URL has not been defined, then <strong>no image will be included in the meta tags</strong>. If the option is <em>unchecked</em>, then '.$info['short'].' will use image(s) from the first entry on the webpage (default is checked).';
@@ -218,7 +210,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = 'The maximum length of text used in the Facebook / Open Graph and Rich Pin title tag (default is '.$this->p->opt->get_defaults( 'og_title_len' ).' characters).';
 							break;
 						case 'tooltip-og_desc_len':
-							$text = 'The maximum length of text used in the Facebook / Open Graph and Rich Pin description tag. The length should be at least '.$this->p->cf['head']['min']['og_desc_len'].' characters or more, and the default is '.$this->p->opt->get_defaults( 'og_desc_len' ).' characters.';
+							$text = 'The maximum length of text used in the Facebook / Open Graph and Rich Pin description tag. The length should be at least '.$this->p->cf['head']['limit_min']['og_desc_len'].' characters or more, and the default is '.$this->p->opt->get_defaults( 'og_desc_len' ).' characters.';
 							break;
 						case 'tooltip-og_page_title_tag':
 							$text = 'Add the title of the <em>Page</em> to the Facebook / Open Graph and Pinterest Rich Pin article tag and Hashtag list (default is unchecked). If the Add Page Ancestor Tags option is checked, all the titles of the ancestor Pages will be added as well. This option works well if the title of your Pages are short (one or two words) and subject-oriented.';
@@ -236,19 +228,19 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = __( 'Select which contact field to use from the author\'s WordPress profile page for the Facebook / Open Graph <code>article:author</code> meta tag. The preferred setting is the Facebook URL field (default value).', 'nextgen-facebook' );
 							break;
 						case 'tooltip-og_author_fallback':
-							$text = sprintf( __( 'If the \'%1$s\' (and the \'%2$s\' in the Google settings below) is not a valid URL, then %3$s can fallback to using the author index / archive page on this website (for example, \'%4$s\').', 'nextgen-facebook' ), _x( 'Author Profile URL Field', 'option label', 'nextgen-facebook' ), _x( 'Author Link URL Field', 'option label', 'nextgen-facebook' ), $info['short'], trailingslashit( site_url() ).'author/username' ).' '.__( 'Uncheck this option to disable the fallback feature (default is unchecked).', 'nextgen-facebook' );
+							$text = sprintf( __( 'If the \'%1$s\' is not a valid URL, then fallback to using the author archive URL from this website (example: \'%2$s\').', 'nextgen-facebook' ), _x( 'Author Profile URL Field', 'option label', 'nextgen-facebook' ), trailingslashit( site_url() ).'author/username' ).' '.__( 'Uncheck this option to disable the author URL fallback feature (default is unchecked).', 'nextgen-facebook' );
 							break;
 						case 'tooltip-og_def_author_id':
-							$text = 'A default author for webpages <em>missing authorship information</em> (for example, an index webpage without posts). If you have several authors on your website, you should probably leave this option set to <em>[None]</em> (the default).';
+							$text = 'A default author for webpages <em>missing authorship information</em> (for example, a custom post type without an author ID). If you have several authors on your website, you should probably leave this option set to <em>[None]</em> (the default).';
 							break;
 						case 'tooltip-og_def_author_on_index':
 							$text = 'Check this option if you would like to force the Default Author on index webpages (<strong>non-static</strong> homepage, archives, categories, author, etc.). If this option is checked, index webpages will be labeled as a an \'article\' with authorship attributed to the Default Author (default is unchecked). If the Default Author is <em>[None]</em>, then the index webpages will be labeled as a \'website\'.';
 							break;
 						case 'tooltip-og_def_author_on_search':
-							$text = 'Check this option if you would like to force the Default Author on search result webpages as well.  If this option is checked, search results will be labeled as a an \'article\' with authorship attributed to the Default Author (default is unchecked).';
+							$text = 'Check this option if you would like to force the Default Author on search result webpages as well. If this option is checked, search results will be labeled as a an \'article\' with authorship attributed to the Default Author (default is unchecked).';
 							break;
-						case 'tooltip-og_author_gravatar':
-							$text = 'Check this option to include the author\'s Gravatar image in meta tags for author index / archive webpages. If the "<strong>Use Default Image on <em>Author</em> Index</strong>" option is also checked under the <em>Images</em> tab (unchecked by default), then the default image will be used instead for author index / archive webpages.';
+						case 'tooltip-og_author_gravatar':	// aka plugin_gravatar_api
+							$text = 'Check this option to include the author\'s Gravatar image in meta tags for author index / archive webpages (default is checked).';
 							break;
 						default:
 							$text = apply_filters( $lca.'_messages_tooltip_og', $text, $idx, $info );
@@ -262,17 +254,20 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						/*
 						 * 'Plugin Settings' settings
 						 */
+						case 'tooltip-plugin_clear_on_save':	// Clear All Cache(s) on Save Settings
+							$text = 'Automatically clear all cache(s) when saving the plugin settings (default is checked).';
+							break;
 						case 'tooltip-plugin_preserve':	// Preserve Settings on Uninstall
 							$text = 'Check this option if you would like to preserve all '.$info['short'].' settings when you <em>uninstall</em> the plugin (default is unchecked).';
 							break;
 						case 'tooltip-plugin_debug':	// Add Hidden Debug Messages
 							$text = 'Add hidden debug messages to the HTML of webpages (default is unchecked).';
 							break;
-						case 'tooltip-plugin_clear_on_save':	// Clear All Cache(s) on Save Settings
-							$text = 'Automatically clear all cache(s) when saving the plugin settings (default is checked).';
+						case 'tooltip-plugin_hide_pro':	// Hide All Pro Settings
+							$text = 'Hide all Pro version settings, tabs, and options (default is unchecked).';
 							break;
 						case 'tooltip-plugin_show_opts':	// Options to Show by Default
-							$text = 'Select the default number of options to display on the '.$info['short'].' settings pages by default. The basic view shows only the essential options that are most commonly used.';
+							$text = 'Select the default number of options to display in the '.$info['short'].' settings pages. The basic view shows only the most commonly used options.';
 							break;
 						/*
 						 * 'Content and Filters' settings
@@ -298,6 +293,12 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						case 'tooltip-plugin_p_cap_prefix':
 							$text = $info['short'].' can add a custom text prefix to paragraphs assigned the "wp-caption-text" class. Leave this option empty to prevent caption paragraphs from being prefixed.';
 							break;
+						case 'tooltip-plugin_content_img_max':
+							$text = 'The maximum number of images that '.$info['short'].' will consider using from your content.';
+							break;
+						case 'tooltip-plugin_content_vid_max':
+							$text = 'The maximum number of embedded videos that '.$info['short'].' will consider using from your content.';
+							break;
 						case 'tooltip-plugin_embedded_media':
 							$text = 'Check the Post and Page content, along with the custom Social Settings, for embedded media URLs from supported media providers (Youtube, Wistia, etc.). If a supported URL is found, an API connection to the provider will be made to retrieve information about the media (preview image, flash player url, oembed player url, video width / height, etc.).';
 							break;
@@ -318,13 +319,16 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = 'Include and exclude specific tabs in the Social Settings metabox.';
 							break;
 						case 'tooltip-plugin_cf_img_url':
-							$text = 'If your theme or another plugin provides a custom field for image URLs, you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Image URL</strong>" option in the Social Settings metabox. The default value is "'.$this->p->opt->get_defaults( 'plugin_cf_img_url' ).'".';
+							$text = 'If your theme or another plugin provides a custom field for image URLs, you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Image URL</strong>" option in the Social Settings metabox. The default custom field name is "'.$this->p->opt->get_defaults( 'plugin_cf_img_url' ).'".';
 							break;
 						case 'tooltip-plugin_cf_vid_url':
-							$text = 'If your theme or another plugin provides a custom field for video URLs (not embed HTML code), you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Video URL</strong>" option in the Social Settings metabox. The default value is "'.$this->p->opt->get_defaults( 'plugin_cf_vid_url' ).'".';
+							$text = 'If your theme or another plugin provides a custom field for video URLs (not embed HTML code), you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Video URL</strong>" option in the Social Settings metabox. The default custom field name is "'.$this->p->opt->get_defaults( 'plugin_cf_vid_url' ).'".';
 							break;
 						case 'tooltip-plugin_cf_vid_embed':
-							$text = 'If your theme or another plugin provides a custom field for video embed HTML code (not simply a URL), you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Video Embed HTML</strong>" option in the Social Settings metabox. The default value is "'.$this->p->opt->get_defaults( 'plugin_cf_vid_embed' ).'".';
+							$text = 'If your theme or another plugin provides a custom field for video embed HTML code (not simply a URL), you may enter its custom field name here. If a custom field matching that name is found, its value will be used for the "<strong>Video Embed HTML</strong>" option in the Social Settings metabox. The default custom field name is "'.$this->p->opt->get_defaults( 'plugin_cf_vid_embed' ).'".';
+							break;
+						case 'tooltip-plugin_cf_recipe_ingredients':
+							$text = 'If your theme or another plugin provides a custom field for recipe ingredients, you may enter its custom field name here. If a custom field matching that name is found, its value may be used to create additional meta tags and Schema markup. The default custom field name is "'.$this->p->opt->get_defaults( 'plugin_cf_recipe_ingredients' ).'".';
 							break;
 						/*
 						 * 'WP / Theme Integration' settings
@@ -342,16 +346,16 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = $info['short_pro'].' can use the WordPress locale to select the correct language for the Facebook / Open Graph and Pinterest Rich Pin meta tags'.( empty( $this->p->is_avail['ssb'] ) ? '' : ', along with the Google, Facebook, and Twitter social sharing buttons' ).'. If your website is available in multiple languages, this can be a useful feature. Uncheck this option to ignore the WordPress locale and always use the configured language.'; 
 							break;
 						case 'tooltip-plugin_auto_img_resize':
-							$text = 'Automatically generate missing or incorrect image sizes for previously uploaded images in the WordPress Media Library (default is checked).';
+							$text = __( 'Automatically create missing and/or incorrect images in the WordPress Media Library (default is checked).', 'nextgen-facebook' );
 							break;
 						case 'tooltip-plugin_check_img_dims':
-							$text = 'Full size images selected by '.$info['short'].' must be equal to (or larger) than the '.$this->p->util->get_admin_url( 'image-dimensions', 'Social Image Dimensions' ).' you\'ve defined. Uncheck this option to disable the minimum image dimensions check. <em>Disabling this option is not advised</em> &mdash; if you uncheck this option, images that are too small for some social websites may be included in your meta tags.';
+							$text = 'When this option is enabled, selected images must be equal to (or larger) than the '.$this->p->util->get_admin_url( 'image-dimensions', 'Social and SEO Image Dimensions' ).' you\'ve defined -- images that do not meet or exceed the minimum requirements will be rejects / ignored. <strong>Enabling this option is highly recommended</strong> &mdash; it is disabled by default to avoid excessive warnings on sites with small / thumbnail images in their media library.';
 							break;
 						case 'tooltip-plugin_upscale_images':
 							$text = 'WordPress does not upscale (enlarge) images &mdash; WordPress only creates smaller images from larger full-size originals. Upscaled images do not look as sharp or clean when upscaled, and if enlarged too much, images will look fuzzy and unappealing &mdash; not something you want to promote on social sites. '.$info['short_pro'].' includes an optional module that allows upscaling of WordPress Media Library images for '.$info['short'].' image sizes (up to a maximum upscale percentage). <strong>Do not enable this option unless you want to publish lower quality images on social sites</strong>.';
 							break;
 						case 'tooltip-plugin_upscale_img_max':
-							$text = 'When upscaling of '.$info['short'].' image sizes is allowed, '.$info['short_pro'].' can make sure smaller / thumbnail images are not upscaled beyond reason, which could publish very low quality / fuzzy images on social sites (the default maximum is 50%). If an image needs to be upscaled beyond this maximum &ndash; <em>in either width or height</em> &ndash; the image will not be upscaled.';
+							$text = 'When upscaling of '.$info['short'].' image sizes is allowed, '.$info['short_pro'].' can make sure smaller / thumbnail images are not upscaled beyond reason, which could publish very low quality / fuzzy images on social sites (the default maximum is 33%). If an image needs to be upscaled beyond this maximum, <em>in either width or height</em>, the image will not be upscaled.';
 							break;
 						case 'tooltip-plugin_shortcodes':
 							$text = 'Enable the '.$info['short'].' shortcode features (default is checked).';
@@ -375,7 +379,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = '<p>'.$info['short'].' saves filtered and rendered content to a non-persistant cache (aka <a href="https://codex.wordpress.org/Class_Reference/WP_Object_Cache" target="_blank">WP Object Cache</a>), and the meta tag HTMLs to a persistant (aka <a href="https://codex.wordpress.org/Transients_API" target="_blank">Transient</a>) cache. The default is '.$exp_sec.' seconds ('.$exp_hrs.' hrs), and the minimum value is 1 second (values bellow 3600 seconds are not recommended). If you have database performance issues, or don’t use an object / transient cache (like Memcache, Xcache, etc.), you may want to disable the transient caching feature completely by setting the NGFB_TRANSIENT_CACHE_DISABLE constant to true.</p>';
 							break;
 						case 'tooltip-plugin_verify_certs':
-							$text = 'Enable verification of peer SSL certificates when fetching content to be cached using HTTPS. The PHP \'curl\' function will use the '.NGFB_CURL_CAINFO.' certificate file by default. You can define a NGFB_CURL_CAINFO constant in your wp-config.php file to use an alternate certificate file.';
+							$text = 'Enable verification of peer SSL certificates when fetching content to be cached using HTTPS. The PHP \'curl\' function will use the '.NGFB_PHP_CURL_CAINFO.' certificate file by default. You can define a NGFB_PHP_CURL_CAINFO constant in your wp-config.php file to use an alternate certificate file.';
 							break;
 						case 'tooltip-plugin_cache_info':
 							$text = 'Report the number of objects removed from the cache when updating Posts and Pages.';
@@ -390,16 +394,19 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = sprintf( __( 'A preferred URL shortening service for %s plugin filters and/or extensions that may need to shorten URLs &mdash; don\'t forget to define the Service API Keys for the URL shortening service of your choice.', 'nextgen-facebook' ), $info['short'] );
 							break;
 						case 'tooltip-plugin_shortlink':
-							$text = __( 'The <em>Get Shortlink</em> button on Posts / Pages admin editing pages provides the shortened sharing URL instead of the default WordPress shortlink URL.', 'nextgen-facebook' );
+							$text = __( 'The <em>Get Shortlink</em> button and the shortlink meta tag on Posts / Pages provides the shortened sharing URL instead of the default WordPress shortlink URL.', 'nextgen-facebook' );
 							break;
 						case 'tooltip-plugin_min_shorten':
 							$text = sprintf( __( 'URLs shorter than this length will not be shortened (the default suggested by Twitter is %d characters).', 'nextgen-facebook' ), $this->p->opt->get_defaults( 'plugin_min_shorten' ) );
 							break;
 						case 'tooltip-plugin_bitly_login':
-							$text = sprintf( __( 'The username for your Bitly API key (see <a href="%s" target="_blank">Your Bitly API Key</a> for details).', 'nextgen-facebook' ), 'https://bitly.com/a/your_api_key' );
+							$text = __( 'The Bitly username to use with the Generic Access Token or API Key (deprecated).', 'nextgen-facebook' );
+							break;
+						case 'tooltip-plugin_bitly_token':
+							$text = sprintf( __( 'The Bitly shortening service requires a <a href="%s" target="_blank">Generic Access Token</a> or API Key (deprecated) to shorten URLs.', 'nextgen-facebook' ), 'https://bitly.com/a/oauth_apps' );
 							break;
 						case 'tooltip-plugin_bitly_api_key':
-							$text = sprintf( __( 'To use Bitly as your preferred shortening service, you must provide the Bitly API key for this website (see <a href="%s" target="_blank">Your Bitly API Key</a> for details).', 'nextgen-facebook' ), 'https://bitly.com/a/your_api_key' );
+							$text = sprintf( __( 'The Bitly <a href="%s" target="_blank">API Key</a> authentication method has been deprecated by Bitly.', 'nextgen-facebook' ), 'https://bitly.com/a/your_api_key' );
 							break;
 						case 'tooltip-plugin_google_api_key':
 							$text = sprintf( __( 'The Google BrowserKey value for this website (project). If you don\'t already have a Google project, visit <a href="%s" target="_blank">Google\'s Cloud Console</a> and create a new project for your website (use the \'Select a project\' drop-down).', 'nextgen-facebook' ), 'https://console.developers.google.com/start' );
@@ -408,7 +415,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = sprintf( __( 'In order to use Google\'s URL Shortener API service, you must <em>Enable</em> the URL Shortener API from <a href="%s" target="_blank">Google\'s Cloud Console</a> (under the project\'s <em>API &amp; auth / APIs / URL Shortener API</em> settings page).', 'nextgen-facebook' ), 'https://console.developers.google.com/start' ).' '.__( 'Confirm that you have enabled Google\'s URL Shortener API service by checking the \'Yes\' option value.', 'nextgen-facebook' );
 							break;
 						case 'tooltip-plugin_owly_api_key':
-							$text = sprintf( __( 'To use Ow.ly as your preferred shortening service, you must provide the Ow.ly API key for this website (complete this form to <a href="%s" target="_blank">Request Ow.ly API Access</a>).', 'nextgen-facebook' ), 'https://docs.google.com/forms/d/1Fn8E-XlJvZwlN4uSRNrAIWaY-nN_QA3xAHUJ7aEF7NU/viewform' );
+							$text = sprintf( __( 'To use Ow.ly as your preferred shortening service, you must provide the Ow.ly API Key for this website (complete this form to <a href="%s" target="_blank">Request Ow.ly API Access</a>).', 'nextgen-facebook' ), 'https://docs.google.com/forms/d/1Fn8E-XlJvZwlN4uSRNrAIWaY-nN_QA3xAHUJ7aEF7NU/viewform' );
 							break;
 						case 'tooltip-plugin_yourls_api_url':
 							$text = sprintf( __( 'The URL to <a href="%1$s" target="_blank">Your Own URL Shortener</a> (YOURLS) shortening service.', 'nextgen-facebook' ), 'http://yourls.org/' );
@@ -459,7 +466,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = 'If you have a <a href="http://www.google.com/+/business/" target="_blank">Google+ Business Page for your website / business</a>, you may enter its URL here (for example, the Google+ Business Page URL for Surnia Ulula is <a href="https://plus.google.com/+SurniaUlula/" target="_blank">https://plus.google.com/+SurniaUlula/</a>). The Google+ Business Page URL will be used in a link relation header tag, and the schema publisher (Organization) social JSON. '.__( 'Google Search may use this information to display additional publisher / business details in its search results.', 'nextgen-facebook' );
 							break;
 						case 'tooltip-seo_desc_len':
-							$text = 'The maximum length of text used for the Google Search / SEO description meta tag. The length should be at least '.$this->p->cf['head']['min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'seo_desc_len' ).' characters).';
+							$text = 'The maximum length of text used for the Google Search / SEO description meta tag. The length should be at least '.$this->p->cf['head']['limit_min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'seo_desc_len' ).' characters).';
 							break;
 						case 'tooltip-seo_author_field':
 							$text = $info['short'].' can include an <em>author</em> and <em>publisher</em> link in your webpage headers. These are not Facebook / Open Graph and Pinterest Rich Pin meta property tags &mdash; they are used primarily by Google\'s search engine to associate Google+ profiles with search results. Select which field to use from the author\'s profile for the <em>author</em> link tag.';
@@ -483,7 +490,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 				} elseif ( strpos( $idx, 'tooltip-schema_' ) === 0 ) {
 					switch ( $idx ) {
 						case 'tooltip-schema_add_noscript':
-							$text = 'When additional schema properties are available (product ratings, for example), one or more "noscript" containers can be included in webpage headers. The "noscript" container is read correctly by the Google Structured Data Testing Tool, but the W3C Validator will show errors for the included meta tags (these errors can be safely ignored).';
+							$text = 'When additional schema properties are available (product ratings, recipe ingredients, etc.), one or more "noscript" containers may be included in webpage headers. The "noscript" container is read correctly by Google and Pinterest, but the W3C Validator will show errors for the included meta tags (these errors can be safely ignored). The "noscript" containers are always disabled for AMP webpages, and always enabled for the Pinterest crawler.';
 							break;
 						case 'tooltip-schema_social_json':
 							$text = 'Include Website, Organization, and/or Person schema markup in the home page for Google\'s Knowledge Graph. The Website markup includes the site name, alternate site name, site URL and search query URL. Developers can hook the \''.$lca.'_json_ld_search_url\' filter to modify the site search URL (or disable its addition by returning false). The Organization markup includes all URLs entered on the '.$this->p->util->get_admin_url( 'social-accounts', 'Website Social Pages and Accounts' ).' settings page. The Person markup includes all contact method URLs from the user\'s profile page.';
@@ -492,10 +499,10 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = 'An alternate name for your Website that you want Google to consider (optional).';
 							break;
 						case 'tooltip-schema_logo_url':
-							$text = 'A URL for the business / organization\'s logo image, that Google can use in search results and its <em>Knowledge Graph</em>.';
+							$text = 'A URL for the website / organization\'s logo image that Google can use in search results and its <em>Knowledge Graph</em>.';
 							break;
 						case 'tooltip-schema_banner_url':
-							$text = 'A URL for the business / organization\'s logo image, <em>that measures exactly 600x60px</em>, that Google can use as a banner for Articles.';
+							$text = 'A URL for the website / organization\'s banner image &mdash; <em>measuring exactly 600x60px</em> &mdash; that Google can use as a banner for Articles.';
 							break;
 						case 'tooltip-schema_img_max':
 							$text = 'The maximum number of images to include in the Google / Schema markup -- this includes the <em>featured</em> or <em>attached</em> images, and any images found in the Post or Page content. If you select \'0\', then no images will be listed in the Google / Schema meta tags (<strong>not recommended</strong>).';
@@ -504,10 +511,11 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$def_dimensions = $this->p->opt->get_defaults( 'schema_img_width' ).'x'.
 								$this->p->opt->get_defaults( 'schema_img_height' ).' '.
 								( $this->p->opt->get_defaults( 'schema_img_crop' ) == 0 ? 'uncropped' : 'cropped' );
+
 							$text = 'The image dimensions used in the Google / Schema meta tags and JSON-LD markup (the default dimensions are '.$def_dimensions.'). The minimum image width required by Google is 696px for the resulting resized image. If you do not choose to crop this image size, make sure the height value is large enough for portrait / vertical images.';
 							break;
 						case 'tooltip-schema_desc_len':
-							$text = 'The maximum length of text used for the Google+ / Schema description meta tag. The length should be at least '.$this->p->cf['head']['min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'schema_desc_len' ).' characters).';
+							$text = 'The maximum length of text used for the Google+ / Schema description meta tag. The length should be at least '.$this->p->cf['head']['limit_min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'schema_desc_len' ).' characters).';
 							break;
 						case 'tooltip-schema_author_name':
 							$text = sprintf( __( 'Select an <em>%1$s</em> for the author / Person markup, or \'[None]\' to disable this feature (the recommended value is \'Display Name\').', 'nextgen-facebook' ), _x( 'Author Name Format', 'option label', 'nextgen-facebook' ) );
@@ -531,15 +539,27 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$text = 'The <a href="https://business.twitter.com/" target="_blank">Twitter @username for your website and/or business</a> (not your personal Twitter @username). As an example, the Twitter @username for Surnia Ulula is <a href="https://twitter.com/surniaululacom" target="_blank">@surniaululacom</a>. The website / business @username is also used for the schema publisher (Organization) social JSON. '.__( 'Google Search may use this information to display additional publisher / business details in its search results.', 'nextgen-facebook' );
 							break;
 						case 'tooltip-tc_desc_len':
-							$text = 'The maximum length of text used for the Twitter Card description. The length should be at least '.$this->p->cf['head']['min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'tc_desc_len' ).' characters).';
+							$text = 'The maximum length of text used for the Twitter Card description. The length should be at least '.$this->p->cf['head']['limit_min']['og_desc_len'].' characters or more (the default is '.$this->p->opt->get_defaults( 'tc_desc_len' ).' characters).';
+							break;
+						case 'tooltip-tc_type_post':
+							$text = 'The Twitter Card type for posts / pages with a custom, featured, and/or attached image.';
+							break;
+						case 'tooltip-tc_type_default':
+							$text = 'The Twitter Card type for all other images (default, image from content text, etc).';
 							break;
 						case 'tooltip-tc_sum_dimensions':
-							$card = 'sum';
-							$text = 'The dimension of content images provided for the <a href="https://dev.twitter.com/docs/cards/types/summary-card" target="_blank">Summary Card</a> (should be at least 120x120, larger than 60x60, and less than 1MB). The default image dimensions are '.$this->p->opt->get_defaults( 'tc_'.$card.'_width' ).'x'.$this->p->opt->get_defaults( 'tc_'.$card.'_height' ).', '.( $this->p->opt->get_defaults( 'tc_'.$card.'_crop' ) ? '' : 'un' ).'cropped.';
+							$def_dimensions = $this->p->opt->get_defaults( 'tc_sum_width' ).'x'.
+								$this->p->opt->get_defaults( 'tc_sum_height' ).' '.
+								( $this->p->opt->get_defaults( 'tc_sum_crop' ) == 0 ? 'uncropped' : 'cropped' );
+
+							$text = 'The dimension of content images provided for the <a href="https://dev.twitter.com/docs/cards/types/summary-card" target="_blank">Summary Card</a> (should be at least 120x120, larger than 60x60, and less than 1MB). The default image dimensions are '.$def_dimensions.'.';
 							break;
 						case 'tooltip-tc_lrgimg_dimensions':
-							$card = 'lrgimg';
-							$text = 'The dimension of Post Meta, Featured or Attached images provided for the <a href="https://dev.twitter.com/docs/cards/large-image-summary-card" target="_blank">Large Image Summary Card</a> (must be larger than 280x150 and less than 1MB). The default image dimensions are '.$this->p->opt->get_defaults( 'tc_'.$card.'_width' ).'x'.$this->p->opt->get_defaults( 'tc_'.$card.'_height' ).', '.( $this->p->opt->get_defaults( 'tc_'.$card.'_crop' ) ? '' : 'un' ).'cropped.';
+							$def_dimensions = $this->p->opt->get_defaults( 'tc_lrgimg_width' ).'x'.
+								$this->p->opt->get_defaults( 'tc_lrgimg_height' ).' '.
+								( $this->p->opt->get_defaults( 'tc_lrgimg_crop' ) == 0 ? 'uncropped' : 'cropped' );
+
+							$text = 'The dimension of Post Meta, Featured or Attached images provided for the <a href="https://dev.twitter.com/docs/cards/large-image-summary-card" target="_blank">Large Image Summary Card</a> (must be larger than 280x150 and less than 1MB). The default image dimensions are '.$def_dimensions.'.';
 							break;
 						default:
 							$text = apply_filters( $lca.'_messages_tooltip_tc', $text, $idx, $info );
@@ -557,6 +577,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 							$def_dimensions = $this->p->opt->get_defaults( 'rp_img_width' ).'x'.
 								$this->p->opt->get_defaults( 'rp_img_height' ).' '.
 								( $this->p->opt->get_defaults( 'rp_img_crop' ) == 0 ? 'uncropped' : 'cropped' );
+
 							$text = 'The image dimensions specifically for Rich Pin meta tags when the Pinterest crawler is detected (the default dimensions are '.$def_dimensions.'). Images in the Facebook / Open Graph meta tags are usually cropped square, where-as images on Pinterest often look better in their original aspect ratio (uncropped) and/or cropped using portrait photo dimensions. Note that original images in the WordPress Media Library and/or NextGEN Gallery must be larger than your chosen image dimensions.';
 							break;
 						case 'tooltip-rp_author_name':
@@ -631,7 +652,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 			} elseif ( strpos( $idx, 'info-' ) === 0 ) {
 				switch ( $idx ) {
 					case 'info-meta-social-preview':
-					 	$text = '<p style="text-align:right;">'.__( 'The Open Graph social preview shows an <em>example</em> of a typical share on a social website. Images are displayed using Facebooks suggested minimum image dimensions of 600x315px. Actual shares on Facebook and other social websites may look significantly different than this example (depending on the client platform, resolution, orientation, etc.).', 'nextgen-facebook' ).'</p>';
+					 	$text = '<p style="text-align:right;">'.__( 'The social preview shows an <em>example</em> link share on Facebook. Images are displayed using Facebooks suggested minimum image dimensions of 600x315px. Actual shares on Facebook and other social websites may look significantly different than this example (depending on the client platform, resolution, orientation, etc.).', 'nextgen-facebook' ).'</p>';
 					 	break;
 					case 'info-plugin-tid':
 						$um_info = $this->p->cf['plugin']['ngfbum'];
@@ -642,7 +663,7 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						$text = '<blockquote class="top-info"><p>'.__( 'After purchasing one or more Pro version license(s), an email is sent to you with an Authentication ID and installation / activation instructions.', 'nextgen-facebook' ).' '.__( 'You may enter the unique Authentication ID on this page <em>to define a value for all sites within the network</em> &mdash; or enter the Authentication ID individually on each site\'s Pro Licenses settings page.', 'nextgen-facebook' ).'</p><p>'.__( 'If you enter an Authentication ID here, <em>please make sure you have purchased enough licenses to license all sites within the network</em> (for example, if you have 10 sites, you will need 10 or more licenses).', 'nextgen-facebook' ).' <strong>'.__( 'To license one or more sites individually, enter the Authentication ID in each site\'s Pro Licenses settings page.', 'nextgen-facebook' ).'</strong></p><p>'.sprintf( __( 'Please note that <em>the default site / blog must be licensed</em> and the %1$s extension active, in order to install %2$s version updates from the network admin interface.', 'nextgen-facebook' ), $um_info['name'], $info['short_pro'] ).'</p></blockquote>';
 						break;
 					case 'info-pub-pinterest':
-						$text = '<blockquote class="top-info"><p>'.__( 'These options allow you to customize some Open Graph meta tag and Schema markup values for the Pinterest crawler.', 'nextgen-facebook' ).' '.__( 'If you use a caching plugin (or front-end caching service), it should detect the Pinterest user-agent and bypass its cache (for example, look for a <em>User-Agent Exclusion Pattern</em> setting and add "Pinterest/" to that list).', 'nextgen-facebook' ).'</p></blockquote>';
+						$text = '<blockquote class="top-info"><p>'.__( 'These options allow you to customize some Open Graph meta tag and Schema markup values for the Pinterest crawler.', 'nextgen-facebook' ).' '.__( 'If you use a caching plugin (or front-end caching service), it should detect the Pinterest user-agent and bypass its cache (for example, look for a <em>User-Agent Exclusion Pattern</em> setting and add "Pinterest" to that list).', 'nextgen-facebook' ).'</p></blockquote>';
 						break;
 					case 'info-cm':
 						$text = '<blockquote class="top-info"><p>'.sprintf( __( 'The following options allow you to customize the contact fields shown in <a href="%s">the user profile page</a> under the <strong>Contact Info</strong> header.', 'nextgen-facebook' ), get_admin_url( null, 'profile.php' ) ).' '.sprintf( __( '%s uses the Facebook, Google+, and Twitter contact values for Facebook / Open Graph, Google / Schema, and Twitter Card meta tags.', 'nextgen-facebook' ), $info['short'] ).'</p><p><strong>'.sprintf( __( 'You should not modify the <em>%s</em> unless you have a <em>very</em> good reason to do so.', 'nextgen-facebook' ), _x( 'Contact Field Name', 'column title', 'nextgen-facebook' ) ).'</strong> '.sprintf( __( 'The <em>%s</em> on the other hand is for display purposes only and it can be changed as you wish.', 'nextgen-facebook' ), _x( 'Profile Contact Label', 'column title', 'nextgen-facebook' ) ).' ;-)</p><p>'.sprintf( __( 'Enabled contact methods are included on user profile editing pages automatically. Your theme is responsible for using their values in its templates (see the WordPress <a href="%s" target="_blank">get_the_author_meta()</a> documentation for examples).', 'nextgen-facebook' ), 'https://codex.wordpress.org/Function_Reference/get_the_author_meta' ).'</p><p><center><strong>'.__( 'DO NOT ENTER YOUR CONTACT INFORMATION HERE &ndash; THESE ARE CONTACT FIELD LABELS ONLY.', 'nextgen-facebook' ).'</strong><br/>'.sprintf( __( 'Enter your personal contact information on <a href="%1$s">the user profile page</a>.', 'nextgen-facebook' ), get_admin_url( null, 'profile.php' ) ).'</center></p></blockquote>';
@@ -666,30 +687,30 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						if ( $lca !== $this->p->cf['lca'] &&
 							! $this->p->check->aop( $this->p->cf['lca'], true, $this->p->is_avail['aop'] ) ) {
 								$req_short = $this->p->cf['plugin'][$this->p->cf['lca']]['short'].' Pro';
-								$req_msg = '<br>'.sprintf( __( '(note that all %1$s extensions also require a licensed and active %1$s plugin)',
+								$req_msg = '<br>'.sprintf( __( '(note that all %1$s extensions also require a licensed %1$s plugin)',
 									'nextgen-facebook' ), $req_short );
 						} else $req_msg = '';
+
+						$purchase_url = add_query_arg( 'utm_source', $idx, $url['purchase'] );
 						if ( $this->p->check->aop( $lca, false ) )
-							$text = '<p class="pro-feature-msg"><a href="'.$url['purchase'].'" target="_blank">'.
+							$text = '<p class="pro-feature-msg"><a href="'.$purchase_url.'" target="_blank">'.
 								sprintf( __( 'Purchase %s licence(s) to install its Pro modules and use the following features / options.',
 									'nextgen-facebook' ), $info['short_pro'] ).'</a>'.$req_msg.'</p>';
-						else $text = '<p class="pro-feature-msg"><a href="'.$url['purchase'].'" target="_blank">'.
+						else $text = '<p class="pro-feature-msg"><a href="'.$purchase_url.'" target="_blank">'.
 							sprintf( __( 'Purchase the %s plugin to install its Pro modules and use the following features / options.',
 								'nextgen-facebook' ), $info['short_pro'] ).'</a>'.$req_msg.'</p>';
 						break;
 					case 'pro-option-msg':
-						$text = '<p class="pro-option-msg"><a href="'.$url['purchase'].'" target="_blank">'.
+						$purchase_url = add_query_arg( 'utm_source', $idx, $url['purchase'] );
+						$text = '<p class="pro-option-msg"><a href="'.$purchase_url.'" target="_blank">'.
 							sprintf( _x( '%s required to use this option', 'option comment', 'nextgen-facebook' ),
 								$info['short_pro'] ).'</a></p>';
 						break;
-					case 'pro-about-msg-post':
-						$text = '<p class="pro-about-msg">'.sprintf( __( 'The Free / Basic version of %1$s does not include modules required to customize post, term, and/or user meta &mdash; these options are shown for informative purposes only.', 'nextgen-facebook' ), $info['short'] ).' '.__( 'Update the content or excerpt text to change the default values shown here.', 'nextgen-facebook' ).'</p>';
+					case 'pro-about-msg-post-text':
+						$text = '<p>'.__( 'You can update the excerpt or content text to change the default description values.', 'nextgen-facebook' ).'</p>';
 						break;
-					case 'pro-about-msg-media':
-						$text = '<p class="pro-about-msg">'.sprintf( __( 'The Free / Basic version of %1$s does not include modules required to customize post, term, and/or user meta &mdash; these options are shown for informative purposes only.', 'nextgen-facebook' ), $info['short'] ).' '.__( 'You can change the social image by selecting a featured image or including images in the content.', 'nextgen-facebook' ).' '.sprintf( __( 'The video service modules &mdash; required to detect embedded videos &mdash; are available in the %s Pro version.', 'nextgen-facebook' ),  $info['short'] ).'</p>';
-						break;
-					case 'pro-about-msg':
-						$text = '<p class="pro-about-msg">'.sprintf( __( 'The Free / Basic version of %1$s does not include modules required to customize post, term, and/or user meta &mdash; these options are shown for informative purposes only.', 'nextgen-facebook' ), $info['short'] ).( empty( $info['text'] ) ? '' : ' '.$info['text'] ).'</p>';
+					case 'pro-about-msg-post-media':
+						$text = '<p>'.__( 'You can change the social image by selecting a featured image, attaching image(s) or including images in the content.', 'nextgen-facebook' ).'<br/>'.sprintf( __( 'The video service modules &mdash; required to detect embedded videos &mdash; are available with the %s Pro version.', 'nextgen-facebook' ),  $info['short'] ).'</p>';
 						break;
 					default:
 						$text = apply_filters( $lca.'_messages_pro', $text, $idx, $info );
@@ -702,48 +723,41 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 				switch ( $idx ) {
 					case 'notice-image-rejected':
 						$hide_const_name = strtoupper( $lca ).'_HIDE_ALL_WARNINGS';
-						$hide_warnings = SucomUtil::get_const( $hide_const_name );
+						$hidden_warnings = SucomUtil::get_const( $hide_const_name );
 
-						$text = __( 'The <em>Select Media</em> tab in the Social Settings metabox can be used to select a larger image specifically for social / SEO purposes.', 'nextgen-facebook' );
-						if ( current_user_can( 'manage_options' ) ) {
+						if ( empty( $this->p->options['plugin_hide_pro'] ) )
+							$text = __( 'A larger and/or different custom image &mdash; specifically for social meta tags and markup &mdash; can be selected in the Social Settings metabox under the <em>Select Media</em> tab.', 'nextgen-facebook' );
+						else $text = '';
+
+						if ( empty( $info['hard_limit'] ) && current_user_can( 'manage_options' ) ) {
 							$text .= '<p><em>'.__( 'Additional information shown only to users with Administrative privileges:', 'nextgen-facebook' ).'</em></p>';
 							$text .= '<ul>';
 							$text .= '<li>'.sprintf( __( 'You can also adjust the <b>%2$s</b> option in the <a href="%1$s">Social and SEO Image Dimensions</a> settings.', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'image-dimensions' ), $info['size_label'] ).'</li>';
 							$text .= '<li>'.sprintf( __( 'Enable or increase the <a href="%1$s">WP / Theme Integration</a> <em>image upscaling percentage</em> feature.', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_integration' ) ).'</li>';
 							$text .= '<li>'.sprintf( __( 'Disable the <a href="%1$s">WP / Theme Integration</a> <em>image dimensions check</em> option (not recommended).', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_integration' ) ).'</li>';
-							if ( ! $hide_warnings )
+							if ( empty( $hidden_warnings ) )
 								$text .= '<li>'.sprintf( __( 'Define the %1$s constant as <em>true</em> to auto-hide all dismissable warnings.', 'nextgen-facebook' ), $hide_const_name ).'</li>';
 							$text .= '</ul>';
 						}
 						break;
 					case 'notice-missing-og-image':
-						$text = __( 'An Open Graph image meta tag could not be created from this webpage content. Facebook and other social websites <em>require</em> at least one image meta tag to render shared content correctly.', 'nextgen-facebook' );
+						$text = __( 'An Open Graph image meta tag could not be created from this webpage content and/or custom settings. Facebook and other social websites <em>require at least one image meta tag</em> to render shared content correctly.', 'nextgen-facebook' );
 						break;
 					case 'notice-missing-schema-image':
-						$text = __( 'Google / Schema image markup could not be created from this webpage content. Google <em>requires</em> at least one image object for this Schema item type.', 'nextgen-facebook' );
-						break;
-					case 'notice-missing-schema_logo_url':
-						$text = __( 'A Business / Organization Logo image is missing for the Schema Organization markup.', 'nextgen-facebook' ).' '.
-						sprintf( __( 'Please enter an Business / Organization Logo URL in the %1$s settings.', 'nextgen-facebook' ),
-							( $this->p->is_avail['json'] ? '<a href="'.$this->p->util->get_admin_url( 'schema-json-ld' ).'">Schema Markup</a>' :
-								'<a href="'.$this->p->util->get_admin_url( 'general#sucom-tabset_pub-tab_google' ).'">Google / Schema</a>' ) );
-						break;
-					case 'notice-missing-schema_banner_url':
-						$text = __( 'A Business Banner Image is missing for the Schema Organization markup.', 'nextgen-facebook' ).' '.
-						sprintf( __( 'Please enter a Business Banner 600x60px Image URL in the %1$s settings.', 'nextgen-facebook' ),
-							( $this->p->is_avail['json'] ? '<a href="'.$this->p->util->get_admin_url( 'schema-json-ld' ).'">Schema Markup</a>' :
-								'<a href="'.$this->p->util->get_admin_url( 'general#sucom-tabset_pub-tab_google' ).'">Google / Schema</a>' ) );
+						$text = __( 'A Schema image property could not be created from this webpage content and/or custom settings. Google <em>requires at least one image property</em> for this Schema item type.', 'nextgen-facebook' );
 						break;
 					case 'notice-object-cache-exp':
 						$text = sprintf( __( 'Please note that the <a href="%1$s">%2$s</a> advanced option is currently set at %3$d seconds &mdash; this is lower than the recommended default value of %4$d seconds.', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_cache' ), _x( 'Object Cache Expiry', 'option label', 'nextgen-facebook' ), $this->p->options['plugin_object_cache_exp'], $this->p->opt->get_defaults( 'plugin_object_cache_exp' ) );
 						break;
 					case 'notice-content-filters-disabled':
-						$text = '<p><b>'.sprintf( __( 'The <a href="%1$s">%2$s</a> advanced option is currently disabled.', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_content' ), _x( 'Apply WordPress Content Filters', 'option label', 'nextgen-facebook' ) ).'</b> '.sprintf( __( 'The use of WordPress content filters allows %s to fully render your content text for meta tag descriptions, and detect additional images / embedded videos provided by shortcodes.', 'nextgen-facebook' ), $info['short'] ).'</p><p><b>'.__( 'Some theme / plugins have badly coded content filters, so this option is disabled by default.', 'nextgen-facebook' ).'</b> '.sprintf( __( '<a href="%s">If you use any shortcodes in your content text, this option should be enabled</a> (Pro version required) &mdash; if you experience display issues after enabling this option, determine which theme / plugin content filter is at fault, and report the problem to its author(s).', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_content' ) ).'</p>';
+						$text = '<p><b>'.sprintf( __( 'The <a href="%1$s">%2$s</a> advanced option is currently disabled.', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_content' ), _x( 'Apply WordPress Content Filters', 'option label', 'nextgen-facebook' ) ).'</b> '.sprintf( __( 'The use of WordPress content filters allows %s to fully render your content text for meta tag descriptions, and detect additional images / embedded videos provided by shortcodes.', 'nextgen-facebook' ), $info['short'] ).'</p><p><b>'.__( 'Some theme / plugins have badly coded content filters, so this option is disabled by default.', 'nextgen-facebook' ).'</b> '.sprintf( __( '<a href="%s">If you use any shortcodes in your content text, this option should be enabled</a> &mdash; if you experience display issues after enabling this option, determine which theme / plugin content filter is at fault, and report the problem to its author(s).', 'nextgen-facebook' ), $this->p->util->get_admin_url( 'advanced#sucom-tabset_plugin-tab_content' ) ).'</p>';
 						break;
 					case 'notice-header-tmpl-no-head-attr':
 						$action_url = wp_nonce_url( $this->p->util->get_admin_url( '?'.$this->p->cf['lca'].'-action=modify_tmpl_head_elements' ),
 							NgfbAdmin::get_nonce(), NGFB_NONCE );
-						$text = '<p><b>'.__( 'At least one of your theme header templates does not support Schema markup of the webpage head section.', 'nextgen-facebook' ).'</b> '.sprintf( __( 'The %s element in your theme\'s header templates should include a function / action / filter call for its attributes.', 'nextgen-facebook' ), '<code>&lt;head&gt;</code>' ).' '.sprintf( __( '%1$s can update your theme header templates automatically to change the default %2$s element to:', 'nextgen-facebook' ), $info['short'], '<code>&lt;head&gt;</code>' ).'</p><pre><code>&lt;head &lt;?php do_action( \'add_head_attributes\' ); ?&gt;&gt;</code></pre><p>'.sprintf( __( '<b><a href="%1$s">Click here to update theme header templates automatically</a></b> or update the theme templates yourself manually.', 'nextgen-facebook' ), $action_url ).'</p>';
+						$text = '<p><b>'.__( 'At least one of your theme header templates does not support Schema markup of the webpage head section &mdash; this is especially important for Pinterest.', 'nextgen-facebook' ).'</b> '.sprintf( __( 'The %s element in your header templates should include a function, action, or filter for its attributes.', 'nextgen-facebook' ), '<code>&lt;head&gt;</code>' ).' '.sprintf( __( '%1$s can update your header templates automatically to change the default %2$s element to:', 'nextgen-facebook' ), $info['short'], '<code>&lt;head&gt;</code>' ).'</p>';
+						$text .= '<pre><code>&lt;head &lt;?php do_action( \'add_head_attributes\' ); ?&gt;&gt;</code></pre>';
+						$text .= '<p>'.sprintf( __( '<b><a href="%1$s">Click here to update header templates automatically</a></b> or update the templates yourself manually.', 'nextgen-facebook' ), $action_url ).'</p>';
 						break;
 					case 'notice-pro-tid-missing':
 						if ( ! is_multisite() )
@@ -786,9 +800,8 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						$text .= ' '.__( 'Pro version licenses do not expire &ndash; there are no yearly or recurring fees for updates and support.', 'nextgen-facebook' );
 						$text .= '<p>';
 						break;
-					case 'side-help':
-						$submit_text = _x( 'Save All Plugin Settings', 'submit button', 'nextgen-facebook' );
-						$text = '<p>'.sprintf( __( 'Metaboxes (like this one) can be opened / closed by clicking on their title bar, moved and re-ordered by dragging them, or removed / added from the <em>Screen Options</em> tab (top-right of page).', 'nextgen-facebook' ).' '.__( 'Option values in multiple tabs can be modified before clicking the \'%s\' button.', 'nextgen-facebook' ), $submit_text ).'</p>';
+					case 'side-help-support':
+						$text = '<p>'.sprintf( __( 'The development of %1$s is driven mostly by customer requests &mdash; we welcome your comments and suggestions. ;-)', 'nextgen-facebook' ), $info['short'] ).'</p>';
 						break;
 					default:
 						$text = apply_filters( $lca.'_messages_side', $text, $idx, $info );

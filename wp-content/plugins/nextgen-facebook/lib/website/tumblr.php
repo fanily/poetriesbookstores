@@ -158,33 +158,32 @@ if ( ! class_exists( 'NgfbWebsiteTumblr' ) ) {
 			return array_merge( $def_opts, self::$cf['opt']['defaults'] );
 		}
 
-		// do not use an $atts reference to allow for local changes
-		public function get_html( array $atts, array &$opts, array &$mod ) {
+		public function get_html( array $atts, array $opts, array $mod ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
-			if ( empty( $opts ) ) 
-				$opts =& $this->p->options;
-
 			$lca = $this->p->cf['lca'];
-			$atts['use_post'] = isset( $atts['use_post'] ) ? $atts['use_post'] : true;
-			$atts['add_page'] = isset( $atts['add_page'] ) ? $atts['add_page'] : true;      // get_sharing_url() argument
-
-			if ( ! array_key_exists( 'lang', $atts ) ) {
-				$atts['lang'] = empty( $opts['tumblr_lang'] ) ? 'en_US' : $opts['tumblr_lang'];
-				$atts['lang'] = apply_filters( $this->p->cf['lca'].'_pub_lang', $atts['lang'], 'tumblr', 'current' );
-			}
-
-			$atts['url'] = empty( $atts['url'] ) ? 
-				$this->p->util->get_sharing_url( $mod, $atts['add_page'] ) : 
-				apply_filters( $lca.'_sharing_url', $atts['url'], $mod, $atts['add_page'] );
 
 			if ( empty( $atts['size'] ) ) 
 				$atts['size'] = $this->p->cf['lca'].'-tumblr-button';
 
-			if ( ! empty( $atts['pid'] ) )
-				list( $atts['photo'], $atts['width'], $atts['height'], 
-					$atts['cropped'] ) = $this->p->media->get_attachment_image_src( $atts['pid'], $atts['size'], false );
+			if ( ! array_key_exists( 'lang', $atts ) ) {
+				$atts['lang'] = empty( $opts['tumblr_lang'] ) ? 'en_US' : $opts['tumblr_lang'];
+				$atts['lang'] = apply_filters( $lca.'_pub_lang', $atts['lang'], 'tumblr', 'current' );
+			}
+
+			if ( ! empty( $atts['pid'] ) ) {
+				list( 
+					$atts['photo'],
+					$atts['width'],
+					$atts['height'], 
+					$atts['cropped'],
+					$atts['pid']
+				) = $this->p->media->get_attachment_image_src( $atts['pid'], $atts['size'], false );
+
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'returned image '.$atts['photo'].' ('.$atts['width'].'x'.$atts['height'].')' );
+			}
 
 			if ( empty( $atts['photo'] ) && empty( $atts['embed'] ) ) {
 				$media_info = $this->p->og->get_the_media_info( $atts['size'], array( 'img_url', 'vid_url' ), $mod, 'og' );
@@ -254,7 +253,7 @@ if ( ! class_exists( 'NgfbWebsiteTumblr' ) ) {
 			}
 
 			$html = '<!-- Tumblr Button -->'.
-			'<div '.NgfbSharing::get_css_class_id( 'tumblr', $atts ).'>'.
+			'<div '.SucomUtil::get_atts_css_attr( $atts, 'tumblr' ).'>'.
 			'<a href="'.SucomUtil::get_prot().'://www.tumblr.com/share" class="tumblr-share-button"'.
 			' data-posttype="'.$atts['posttype'].'"'.
 			' data-content="'.$atts['content'].'"'.
@@ -268,6 +267,7 @@ if ( ! class_exists( 'NgfbWebsiteTumblr' ) ) {
 
 			if ( $this->p->debug->enabled )
 				$this->p->debug->log( 'returning html ('.strlen( $html ).' chars)' );
+
 			return $html;
 		}
 

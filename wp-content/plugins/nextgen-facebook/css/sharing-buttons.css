@@ -1,6 +1,6 @@
 /* Save an empty style text box to reload the default example styles.
  * These styles are provided as examples only - modifications may be 
- * necessary to customize the layout for your website. Social sharing
+ * necessary to customize the layout for your website. Social share
  * buttons can be aligned vertically, horizontally, floated, etc.
  */
 
@@ -51,19 +51,21 @@
 
 .ngfb-buttons div.facebook-button,		/* English (Default) */
 .ngfb-preset-small_share_count
-	.ngfb-buttons div.facebook-button { width:139px; }
+	.ngfb-buttons div.facebook-button { width:114px; }
 
 .ngfb-buttons.cs_CZ div.facebook-button,	/* Czech */
 .ngfb-preset-small_share_count
-	.ngfb-buttons.cs_CZ div.facebook-button { width:169px; }
+	.ngfb-buttons.cs_CZ div.facebook-button { width:144px; }
 
 .ngfb-buttons div.fb-share-button,
 .ngfb-preset-small_share_count 
-	.ngfb-buttons div.fb-share-button { width:105px; }
+	.ngfb-buttons div.fb-share-button { width:90px; }
+
+.ngfb-preset-large_share_vertical 
+	.ngfb-buttons div.fb-share-button { height:40px; line-height:40px; }
 
 .ngfb-buttons div.fb-share-button span {
 	display:inline-block	!important;
-	vertical-align:middle	!important;
 }
 
 .ngfb-buttons div.gplus-button,
@@ -98,7 +100,7 @@
 
 .ngfb-buttons div.pinterest-button,
 .ngfb-preset-small_share_count 
-	.ngfb-buttons div.pinterest-button { width:78px; }
+	.ngfb-buttons div.pinterest-button { width:85px; }
 .ngfb-preset-large_share_vertical 
 	.ngfb-buttons div.pinterest-button { height:40px; margin-top:42px; }
 
@@ -150,12 +152,12 @@
 .ngfb-buttons div.email-button,
 .ngfb-preset-small_share_count
 	.ngfb-buttons div.email-button { 
-		width:60px; 
+		width:62px; 
 }
 .ngfb-buttons div.email-button a,
 .ngfb-preset-small_share_count
 	.ngfb-buttons div.email-button a { 
-		width:60px;
+		width:62px;
 		background-color:#0a88ff;
 }
 .ngfb-preset-large_share_vertical

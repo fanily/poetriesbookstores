@@ -68,7 +68,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			$add_hashtags = true, $encode = true, $md_idx = '' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'type' => $type, 
 					'textlen' => $textlen, 
 					'mod' => $mod, 
@@ -172,7 +172,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			$add_hashtags = false, $encode = true, $md_idx = 'og_title' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'textlen' => $textlen, 
 					'trailing' => $trailing, 
 					'mod' => $mod, 
@@ -242,16 +242,16 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 						$title = wp_title( $separator, false, 'right' );
 						if ( $this->p->debug->enabled ) {
 							$this->p->debug->log( 'is_singular wp_title() = "'.$title.'"' );
-							if ( $this->p->options['plugin_filter_title'] )
-								$this->p->debug->log( SucomDebug::get_hooks( 'wp_title' ) );
+							//if ( $this->p->options['plugin_filter_title'] )
+							//	$this->p->debug->log( SucomDebug::get_hooks( 'wp_title' ) );
 						}
 					} elseif ( ! empty( $mod['id'] ) ) {
 						$title = apply_filters( 'wp_title', get_the_title( $mod['id'] ).
 							' '.$separator.' ', $separator, 'right' );
 						if ( $this->p->debug->enabled ) {
 							$this->p->debug->log( 'post ID get_the_title() = "'.$title.'"' );
-							if ( $this->p->options['plugin_filter_title'] )
-								$this->p->debug->log( SucomDebug::get_hooks( 'wp_title' ) );
+							//if ( $this->p->options['plugin_filter_title'] )
+							//	$this->p->debug->log( SucomDebug::get_hooks( 'wp_title' ) );
 						}
 					}
 
@@ -352,7 +352,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			if ( $this->p->debug->enabled ) {
 				$this->p->debug->mark( 'render description' );	// begin timer
 
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'textlen' => $textlen, 
 					'trailing' => $trailing, 
 					'mod' => $mod, 
@@ -372,10 +372,9 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 
 			// skip if no metadata index / key name
 			if ( ! empty( $md_idx ) ) {
-				$desc = $mod['obj'] ?
-					$mod['obj']->get_options_multi( $mod['id'], ( $mod['is_post'] ? 
-						array( $md_idx, 'og_desc' ) : $md_idx ) ) : null;
-
+				// fallback to og_desc value
+				$desc = is_object( $mod['obj'] ) ?
+					$mod['obj']->get_options_multi( $mod['id'], array( $md_idx, 'og_desc' ) ) : null;
 				if ( $this->p->debug->enabled ) {
 					if ( empty( $desc ) )
 						$this->p->debug->log( 'no custom description found for '.$md_idx );
@@ -423,7 +422,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 							// apply the content filters
 							if ( $this->p->debug->enabled ) {
 								$this->p->debug->log( 'applying the WordPress get_the_excerpt filters' );
-								$this->p->debug->log( SucomDebug::get_hooks( 'get_the_excerpt' ) );
+								//$this->p->debug->log( SucomDebug::get_hooks( 'get_the_excerpt' ) );
 							}
 
 							$desc = apply_filters( 'get_the_excerpt', $desc );
@@ -432,7 +431,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 								apply_filters( $this->p->cf['lca'].'_text_filter_has_changes_after', false, 'get_the_excerpt' );
 						}
 					} elseif ( $this->p->debug->enabled )
-						$this->p->debug->log( 'no post_excerpt for post ID '.$mod['id'] );
+						$this->p->debug->log( 'fetching content: no post_excerpt for post ID '.$mod['id'] );
 
 					// if there's no excerpt, then fallback to the content
 					if ( empty( $desc ) )
@@ -524,7 +523,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 		public function get_content( array $mod, $use_cache = true, $md_idx = '' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'mod' => $mod, 
 					'use_cache' => $use_cache,
 					'md_idx' => $md_idx,
@@ -540,28 +539,31 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			/*
 			 * retrieve the content
 			 */
-			if ( $filter_content ) {
-				if ( $this->p->is_avail['cache']['object'] ) {
+			if ( $this->p->is_avail['cache']['object'] ) {
 
-					// if the post id is 0, then add the sharing url to ensure a unique salt string
-					$cache_salt = __METHOD__.'('.SucomUtil::get_mod_salt( $mod ).'_'.$filter_status.
-						( empty( $mod['id'] ) ? '_url:'.$this->p->util->get_sharing_url( $mod, true ) : '' ).')';
-					$cache_id = $this->p->cf['lca'].'_'.md5( $cache_salt );
-					$cache_type = 'object cache';
+				// if the post id is 0, then add the sharing url to ensure a unique salt string
+				if ( empty( $mod['id'] ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'adding sharing_url to cache_salt for mod id 0' );
+					$url_salt = '_url:'.$this->p->util->get_sharing_url( $mod, true );
+				} else $url_salt = '';
 
-					if ( $use_cache === true ) {
+				$cache_salt = __METHOD__.'('.SucomUtil::get_mod_salt( $mod ).'_'.$filter_status.$url_salt.')';
+				$cache_id = $this->p->cf['lca'].'_'.md5( $cache_salt );
+				$cache_type = 'object cache';
+
+				if ( $use_cache === true ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $cache_type.': wp_cache salt '.$cache_salt );
+					$content = wp_cache_get( $cache_id, __METHOD__ );
+					if ( $content !== false ) {
 						if ( $this->p->debug->enabled )
-							$this->p->debug->log( $cache_type.': wp_cache salt '.$cache_salt );
-						$content = wp_cache_get( $cache_id, __METHOD__ );
-						if ( $content !== false ) {
-							if ( $this->p->debug->enabled )
-								$this->p->debug->log( $cache_type.': '.$filter_status.
-									' content retrieved from wp_cache '.$cache_id );
-							return $content;
-						}
-					} elseif ( $this->p->debug->enabled )
-						$this->p->debug->log( 'use_cache = false' );
-				}
+							$this->p->debug->log( $cache_type.': '.$filter_status.
+								' content retrieved from wp_cache '.$cache_id );
+						return $content;
+					}
+				} elseif ( $this->p->debug->enabled )
+					$this->p->debug->log( 'use_cache = false' );
 			}
 
 			$content = apply_filters( $this->p->cf['lca'].'_content_seed', '', $mod, $use_cache, $md_idx );
@@ -569,13 +571,13 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			if ( ! empty( $content ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'content seed = "'.$content.'"' );
-			} elseif ( $mod['is_post'] )
+			} elseif ( $mod['is_post'] ) {
 				$content = get_post_field( 'post_content', $mod['id'] );
-
-			if ( empty( $content ) ) {
-				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'exiting early: empty post content' );
-				return $content;
+				if ( empty( $content ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'exiting early: no post_content for post ID '.$mod['id'] );
+					return $content;
+				}
 			}
 
 			/*
@@ -620,7 +622,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 				// apply the content filters
 				if ( $this->p->debug->enabled ) {
 					$this->p->debug->log( 'applying the WordPress the_content filters' );
-					$this->p->debug->log( SucomDebug::get_hooks( 'the_content' ) );
+					//$this->p->debug->log( SucomDebug::get_hooks( 'the_content' ) );
 				}
 
 				$content = apply_filters( 'the_content', $content );
@@ -668,7 +670,7 @@ if ( ! class_exists( 'SucomWebpage' ) ) {
 			// apply filters before caching
 			$content = apply_filters( $this->p->cf['lca'].'_content', $content, $mod, $use_cache, $md_idx );
 
-			if ( $filter_content && ! empty( $cache_id ) ) {
+			if ( ! empty( $cache_id ) ) {
 				// only some caching plugins implement this function
 				wp_cache_add_non_persistent_groups( array( __METHOD__ ) );
 				wp_cache_set( $cache_id, $content, __METHOD__, $this->p->options['plugin_object_cache_exp'] );

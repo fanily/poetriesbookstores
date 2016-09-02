@@ -12,28 +12,36 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 
 	class NgfbOptions {
 
-		protected $p;
-
-		private $upg;
+		protected $p;			// Ngfb class object
+		protected $upg;			// NgfbOptionsUpgrade class object
+		protected static $allow_cache = false;
 
 		public function __construct( &$plugin ) {
 			$this->p =& $plugin;
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
-			$this->p->util->add_plugin_filters( $this, array( 
-				'option_type' => 2,	// identify option type for sanitation
-			) );
+
+			$this->p->util->add_plugin_filters( $this, array( 'option_type' => 2 ), -100 );
+			$this->p->util->add_plugin_filters( $this, array( 'init_objects' => 0 ), 9000 );
+
+			if ( $this->p->debug->enabled )
+				$this->p->debug->log( 'running init_options action' );
 			do_action( $this->p->cf['lca'].'_init_options' );
 		}
 
 		public function get_defaults( $idx = false, $force_filter = false ) {
+			
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log_args( array( 
+					'idx' => $idx, 
+					'force_filter' => $force_filter, 
+				) );
+			}
 
 			$lca = $this->p->cf['lca'];
 			$defs =& $this->p->cf['opt']['defaults'];	// shortcut
 
-			if ( ! isset( $defs['options_filtered'] ) ||
-				$defs['options_filtered'] !== true ||
-					$force_filter === true ) {
+			if ( $force_filter || ! self::$allow_cache || empty( $defs['options_filtered'] ) ) {
 
 				$defs = $this->p->util->add_ptns_to_opts( $defs, 
 					array( 'plugin_add_to' => 1, 'schema_type_for' => 'webpage' ) );
@@ -54,31 +62,64 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 					}
 				}
 
+				if ( $this->p->debug->enabled ) {
+					$this->p->debug->mark( 'get_defaults filter' );	// start
+					$this->p->debug->log( 'applying get_defaults filter' );
+				}
+
 				$defs = apply_filters( $lca.'_get_defaults', $defs );
 
-				$defs['options_filtered'] = true;
-			}
+				if ( $this->p->debug->enabled )
+					$this->p->debug->mark( 'get_defaults filter' );	// end
 
-			if ( $idx !== false ) 
+				if ( self::$allow_cache ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'setting options_filtered to true' );
+					$defs['options_filtered'] = true;
+				} elseif ( $this->p->debug->enabled )
+					$this->p->debug->log( 'options_filtered value unchanged' );
+
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'get_defaults filter skipped' );
+
+			if ( $idx !== false ) {
 				if ( isset( $defs[$idx] ) )
 					return $defs[$idx];
 				else return null;
-			else return $defs;
+			} else return $defs;
 		}
 
 		public function get_site_defaults( $idx = false, $force_filter = false ) {
 
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log_args( array( 
+					'idx' => $idx, 
+					'force_filter' => $force_filter, 
+				) );
+			}
+
 			$lca = $this->p->cf['lca'];
 			$defs =& $this->p->cf['opt']['site_defaults'];	// shortcut
 
-			if ( ! isset( $defs['options_filtered'] ) ||
-				$defs['options_filtered'] !== true ||
-					$force_filter === true ) {
+			if ( $force_filter || ! self::$allow_cache || empty( $defs['options_filtered'] ) ) {
+
+				if ( $this->p->debug->enabled )
+					$this->p->debug->mark( 'get_site_defaults filter' );	// start
 
 				$defs = apply_filters( $lca.'_get_site_defaults', $defs );
+				
+				if ( $this->p->debug->enabled )
+					$this->p->debug->mark( 'get_site_defaults filter' );	// end
 
-				$defs['options_filtered'] = true;
-			}
+				if ( self::$allow_cache ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'setting options_filtered to true' );
+					$defs['options_filtered'] = true;
+				} elseif ( $this->p->debug->enabled )
+					$this->p->debug->log( 'options_filtered value unchanged' );
+
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'get_site_defaults filter skipped' );
 
 			if ( $idx !== false ) {
 				if ( isset( $defs[$idx] ) )
@@ -91,6 +132,7 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 
 			if ( ! empty( $opts ) && is_array( $opts ) ) {
 
+				$lca = $this->p->cf['lca'];
 				$has_diff_version = false;
 				$has_diff_options = false;
 
@@ -129,37 +171,55 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 						$this->upg = new NgfbOptionsUpgrade( $this->p );
 					}
 
-					$opts = $this->upg->options( $options_name, $opts, $this->get_defaults(), $network );
+					$def_opts = $network === false ? 
+						$this->get_defaults() : 
+						$this->get_site_defaults();
+
+					$opts = $this->upg->options( $options_name, $opts, $def_opts, $network );
 				}
 
 				// adjust some options based on external factors
 				if ( ! $network ) {
-					if ( ! $this->p->check->aop( $this->p->cf['lca'], 
-						false, $this->p->is_avail['aop'] ) ) {
+					if ( $this->p->check->aop( $lca, false, $this->p->is_avail['aop'] ) ) {
 						foreach ( array(
-							'plugin_filter_content',
-							'plugin_check_head',
-							'plugin_upscale_images',
-							'plugin_object_cache_exp',
-						) as $idx ) {
-							$def_val = $this->get_defaults( $idx );
-							// numeric options from forms are strings, so don't do a strict test
-							if ( $opts[$idx] != $def_val ) {
-								if ( is_admin() )
-									$this->p->notice->err( sprintf( __( 'Non-standard value found for the Free version \'%s\' option - resetting the option to its default value.', 'nextgen-facebook' ), $idx ), true );
-								$opts[$idx] = $def_val;
-								$has_diff_options = true;	// save the options
-							}
+							'plugin_hide_pro' => 0,
+						) as $idx => $def_val ) {
+							if ( $opts[$idx] == $def_val )	// numeric options could be strings
+								continue;
+							$opts[$idx] = $def_val;
+							$has_diff_options = true;	// save the options
+						}
+					} else {
+						foreach ( array(
+							'plugin_filter_content' => 0,
+							'plugin_check_head' => 1,
+							'plugin_upscale_images' => 0,
+							'plugin_file_cache_exp' => 0,
+						) as $idx => $def_val ) {
+							if ( $opts[$idx] == $def_val )	// numeric options could be strings
+								continue;
+							if ( is_admin() )
+								$this->p->notice->warn( sprintf( __( 'Non-standard value found for "%s" option - resetting to default value.',
+									'nextgen-facebook' ), $idx ), true );
+							$opts[$idx] = $def_val;
+							$has_diff_options = true;	// save the options
 						}
 					}
 
-					// if an seo plugin is found, disable the canonical and description meta tags
+					// if an seo plugin is detected, disable the standard seo meta tags
 					if ( $this->p->is_avail['seo']['*'] ) {
-						foreach ( array( 'canonical', 'description' ) as $name ) {
-							$opts['add_meta_name_'.$name] = 0;
-							$opts['add_meta_name_'.$name.':is'] = 'disabled';
+						foreach ( array(
+							'add_meta_name_canonical' => 0,
+							'add_meta_name_description' => 0,
+						) as $idx => $def_val ) {
+							$def_val = (int) apply_filters( $lca.'_'.$idx, $def_val );
+							$opts[$idx.':is'] = 'disabled';
+							if ( $opts[$idx] == $def_val )	// numeric options could be strings
+								continue;
+							$opts[$idx] = $def_val;
+							$has_diff_options = true;	// save the options
 						}
-					} 
+					}
 
 					$opts['add_meta_name_generator'] = SucomUtil::get_const( 'NGFB_META_GENERATOR_DISABLE' ) ? 0 : 1;
 				}
@@ -170,15 +230,20 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 					$this->save_options( $options_name, $opts, $network );
 
 					if ( is_admin() ) {
+						$def_opts = $network === false ? 
+							$this->get_defaults() : 
+							$this->get_site_defaults();
+
 						if ( empty( $opts['plugin_object_cache_exp'] ) ||
-							$opts['plugin_object_cache_exp'] < $this->get_defaults( 'plugin_object_cache_exp' ) ) {
-							if ( $this->p->check->aop( $this->p->cf['lca'], true, $this->p->is_avail['aop'] ) )
-								$this->p->notice->inf( $this->p->msgs->get( 'notice-object-cache-exp' ), true );
-							else $opts['plugin_object_cache_exp'] = $this->get_defaults( 'plugin_object_cache_exp' );
+							$opts['plugin_object_cache_exp'] < $def_opts['plugin_object_cache_exp'] ) {
+
+							if ( $this->p->check->aop( $lca, true, $this->p->is_avail['aop'] ) )
+								$this->p->notice->warn( $this->p->msgs->get( 'notice-object-cache-exp' ), true );
+							else $opts['plugin_object_cache_exp'] = $def_opts['plugin_object_cache_exp'];
 						}
 
 						if ( empty( $opts['plugin_filter_content'] ) )
-							$this->p->notice->inf( $this->p->msgs->get( 'notice-content-filters-disabled' ), 
+							$this->p->notice->warn( $this->p->msgs->get( 'notice-content-filters-disabled' ), 
 								true, true, 'notice-content-filters-disabled', true );
 
 						if ( ! empty( $this->p->options['plugin_head_attr_filter_name'] ) &&
@@ -187,9 +252,13 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 					}
 				}
 
-				// add missing options for all post types
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'adding options derived from post type names' );
+
 				$opts = $this->p->util->add_ptns_to_opts( $opts,
 					array( 'plugin_add_to' => 1, 'schema_type_for' => 'webpage' ) );
+
+				return $opts;
 
 			// $opts should be an array and not empty
 			} else {
@@ -208,10 +277,6 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( $err_msg );
 
-				if ( $network === false )
-					$opts = $this->get_defaults();
-				else $opts = $this->get_site_defaults();
-
 				if ( is_admin() ) {
 					if ( $network === false )
 						$url = $this->p->util->get_admin_url( 'general' );
@@ -219,9 +284,11 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 
 					$this->p->notice->err( $err_msg.' '.sprintf( __( 'The plugin settings have been returned to their default values &mdash; <a href="%s">please review and save the new settings</a>.', 'nextgen-facebook' ), $url ) );
 				}
-			}
 
-			return $opts;
+				return $network === false ?	// return the default options
+					$this->get_defaults() : 
+					$this->get_site_defaults();
+			}
 		}
 
 		// sanitize and validate options
@@ -260,17 +327,22 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 			foreach ( array( 'og', 'rp', 'schema' ) as $md_pre ) {
 				if ( ! empty( $opts[$md_pre.'_img_width'] ) &&
 					! empty( $opts[$md_pre.'_img_height'] ) &&
-					! empty( $opts[$md_pre.'_img_crop'] ) ) {
+					! empty( $opts[$md_pre.'_img_crop'] ) ) {	// check cropped image ratio
 
 					$img_width = $opts[$md_pre.'_img_width'];
 					$img_height = $opts[$md_pre.'_img_height'];
+
 					$img_ratio = $img_width >= $img_height ?
 						$img_width / $img_height :
 						$img_height / $img_width;
-					$max_ratio = $this->p->cf['head']['max']['og_img_ratio'];
+
+					$max_ratio = isset( $this->p->cf['head']['limit_max'][$md_pre.'_img_ratio'] ) ?
+						$this->p->cf['head']['limit_max'][$md_pre.'_img_ratio'] :
+						$this->p->cf['head']['limit_max']['og_img_ratio'];
 
 					if ( $img_ratio >= $max_ratio ) {
-						$this->p->notice->err( 'The values for \''.$md_pre.'_img_width\' and  \''.$md_pre.'_img_height\' have an aspect ratio that is equal to / or greater than '.$max_ratio.':1 &mdash; resetting these options to their default values.', true );
+						$this->p->notice->err( sprintf( __( 'The values for \'%1$s\' and  \'%2$s\' have an aspect ratio that is equal to / or greater than %3$s:1 &mdash; resetting these options to their default values.', 'nextgen-facebook' ), $md_pre.'_img_width', $md_pre.'_img_height', $max_ratio ), true );
+
 						$opts[$md_pre.'_img_width'] = $def_opts[$md_pre.'_img_width'];
 						$opts[$md_pre.'_img_height'] = $def_opts[$md_pre.'_img_height'];
 						$opts[$md_pre.'_img_crop'] = $def_opts[$md_pre.'_img_crop'];
@@ -292,8 +364,8 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 
 			// og_desc_len must be at least 156 chars (defined in config)
 			if ( isset( $opts['og_desc_len'] ) && 
-				$opts['og_desc_len'] < $this->p->cf['head']['min']['og_desc_len'] ) 
-					$opts['og_desc_len'] = $this->p->cf['head']['min']['og_desc_len'];
+				$opts['og_desc_len'] < $this->p->cf['head']['limit_min']['og_desc_len'] ) 
+					$opts['og_desc_len'] = $this->p->cf['head']['limit_min']['og_desc_len'];
 
 			if ( $mod === false ) {
 				foreach ( $this->p->cf['plugin'] as $ext => $info ) {
@@ -319,9 +391,9 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 
 			// get / remove dimensions for remote image urls
 			$this->p->util->add_image_url_sizes( array(
-				'rp_img_url',
 				'og_img_url',
 				'og_def_img_url',
+				'rp_img_url',
 				'schema_logo_url',
 				'schema_banner_url',
 			), $opts );
@@ -365,7 +437,7 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 						$this->p->debug->log( 'upgraded '.$options_name.' settings have been saved' );
 					if ( is_admin() )
 						$this->p->notice->inf( sprintf( __( 'Plugin settings (%s) have been upgraded and saved.',
-							'nextgen-facebook' ), $options_name ), true );
+							'nextgen-facebook' ), $options_name ), true, true, __FUNCTION__.'_upgraded', true );
 				}
 			} else {
 				if ( $this->p->debug->enabled )
@@ -382,6 +454,10 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				return $type;
 
 			switch ( $key ) {
+				// optimize and check for add meta tags options now
+				case ( strpos( $key, 'add_' ) === 0 ? true : false ):
+					return 'checkbox';
+					break;
 				// empty string or must include at least one HTML tag
 				case 'og_vid_embed':
 					return 'html';
@@ -403,15 +479,15 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				// must be a url
 				case 'sharing_url':
 				case 'fb_page_url':
-				case 'fb_publisher_url':
-				case 'seo_publisher_url':
-				case 'schema_logo_url':
-				case 'schema_banner_url':
-				case 'og_def_img_url':
 				case 'og_img_url':
 				case 'og_vid_url':
+				case 'og_def_img_url':
 				case 'rp_img_url':
+				case 'schema_logo_url':
+				case 'schema_banner_url':
 				case 'plugin_yourls_api_url':
+				case ( strpos( $key, '_url' ) && 
+					isset( $this->p->cf['form']['social_accounts'][$key] ) ? true : false ):
 					return 'url';
 					break;
 				// must be numeric (blank and zero are ok)
@@ -420,7 +496,7 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				case 'og_def_img_id':
 				case 'og_img_id':
 				case 'rp_img_id':
-					return 'blank_num';	// cast as integer
+					return 'blank_num';
 					break;
 				// must be numeric (zero and -1 is ok)
 				case 'schema_img_max':
@@ -428,25 +504,27 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				case 'og_vid_max':
 				case 'og_desc_hashtags': 
 				case 'plugin_file_cache_exp':
+				case 'plugin_content_img_max':
+				case 'plugin_content_vid_max':
 				case ( strpos( $key, '_filter_prio' ) === false ? false : true ):
-					return 'numeric';	// cast as integer
+					return 'numeric';
 					break;
 				// integer options that must be positive (1 or more)
 				case 'plugin_upscale_img_max':
 				case 'plugin_object_cache_exp':
 				case 'plugin_min_shorten':
 				case ( preg_match( '/_len$/', $key ) ? true : false ):
-					return 'pos_num';	// cast as integer
+					return 'pos_num';
 					break;
 				// image width, subject to minimum value (typically, at least 200px)
 				case ( preg_match( '/_img_width$/', $key ) ? true : false ):
 				case ( preg_match( '/^tc_[a-z]+_width$/', $key ) ? true : false ):
-					return 'img_width';	// cast as integer
+					return 'img_width';
 					break;
 				// image height, subject to minimum value (typically, at least 200px)
 				case ( preg_match( '/_img_height$/', $key ) ? true : false ):
 				case ( preg_match( '/^tc_[a-z]+_height$/', $key ) ? true : false ):
-					return 'img_height';	// cast as integer
+					return 'img_height';
 					break;
 				// must be texturized 
 				case 'og_title_sep':
@@ -463,10 +541,6 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				case ( preg_match( '/_api_key$/', $key ) ? true : false ):
 					return 'api_key';
 					break;
-				// text strings that can be blank (multi-line is ok)
-				case 'plugin_cf_vid_embed':
-					return 'ok_blank';
-					break;
 				// text strings that can be blank (line breaks are removed)
 				case 'og_art_section':
 				case 'og_title':
@@ -479,7 +553,10 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 				case 'pin_desc':
 				case 'plugin_img_alt_prefix':
 				case 'plugin_p_cap_prefix':
-				case 'plugin_cf_vid_url':
+				case 'plugin_cf_img_url':		// name of meta key
+				case 'plugin_cf_vid_url':		// name of meta key
+				case 'plugin_cf_vid_embed':		// name of meta key
+				case 'plugin_cf_recipe_ingredients':	// name of meta key
 				case 'plugin_bitly_login':
 				case 'plugin_yourls_username':
 				case 'plugin_yourls_password':
@@ -504,6 +581,18 @@ if ( ! class_exists( 'NgfbOptions' ) ) {
 					break;
 			}
 			return $type;
+		}
+
+		public function filter_init_objects() {
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->mark();
+				$this->p->debug->log( 'setting allow_cache to true' );
+			}
+			self::$allow_cache = true;
+		}
+
+		public static function can_cache() {
+			return self::$allow_cache;
 		}
 	}
 }

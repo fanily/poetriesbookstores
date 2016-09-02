@@ -44,13 +44,17 @@ if ( ! class_exists( 'NgfbLoader' ) ) {
 
 			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
 				$type = $this->p->check->aop( $this->p->cf['lca'], true, $this->p->is_avail['aop'] ) &&
-						$this->p->check->aop( $ext, true, -1 ) === -1 ?
-							'pro' : 'gpl';
+					$this->p->check->aop( $ext, true, -1 ) === -1 ? 'pro' : 'gpl';
 				if ( ! isset( $info['lib'][$type] ) )
 					continue;
 				foreach ( $info['lib'][$type] as $sub => $libs ) {
-					if ( $sub === 'admin' && ! is_admin() )	// load admin sub-folder only in back-end
-						continue;
+					if ( $sub === 'admin' ) {
+						if ( ! is_admin() )	// load admin sub-folder only in back-end
+							continue;
+						elseif ( $type === 'gpl' &&
+							! empty( $this->p->options['plugin_hide_pro'] ) )
+								continue;
+					}
 					foreach ( $libs as $id_key => $label ) {
 						/* 
 						 * Example:
@@ -66,26 +70,29 @@ if ( ! class_exists( 'NgfbLoader' ) ) {
 							// this is usually / almost always a false === false comparison
 							if ( $action !== $has_action ) {
 								if ( $this->p->debug->enabled )
-									$this->p->debug->log( 'ignoring '.$ext.' '.
-										$type.'/'.$sub.'/'.$id_key );
+									$this->p->debug->log( 'ignoring '.$ext.' '.$type.'/'.$sub.'/'.$id_key );
 								continue;
 							}
 
-							if ( $this->p->debug->enabled )
-								$this->p->debug->log( 'loading '.$ext.' '.$type.'/'.$sub.'/'.$id_key.': '.$label );
 							$classname = apply_filters( $ext.'_load_lib', false, "$type/$sub/$id" );
 
-							if ( is_string( $classname ) && class_exists( $classname ) ) {
-								if ( $ext === $this->p->cf['lca'] ) {
-									if ( ! isset( $this->p->m[$sub][$id] ) )
-										$this->p->m[$sub][$id] = new $classname( $this->p );
-									elseif ( $this->p->debug->enabled )
-										$this->p->debug->log( 'module ['.$sub.']['.$id.'] already defined' );
-								} elseif ( ! isset( $this->p->m_ext[$ext][$sub][$id] ) ) {
-									$this->p->m_ext[$ext][$sub][$id] = new $classname( $this->p );
+							if ( is_string( $classname ) ) {
+								if ( $this->p->debug->enabled )
+									$this->p->debug->log( 'loading '.$ext.' '.$type.'/'.$sub.'/'.$id_key.': '.$label );
+								if ( class_exists( $classname ) ) {
+									if ( $ext === $this->p->cf['lca'] ) {
+										if ( ! isset( $this->p->m[$sub][$id] ) )
+											$this->p->m[$sub][$id] = new $classname( $this->p );
+										elseif ( $this->p->debug->enabled )
+											$this->p->debug->log( 'module ['.$sub.']['.$id.'] already defined' );
+									} elseif ( ! isset( $this->p->m_ext[$ext][$sub][$id] ) ) {
+										$this->p->m_ext[$ext][$sub][$id] = new $classname( $this->p );
+									} elseif ( $this->p->debug->enabled )
+										$this->p->debug->log( 'module ['.$ext.']['.$sub.']['.$id.'] already defined' );
 								} elseif ( $this->p->debug->enabled )
-									$this->p->debug->log( 'module ['.$ext.']['.$sub.']['.$id.'] already defined' );
-							}
+									$this->p->debug->log( 'classname '.$classname.' does not exist' );
+							} elseif ( $this->p->debug->enabled )
+								$this->p->debug->log( 'no classname for '.$ext.' '.$type.'/'.$sub.'/'.$id_key );
 						}
 					}
 				}

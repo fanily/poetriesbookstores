@@ -23,11 +23,11 @@ if ( ! function_exists( 'ngfb_get_sharing_buttons' ) ) {
 		$html = false;
 
 		if ( ! is_array( $ids ) ) {
-			error_log( __FUNCTION__.'() error: sharing button ids (1st argument) must be an array' );
+			error_log( __FUNCTION__.'() error: sharing button ids must be an array' );
 			if ( $ngfb->debug->enabled )
 				$ngfb->debug->log( 'sharing button ids must be an array' );
 		} elseif ( ! is_array( $atts ) ) {
-			error_log( __FUNCTION__.'() error: sharing button attributes (2nd argument) must be an array' );
+			error_log( __FUNCTION__.'() error: sharing button attributes must be an array' );
 			if ( $ngfb->debug->enabled )
 				$ngfb->debug->log( 'sharing button attributes must be an array' );
 		} elseif ( ! $ngfb->is_avail['ssb'] ) {
@@ -115,16 +115,17 @@ if ( ! function_exists( 'ngfb_schema_attributes' ) ) {
 }
 
 if ( ! function_exists( 'ngfb_clear_all_cache' ) ) {
-	function ngfb_clear_all_cache() {
+	function ngfb_clear_all_cache( $clear_external = false ) {
 		$ngfb =& Ngfb::get_instance();
-		return $ngfb->util->clear_all_cache( false );	// $ext_cache = false
+		return $ngfb->util->clear_all_cache( $clear_external, __FUNCTION__, true );
 	}
 }
 
 if ( ! function_exists( 'ngfb_clear_post_cache' ) ) {
 	function ngfb_clear_post_cache( $post_id ) {
 		$ngfb =& Ngfb::get_instance();
-		return $ngfb->util->clear_post_cache( $post_id );
+		if ( is_object( $ngfb->m['util']['post'] ) )
+			$ngfb->m['util']['post']->clear_cache( $post_id );
 	}
 }
 

@@ -17,7 +17,6 @@ if ( ! class_exists( 'NgfbGplEcomWoocommerce' ) ) {
 
 		public function __construct( &$plugin ) {
 			$this->p =& $plugin;
-
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
@@ -44,12 +43,12 @@ if ( ! class_exists( 'NgfbGplEcomWoocommerceSharing' ) ) {
 				'get_defaults' => 1,
 			) );
 
-			if ( is_admin() ) {
+			if ( is_admin() && empty( $this->p->options['plugin_hide_pro'] ) ) {
 				$this->p->util->add_plugin_filters( $this, array( 
 					'buttons_show_on' => 2,
 					'sharing_styles_tabs' => 1,
-					'style_woo_short_rows' => 2,
-					'buttons_position_rows' => 2,	// social sharing 'Buttons Position' options
+					'styles_woo_short_rows' => 2,
+					'buttons_position_rows' => 2,
 				) );
 			}
 		}
@@ -85,10 +84,9 @@ if ( ! class_exists( 'NgfbGplEcomWoocommerceSharing' ) ) {
 			return $tabs;
 		}
 
-		public function filter_style_woo_short_rows( $table_rows, $form ) {
+		public function filter_styles_woo_short_rows( $table_rows, $form ) {
 			$table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-feature-msg', 
-					array( 'lca' => 'ngfb' ) ).'</td>';
+				$this->p->msgs->get( 'pro-feature-msg' ).'</td>';
 
 			$table_rows['buttons_css_woo_short'] = '<th class="textinfo">
 			<p>Social sharing buttons added to the WooCommerce Short Description are assigned the \'ngfb-woo_short-buttons\' class, which itself contains the \'ngfb-buttons\' class -- a common class for all buttons (see the All Buttons tab).</p> 
@@ -102,15 +100,18 @@ if ( ! class_exists( 'NgfbGplEcomWoocommerceSharing' ) ) {
 				'[None]' : $this->p->options['buttons_preset_woo_short'] ).
 			'</p></th><td><textarea disabled="disabled" class="tall code">'.
 				$this->p->options['buttons_css_woo_short'].'</textarea></td>';
+
 			return $table_rows;
 		}
 
 		public function filter_buttons_position_rows( $table_rows, $form ) {
 			$table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-feature-msg', array( 'lca' => 'ngfb' ) ).'</td>';
+				$this->p->msgs->get( 'pro-feature-msg' ).'</td>';
+
 			$table_rows['buttons_pos_woo_short'] = $form->get_th_html( _x( 'Position in Woo Short Text',
 				'option label', 'nextgen-facebook' ), null, 'buttons_pos_woo_short' ).
 			'<td class="blank">'.$this->p->cf['sharing']['position'][$this->p->options['buttons_pos_woo_short']].'</td>';
+
 			return $table_rows;
 		}
 	}

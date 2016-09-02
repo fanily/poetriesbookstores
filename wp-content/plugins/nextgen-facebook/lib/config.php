@@ -20,11 +20,11 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 			'feed_cache_exp' => 86400,	// 24 hours
 			'plugin' => array(
 				'ngfb' => array(
-					'version' => '8.32.3-1',	// plugin version
-					'opt_version' => '434',		// increment when changing default options
+					'version' => '8.34.3-1',	// plugin version
+					'opt_version' => '448',		// increment when changing default options
 					'short' => 'NGFB',		// short plugin name
 					'name' => 'NextGEN Facebook (NGFB)',
-					'desc' => 'The most complete meta tags for the best looking shares on Facebook, G+, Twitter, Pinterest, etc. - no matter how your webpage is shared!',
+					'desc' => 'Complete meta tags for the best looking shares on Facebook, Google, Pinterest, Twitter, etc - no matter how your webpage is shared!',
 					'slug' => 'nextgen-facebook',
 					'base' => 'nextgen-facebook/nextgen-facebook.php',
 					'update_auth' => 'tid',
@@ -66,7 +66,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 							'general' => 'General Settings',
 							'advanced' => 'Advanced Settings',
 							'buttons' => 'Sharing Buttons',
-							'style' => 'Sharing Styles',
+							'styles' => 'Sharing Styles',
 							'setup' => '<color>Plugin Setup Guide and Notes</color>',
 							'licenses' => 'Pro Licenses and Extension Plugins',
 						),
@@ -135,6 +135,9 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 								'wpecommerce' => '(plugin) WP eCommerce',
 								'yotpowc' => '(plugin) Yotpo Social Reviews for WooCommerce',
 							),
+							'event' => array(
+								'tribe_events' => '(plugin) The Events Calendar',
+							),
 							'forum' => array(
 								'bbpress' => '(plugin) bbPress',
 							),
@@ -142,6 +145,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 								'polylang' => '(plugin) Polylang',
 							),
 							'media' => array(
+								'facebook' => '(api) Facebook Video API',
 								'gravatar' => '(api) Author Gravatar Image',
 								'ngg' => '(plugin) NextGEN Gallery',
 								'rtmedia' => '(plugin) rtMedia for WordPress, BuddyPress and bbPress',
@@ -176,7 +180,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 				'ngfbum' => array(
 					'short' => 'NGFB UM',
 					'name' => 'NextGEN Facebook (NGFB) Pro Update Manager',
-					'desc' => 'Update Manager for the NextGEN Facebook (NGFB) Pro plugin and its Pro extensions.',
+					'desc' => 'NGFB extension to provide updates for the NextGEN Facebook (NGFB) Pro plugin and its Pro extensions.',
 					'slug' => 'nextgen-facebook-um',
 					'base' => 'nextgen-facebook-um/nextgen-facebook-um.php',
 					'update_auth' => '',
@@ -215,29 +219,28 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'schema_banner_url' => '',
 					'schema_desc_len' => 250,		// meta itemprop="description" maximum text length
 					'schema_type_for_home_page' => 'website',
-					'schema_type_for_post' => 'webpage',
+					'schema_type_for_post' => 'blog.posting',
 					'schema_type_for_page' => 'webpage',
 					'schema_type_for_attachment' => 'webpage',
 					'schema_type_for_article' => 'article',
-					'schema_type_for_article.news' => 'article.news',
-					'schema_type_for_article.tech' => 'article.tech',
 					'schema_type_for_book' => 'book',
 					'schema_type_for_blog' => 'blog',
-					'schema_type_for_blog.posting' => 'blog.posting',
+					'schema_type_for_business' => 'local.business',
 					'schema_type_for_download' => 'product',
+					'schema_type_for_event' => 'event',
 					'schema_type_for_organization' => 'organization',
+					'schema_type_for_other' => 'other',
 					'schema_type_for_person' => 'person',
 					'schema_type_for_place' => 'place',
 					'schema_type_for_product' => 'product',
 					'schema_type_for_recipe' => 'recipe',
 					'schema_type_for_review' => 'review',
-					'schema_type_for_other' => 'other',
-					'schema_type_for_local.business' => 'local.business',
+					'schema_type_for_tribe_events' => 'event',
 					'schema_type_for_webpage' => 'webpage',
 					'schema_type_for_website' => 'website',
 					'schema_author_name' => 'display_name',
 					'schema_img_max' => 1,
-					'schema_img_width' => 800,		// must be at least 696px
+					'schema_img_width' => 800,		// must be at least 696px for Articles
 					'schema_img_height' => 1600,
 					'schema_img_crop' => 0,
 					'schema_img_crop_x' => 'center',
@@ -247,17 +250,17 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'seo_def_author_on_index' => 0,
 					'seo_def_author_on_search' => 0,
 					'seo_author_field' => '',		// default value set by NgfbOptions::get_defaults()
-					'seo_publisher_url' => '',		// multilingual
-					'fb_publisher_url' => '',		// multilingual
+					'seo_publisher_url' => '',		// (multilingual)
+					'fb_publisher_url' => '',		// (multilingual)
 					'fb_app_id' => '',
 					'fb_admins' => '',
 					'fb_author_name' => 'display_name',
 					'fb_lang' => 'en_US',
-					'instgram_publisher_url' => '',		// multilingual
-					'linkedin_publisher_url' => '',		// multilingual
-					'myspace_publisher_url' => '',		// multilingual
-					'og_site_name' => '',			// multilingual
-					'og_site_description' => '',		// multilingual
+					'instgram_publisher_url' => '',		// (multilingual)
+					'linkedin_publisher_url' => '',		// (multilingual)
+					'myspace_publisher_url' => '',		// (multilingual)
+					'og_site_name' => '',			// (multilingual)
+					'og_site_description' => '',		// (multilingual)
 					'og_art_section' => 'none',
 					'og_img_width' => 600,
 					'og_img_height' => 315,
@@ -290,7 +293,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'og_title_len' => 70,
 					'og_desc_len' => 300,
 					'og_desc_hashtags' => 3,
-					'rp_publisher_url' => '',		// multilingual
+					'rp_publisher_url' => '',		// (multilingual)
 					'rp_author_name' => 'display_name',	// rich-pin specific article:author
 					'rp_img_width' => 800,
 					'rp_img_height' => 1600,
@@ -298,16 +301,18 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'rp_img_crop_x' => 'center',
 					'rp_img_crop_y' => 'center',
 					'rp_dom_verify' => '',
-					'tc_site' => '',			// multilingual
-					'tc_desc_len' => 200,
+					'tc_site' => '',			// Twitter Business @username (multilingual)
+					'tc_desc_len' => 200,			// Maximum Description Length
+					'tc_type_post' => 'summary_large_image',
+					'tc_type_default' => 'summary',
 					// summary card
-					'tc_sum_width' => 600,
+					'tc_sum_width' => 600,			// Summary Card Image Dimensions
 					'tc_sum_height' => 600,
 					'tc_sum_crop' => 1,
 					'tc_sum_crop_x' => 'center',
 					'tc_sum_crop_y' => 'center',
 					// large image summary card
-					'tc_lrgimg_width' => 800,
+					'tc_lrgimg_width' => 800,		// Large Image Card Img Dimensions
 					'tc_lrgimg_height' => 1600,
 					'tc_lrgimg_crop' => 0,
 					'tc_lrgimg_crop_x' => 'center',
@@ -315,6 +320,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					// enable/disable header html tags
 					'add_link_rel_author' => 1,
 					'add_link_rel_publisher' => 1,
+					'add_link_rel_shortlink' => 1,
 					// facebook
 					'add_meta_property_fb:admins' => 1,
 					'add_meta_property_fb:app_id' => 1,
@@ -435,33 +441,58 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'add_meta_itemprop_openinghoursspecification.validthrough' => 1,
 					'add_meta_itemprop_menu' => 1,
 					'add_meta_itemprop_acceptsreservations' => 1,
-					'add_meta_itemprop_ratingvalue' => 1,
-					'add_meta_itemprop_ratingcount' => 1,
-					'add_meta_itemprop_worstrating' => 1,
-					'add_meta_itemprop_bestrating' => 1,
-					'add_meta_itemprop_reviewcount' => 1,
+					'add_meta_itemprop_ratingvalue' => 1,	// Schema AggregateRating
+					'add_meta_itemprop_ratingcount' => 1,	// Schema AggregateRating
+					'add_meta_itemprop_worstrating' => 1,	// Schema AggregateRating
+					'add_meta_itemprop_bestrating' => 1,	// Schema AggregateRating
+					'add_meta_itemprop_reviewcount' => 1,	// Schema AggregateRating
+					'add_meta_itemprop_startdate' => 1,	// Schema Event
+					'add_meta_itemprop_enddate' => 1,	// Schema Event
+					'add_meta_itemprop_location' => 1,	// Schema Event
+					'add_meta_itemprop_totaltime' => 1,	// Schema Recipe
+					'add_meta_itemprop_recipeyield' => 1,	// Schema Recipe
+					'add_meta_itemprop_ingredients' => 1,	// Schema Recipe
 					/*
 					 * Advanced Settings
 					 */
 					// Plugin Settings Tab
+					'plugin_clear_on_save' => 1,			// Clear All Cache(s) on Save Settings
 					'plugin_preserve' => 0,				// Preserve Settings on Uninstall
 					'plugin_debug' => 0,				// Add Hidden Debug Messages
-					'plugin_clear_on_save' => 1,			// Clear All Cache(s) on Save Settings
+					'plugin_hide_pro' => 0,				// Hide All Pro Version Options
 					'plugin_show_opts' => 'basic',			// Options to Show by Default
 					// Content and Filters Tab
-					'plugin_filter_title' => 0,
-					'plugin_filter_content' => 0,
-					'plugin_filter_excerpt' => 0,
-					'plugin_p_strip' => 0,
-					'plugin_use_img_alt' => 1,
-					'plugin_img_alt_prefix' => 'Image:',
-					'plugin_p_cap_prefix' => 'Caption:',
-					'plugin_gravatar_api' => 1,
-					'plugin_slideshare_api' => 1,
-					'plugin_vimeo_api' => 1,
-					'plugin_wistia_api' => 1,
-					'plugin_youtube_api' => 1,
-					// Social Settings Tab
+					'plugin_filter_title' => 0,			// Use Filtered (SEO) Title
+					'plugin_filter_content' => 0,			// Apply WordPress Content Filters
+					'plugin_filter_excerpt' => 0,			// Apply WordPress Excerpt Filters
+					'plugin_p_strip' => 0,				// Content Starts at 1st Paragraph
+					'plugin_use_img_alt' => 1,			// Use Image Alt if No Content
+					'plugin_img_alt_prefix' => 'Image:',		// Image Alt Text Prefix
+					'plugin_p_cap_prefix' => 'Caption:',		// WP Caption Prefix
+					'plugin_content_img_max' => 5,			// Maximum Images from Content
+					'plugin_content_vid_max' => 5,			// Maximum Videos from Content
+					'plugin_gravatar_api' => 1,			// Include Author Gravatar Image
+					'plugin_facebook_api' => 1,			// Check for Embedded Media from: Facebook
+					'plugin_slideshare_api' => 1,			// Check for Embedded Media from: Slideshare
+					'plugin_vimeo_api' => 1,			// Check for Embedded Media from: Vimeo
+					'plugin_wistia_api' => 1,			// Check for Embedded Media from: Wistia
+					'plugin_youtube_api' => 1,			// Check for Embedded Media from: Youtube
+					// WP / Theme Integration Tab
+					'plugin_html_attr_filter_name' => 'language_attributes',
+					'plugin_html_attr_filter_prio' => 100,
+					'plugin_head_attr_filter_name' => 'head_attributes',
+					'plugin_head_attr_filter_prio' => 100,
+					'plugin_check_head' => 1,			// Check for Duplicate Meta Tags
+					'plugin_filter_lang' => 1,			// Use WP Locale for Language
+					'plugin_auto_img_resize' => 1,			// Create Missing WP Media Sizes
+					'plugin_check_img_dims' => 0,			// Enforce Image Dimensions Check
+					'plugin_upscale_images' => 0,			// Allow Upscale of Smaller Images
+					'plugin_upscale_img_max' => 33,			// Maximum Image Upscale Percent
+					'plugin_shortcodes' => 1,			// Enable Plugin Shortcode(s)
+					'plugin_widgets' => 1,				// Enable Plugin Widget(s)
+					'plugin_page_excerpt' => 0,			// Enable WP Excerpt for Pages
+					'plugin_page_tags' => 0,			// Enable WP Tags for Pages
+					// Social Settings Meta Tab
 					'plugin_og_img_col_post' => 1,
 					'plugin_og_img_col_term' => 1,
 					'plugin_og_img_col_user' => 1,
@@ -476,27 +507,10 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'plugin_add_to_term' => 1,
 					'plugin_add_to_topic' => 0,	// bbpress
 					'plugin_add_to_user' => 1,
-					'plugin_add_tab_preview' => 1,
-					'plugin_add_tab_tags' => 1,
-					'plugin_add_tab_validate' => 1,
 					'plugin_cf_img_url' => '_format_image_url',
 					'plugin_cf_vid_url' => '_format_video_url',
 					'plugin_cf_vid_embed' => '_format_video_embed',
-					// WP / Theme Integration Tab
-					'plugin_html_attr_filter_name' => 'language_attributes',
-					'plugin_html_attr_filter_prio' => 100,
-					'plugin_head_attr_filter_name' => 'head_attributes',
-					'plugin_head_attr_filter_prio' => 100,
-					'plugin_check_head' => 1,			// Check for Duplicate Meta Tags
-					'plugin_filter_lang' => 1,			// Use WP Locale for Language
-					'plugin_auto_img_resize' => 1,			// Create Missing WP Media Images
-					'plugin_check_img_dims' => 0,			// Enforce Image Dimensions Check
-					'plugin_upscale_images' => 0,			// Allow Upscaling of Smaller Images
-					'plugin_upscale_img_max' => 50,			// Maximum Image Upscale Percentage
-					'plugin_shortcodes' => 1,			// Enable Plugin Shortcode(s)
-					'plugin_widgets' => 1,				// Enable Plugin Widget(s)
-					'plugin_page_excerpt' => 0,			// Enable WP Excerpt for Pages
-					'plugin_page_tags' => 0,			// Enable WP Tags for Pages
+					'plugin_cf_recipe_ingredients' => '_recipe_ingredients',
 					// File and Object Cache Tab
 					'plugin_object_cache_exp' => 259200,		// Object Cache Expiry (259200 secs = 3 days)
 					'plugin_verify_certs' => 0,			// Verify SSL Certificates
@@ -504,9 +518,10 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'plugin_file_cache_exp' => 0,			// File Cache Expiry
 					// Service API Keys Tab
 					'plugin_shortener' => 'none',
-					'plugin_shortlink' => 1,
+					'plugin_shortlink' => 1,			// Use Shortnened URL for WP Shortlink
 					'plugin_min_shorten' => 23,
 					'plugin_bitly_login' => '',
+					'plugin_bitly_token' => '',
 					'plugin_bitly_api_key' => '',
 					'plugin_google_api_key' => '',
 					'plugin_google_shorten' => 0,
@@ -564,20 +579,31 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					 * Advanced Settings
 					 */
 					// Plugin Settings Tab
-					'plugin_debug' => 0,				// Add Hidden Debug Messages
-					'plugin_debug:use' => 'default',
+					'plugin_clear_on_save' => 1,			// Clear All Cache(s) on Save Settings
+					'plugin_clear_on_save:use' => 'default',
 					'plugin_preserve' => 0,				// Preserve Settings on Uninstall
 					'plugin_preserve:use' => 'default',
+					'plugin_debug' => 0,				// Add Hidden Debug Messages
+					'plugin_debug:use' => 'default',
+					'plugin_hide_pro' => 0,				// Hide All Pro Version Options
+					'plugin_hide_pro:use' => 'default',
 					'plugin_show_opts' => 'basic',			// Options to Show by Default
 					'plugin_show_opts:use' => 'default',
-					'plugin_cache_info' => 0,			// Report Cache Purge Count
-					'plugin_cache_info:use' => 'default',
+					// Content and Filters Tab
+					// Social Settings Tab
+					// WP / Theme Integration Tab
+					'plugin_check_head' => 1,			// Check for Duplicate Meta Tags
+					'plugin_check_head:use' => 'default',
 					'plugin_filter_lang' => 1,			// Use WP Locale for Language
 					'plugin_filter_lang:use' => 'default',
-					'plugin_auto_img_resize' => 1,			// Auto-Resize Media Images
+					'plugin_auto_img_resize' => 1,			// Recreate Missing WP Media Sizes
 					'plugin_auto_img_resize:use' => 'default',
-					'plugin_check_img_dims' => 1,			// Enforce Image Dimensions Check
+					'plugin_check_img_dims' => 0,			// Enforce Image Dimensions Check
 					'plugin_check_img_dims:use' => 'default',
+					'plugin_upscale_images' => 0,			// Allow Upscale of Smaller Images
+					'plugin_upscale_images:use' => 'default',
+					'plugin_upscale_img_max' => 33,			// Maximum Image Upscale Percent
+					'plugin_upscale_img_max:use' => 'default',
 					'plugin_shortcodes' => 1,			// Enable Plugin Shortcode(s)
 					'plugin_shortcodes:use' => 'default',
 					'plugin_widgets' => 1,				// Enable Plugin Widget(s)
@@ -589,10 +615,12 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					// File and Object Cache Tab
 					'plugin_object_cache_exp' => 259200,		// Object Cache Expiry (259200 secs = 3 days)
 					'plugin_object_cache_exp:use' => 'default',
-					'plugin_file_cache_exp' => 0,			// File Cache Expiry
-					'plugin_file_cache_exp:use' => 'default',
 					'plugin_verify_certs' => 0,			// Verify SSL Certificates
 					'plugin_verify_certs:use' => 'default',
+					'plugin_cache_info' => 0,			// Report Cache Purge Count
+					'plugin_cache_info:use' => 'default',
+					'plugin_file_cache_exp' => 0,			// File Cache Expiry
+					'plugin_file_cache_exp:use' => 'default',
 					// Pro Licenses and Extension Plugins
 					'plugin_ngfb_tid' => '',
 					'plugin_ngfb_tid:use' => 'default',
@@ -698,7 +726,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 				),
 			),
 			'php' => array(				// php
-				'min_version' => '4.1.0',	// minimum php version
+				'min_version' => '5.1.0',	// minimum php version
 			),
 			'form' => array(
 				'og_img_col_width' => '70px',
@@ -804,16 +832,21 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 				),
 			),
 			'head' => array(
-				'min' => array(
+				'limit_min' => array(
 					'og_desc_len' => 156,
-					'og_img_width' => 200,
+					'og_img_width' => 200,		// https://developers.facebook.com/docs/sharing/best-practices
 					'og_img_height' => 200,
-					'schema_img_width' => 696,
+					'schema_img_width' => 400,	// https://developers.google.com/+/web/snippet/article-rendering
+					'schema_img_height' => 160,
+					'article_img_width' => 696,	// https://developers.google.com/search/docs/data-types/articles
+					'article_img_height' => 279,	// based on the max image ratio
 				),
-				'max' => array(
+				'limit_max' => array(
 					'og_img_ratio' => 3,
+					'schema_img_ratio' => 2.5,	// https://developers.google.com/+/web/snippet/article-rendering
+					'article_img_ratio' => 2.5,
 				),
-				'og_type_ns' => array(		// from http://ogp.me/#types
+				'og_type_ns' => array(		// http://ogp.me/#types
 					'article' => 'http://ogp.me/ns/article#',
 					'book' => 'http://ogp.me/ns/book#',
 					'music.album' => 'http://ogp.me/ns/music#',
@@ -942,10 +975,38 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 						'book' => 'http://schema.org/Book',
 						'blog' => 'http://schema.org/Blog',
 						'creative.work' => 'http://schema.org/CreativeWork',
+						'game' => 'http://schema.org/Game',
+						'movie' => 'http://schema.org/Movie',
+						'painting' => 'http://schema.org/Painting',
+						'photograph' => 'http://schema.org/Photograph',
 						'recipe' => 'http://schema.org/Recipe',
 						'review' => 'http://schema.org/Review',
+						'sculpture' => 'http://schema.org/Sculpture',
+						'software.application' => 'http://schema.org/SoftwareApplication',
+						'visual.artwork' => 'http://schema.org/VisualArtwork',
 						'webpage' => 'http://schema.org/WebPage',
 						'website' => 'http://schema.org/WebSite',
+					),
+					'event' => array(
+						'event' => 'http://schema.org/Event',
+						'event.business' => 'http://schema.org/BusinessEvent',
+						'event.childrens' => 'http://schema.org/ChildrensEvent',
+						'event.comedy' => 'http://schema.org/ComedyEvent',
+						'event.dance' => 'http://schema.org/DanceEvent',
+						'event.delivery' => 'http://schema.org/DeliveryEvent',
+						'event.education' => 'http://schema.org/EducationEvent',
+						'event.exhibition' => 'http://schema.org/ExhibitionEvent',
+						'event.festival' => 'http://schema.org/Festival',
+						'event.food' => 'http://schema.org/FoodEvent',
+						'event.literary' => 'http://schema.org/LiteraryEvent',
+						'event.music' => 'http://schema.org/MusicEvent',
+						'event.publication' => 'http://schema.org/PublicationEvent',
+						'event.sale' => 'http://schema.org/SaleEvent',
+						'event.screening' => 'http://schema.org/ScreeningEvent',
+						'event.social' => 'http://schema.org/SocialEvent',
+						'event.sports' => 'http://schema.org/SportsEvent',
+						'event.theater' => 'http://schema.org/TheaterEvent',
+						'event.visual.arts' => 'http://schema.org/VisualArtsEvent',
 					),
 					'organization' => array(
 						'airline' => 'http://schema.org/Airline',
@@ -987,7 +1048,18 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 						'landmarks.or.historical.buildings' => 'http://schema.org/LandmarksOrHistoricalBuildings',
 						'local.business' => array( 
 							'animal.shelter' => 'http://schema.org/AnimalShelter',
-							'automotive.business' => 'http://schema.org/AutomotiveBusiness',
+							'automotive.business' => array(
+								'auto.body.shop' => 'http://schema.org/AutoBodyShop',
+								'auto.dealer' => 'http://schema.org/AutoDealer',
+								'auto.parts.store' => 'http://schema.org/AutoPartsStore',
+								'auto.rental' => 'http://schema.org/AutoRental',
+								'auto.repair' => 'http://schema.org/AutoRepair',
+								'auto.wash' => 'http://schema.org/AutoWash',
+								'automotive.business' => 'http://schema.org/AutomotiveBusiness',
+								'gas.station' => 'http://schema.org/GasStation',
+								'motorcycle.dealer' => 'http://schema.org/MotorcycleDealer',
+								'motorcycle.repair' => 'http://schema.org/MotorcycleRepair ',
+							),
 							'child.care' => 'http://schema.org/ChildCare',
 							'dry.cleaning.or.laundry' => 'http://schema.org/DryCleaningOrLaundry',
 							'emergency.service' => 'http://schema.org/EmergencyService',
@@ -1091,7 +1163,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 					'sidebar' => 'CSS Sidebar', 
 					'admin_edit' => 'Admin Edit',
 				),
-				'style' => array(
+				'styles' => array(
 					'sharing' => 'All Buttons',
 					'content' => 'Content',
 					'excerpt' => 'Excerpt',
@@ -1136,7 +1208,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 
 				if ( $do_filter ) {
 
-					self::$cf = apply_filters( self::$cf['lca'].'_get_config', self::$cf );
+					self::$cf = apply_filters( self::$cf['lca'].'_get_config', self::$cf, self::get_version() );
 
 					self::$cf['config_filtered'] = true;
 
@@ -1147,7 +1219,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 							unset (
 								self::$cf['plugin'][$ext]['lib']['website'],
 								self::$cf['plugin'][$ext]['lib']['submenu']['buttons'],
-								self::$cf['plugin'][$ext]['lib']['submenu']['style'],
+								self::$cf['plugin'][$ext]['lib']['submenu']['styles'],
 								self::$cf['plugin'][$ext]['lib']['shortcode']['sharing'],
 								self::$cf['plugin'][$ext]['lib']['widget']['sharing'],
 								self::$cf['plugin'][$ext]['lib']['gpl']['admin']['sharing'],
@@ -1202,8 +1274,10 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 			self::set_variable_constants();
 		}
 
-		public static function set_variable_constants() { 
-			foreach ( self::get_variable_constants() as $name => $value )
+		public static function set_variable_constants( $var_const = null ) { 
+			if ( $var_const === null )
+				$var_const = self::get_variable_constants();
+			foreach ( $var_const as $name => $value )
 				if ( ! defined( $name ) )
 					define( $name, $value );
 		}
@@ -1223,8 +1297,9 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 			$var_const['NGFB_MENU_ORDER'] = '99.11';		// position of the NGFB menu item
 			$var_const['NGFB_MENU_ICON_HIGHLIGHT'] = true;		// highlight the NGFB menu icon
 			$var_const['NGFB_SHARING_SHORTCODE'] = 'ngfb';		// used by social sharing features
+			$var_const['NGFB_HIDE_ALL_ERRORS'] = false;		// auto-hide all error notices
 			$var_const['NGFB_HIDE_ALL_WARNINGS'] = false;		// auto-hide all warning notices
-			$var_const['NGFB_JSON_PRETTY_PRINT'] = true;		// don't minimize json code
+			$var_const['NGFB_JSON_PRETTY_PRINT'] = true;		// output pretty / human readable json
 
 			/*
 			 * NGFB option and meta array names
@@ -1262,16 +1337,8 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 			 * NGFB curl settings
 			 */
 			if ( defined( 'NGFB_PLUGINDIR' ) )
-				$var_const['NGFB_CURL_CAINFO'] = NGFB_PLUGINDIR.'share/curl/ca-bundle.crt';
-			$var_const['NGFB_CURL_USERAGENT'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0';
-
-			// disable 3rd-party caching for duplicate meta tag checks
-			if ( ! empty( $_GET['NGFB_META_TAGS_DISABLE'] ) ) {
-				$var_const['DONOTCACHEPAGE'] = true;		// wp super cache and w3tc
-				$var_const['COMET_CACHE_ALLOWED'] = false;	// comet cache
-				$var_const['QUICK_CACHE_ALLOWED'] = false;	// quick cache
-				$var_const['ZENCACHE_ALLOWED'] = false;		// zencache
-			}
+				$var_const['NGFB_PHP_CURL_CAINFO'] = NGFB_PLUGINDIR.'share/curl/ca-bundle.crt';
+			$var_const['NGFB_PHP_CURL_USERAGENT'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:47.0) Gecko/20100101 Firefox/47.0';
 
 			foreach ( $var_const as $name => $value )
 				if ( defined( $name ) )
@@ -1282,6 +1349,8 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 
 		public static function require_libs( $plugin_filepath ) {
 
+			require_once( NGFB_PLUGINDIR.'lib/com/nodebug.php' );
+			require_once( NGFB_PLUGINDIR.'lib/com/nonotice.php' );
 			require_once( NGFB_PLUGINDIR.'lib/com/exception.php' );	// extends Exception
 			require_once( NGFB_PLUGINDIR.'lib/com/util.php' );
 			require_once( NGFB_PLUGINDIR.'lib/com/cache.php' );
@@ -1328,7 +1397,7 @@ if ( ! class_exists( 'NgfbConfig' ) ) {
 				if ( file_exists( $filepath ) ) {
 					require_once( $filepath );
 					if ( empty( $classname ) )
-						return SucomUtil::sanitize_classname( 'ngfb'.$filespec );
+						return SucomUtil::sanitize_classname( 'ngfb'.$filespec, false );	// $underscore = false
 					else return $classname;
 				}
 			}

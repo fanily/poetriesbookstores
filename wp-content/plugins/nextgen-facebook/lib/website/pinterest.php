@@ -157,21 +157,9 @@ if ( ! class_exists( 'NgfbWebsitePinterest' ) ) {
 			return array_merge( $def_opts, self::$cf['opt']['defaults'] );
 		}
 
-		// do not use an $atts reference to allow for local changes
-		public function get_html( array $atts, array &$opts, array &$mod ) {
+		public function get_html( array $atts, array $opts, array $mod ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
-
-			if ( empty( $opts ) ) 
-				$opts =& $this->p->options;
-
-			$lca = $this->p->cf['lca'];
-			$atts['use_post'] = isset( $atts['use_post'] ) ? $atts['use_post'] : true;
-			$atts['add_page'] = isset( $atts['add_page'] ) ? $atts['add_page'] : true;      // get_sharing_url() argument
-
-			$atts['url'] = empty( $atts['url'] ) ? 
-				$this->p->util->get_sharing_url( $mod, $atts['add_page'] ) : 
-				apply_filters( $lca.'_sharing_url', $atts['url'], $mod, $atts['add_page'] );
 
 			$href_query = '?url='.urlencode( $atts['url'] );
 
@@ -186,6 +174,7 @@ if ( ! class_exists( 'NgfbWebsitePinterest' ) ) {
 					$atts['cropped'],
 					$atts['pid']
 				) = $this->p->media->get_attachment_image_src( $atts['pid'], $atts['size'], false );	// $check_dupes = false
+
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'returned image '.$atts['photo'].' ('.$atts['width'].'x'.$atts['height'].')' );
 			}
@@ -196,15 +185,17 @@ if ( ! class_exists( 'NgfbWebsitePinterest' ) ) {
 				if ( empty( $atts['photo'] ) ) {
 					if ( $this->p->debug->enabled )
 						$this->p->debug->log( 'exiting early: no photo available' );
-						return '<!-- Pinterest Button: No Photo Available -->';	// abort
+					return '<!-- Pinterest Button: No Photo Available -->';	// abort
 				}
 			}
+
 			$href_query .= '&amp;media='.rawurlencode( $atts['photo'] );
 
 			if ( empty( $atts['caption'] ) ) {
 				$atts['caption'] = $this->p->webpage->get_caption( $opts['pin_caption'], $opts['pin_cap_len'],
 					$mod, true, true, false, 'pin_desc' );
 			}
+
 			// use rawurlencode() for mobile devices (encodes a space as '%20' instead of '+')
 			$href_query .= '&amp;description='.rawurlencode( $atts['caption'] );
 
@@ -231,9 +222,10 @@ if ( ! class_exists( 'NgfbWebsitePinterest' ) ) {
 			$pin_img_url = $this->p->util->get_cache_file_url( $pin_img_url );
 
 			$html = '<!-- Pinterest Button -->'.
-			'<div '.NgfbSharing::get_css_class_id( 'pinterest', $atts ).'>'.
+			'<div '.SucomUtil::get_atts_css_attr( $atts, 'pinterest' ).'>'.
 			'<a href="'.SucomUtil::get_prot().'://pinterest.com/pin/create/button/'.$href_query.'" '.
 			'data-pin-do="buttonPin" '.
+			'data-pin-zero="true" '.
 			'data-pin-lang="'.$opts['pin_button_lang'].'" '.
 			'data-pin-shape="'.$opts['pin_button_shape'].'" '.
 			'data-pin-color="'.$opts['pin_button_color'].'" '.
@@ -243,6 +235,7 @@ if ( ! class_exists( 'NgfbWebsitePinterest' ) ) {
 
 			if ( $this->p->debug->enabled )
 				$this->p->debug->log( 'returning html ('.strlen( $html ).' chars)' );
+
 			return $html;
 		}
 

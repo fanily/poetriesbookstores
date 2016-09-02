@@ -12,9 +12,9 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 
 	class NgfbTerm extends NgfbMeta {
 
-		protected $tax_slug = false;
-		protected $tax_obj = false;
-		protected $term_id = false;
+		protected $query_term_id = 0;
+		protected $query_tax_slug = '';
+		protected $query_tax_obj = false;
 
 		public function __construct() {
 		}
@@ -27,19 +27,19 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 				 * editing a category and/or tag page, so return immediately if
 				 * they're not present.
 				 */
-				if ( ( $this->tax_slug = SucomUtil::get_request_value( 'taxonomy' ) ) === '' )
+				if ( ( $this->query_tax_slug = SucomUtil::get_request_value( 'taxonomy' ) ) === '' )
 					return;
 
-				$this->tax_obj = get_taxonomy( $this->tax_slug );
-				if ( ! $this->tax_obj->public )
+				$this->query_tax_obj = get_taxonomy( $this->query_tax_slug );
+				if ( ! $this->query_tax_obj->public )
 					return;
 
 				if ( ! empty( $this->p->options['plugin_og_img_col_term'] ) ||
 					! empty( $this->p->options['plugin_og_desc_col_term'] ) ) {
 
-					add_filter( 'manage_edit-'.$this->tax_slug.'_columns', 
+					add_filter( 'manage_edit-'.$this->query_tax_slug.'_columns', 
 						array( $this, 'add_column_headings' ), 10, 1 );
-					add_filter( 'manage_'.$this->tax_slug.'_custom_column', 
+					add_filter( 'manage_'.$this->query_tax_slug.'_custom_column', 
 						array( $this, 'get_column_content' ), 10, 3 );
 
 					$this->p->util->add_plugin_filters( $this, array( 
@@ -48,12 +48,12 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 					) );
 				}
 
-				if ( ( $this->term_id = SucomUtil::get_request_value( 'tag_ID' ) ) === '' )
+				if ( ( $this->query_term_id = SucomUtil::get_request_value( 'tag_ID' ) ) === '' )
 					return;
 
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'tax_slug/term_id values: '.
-						$this->tax_slug.'/'.$this->term_id );
+					$this->p->debug->log( 'tax_slug / term_id = '.
+						$this->query_tax_slug.' / '.$this->query_term_id );
 
 				/**
 				 * Available taxonomy and term actions:
@@ -72,17 +72,17 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 				add_action( 'admin_init', array( &$this, 'add_metaboxes' ) );
 				// load_meta_page() priorities: 100 post, 200 user, 300 term
 				add_action( 'current_screen', array( &$this, 'load_meta_page' ), 300, 1 );
-				add_action( $this->tax_slug.'_edit_form', array( &$this, 'show_metaboxes' ), 100, 1 );
-				add_action( 'created_'.$this->tax_slug, array( &$this, 'save_options' ), NGFB_META_SAVE_PRIORITY, 2 );
-				add_action( 'created_'.$this->tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
-				add_action( 'edited_'.$this->tax_slug, array( &$this, 'save_options' ), NGFB_META_SAVE_PRIORITY, 2 );
-				add_action( 'edited_'.$this->tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
-				add_action( 'delete_'.$this->tax_slug, array( &$this, 'delete_options' ), NGFB_META_SAVE_PRIORITY, 2 );
-				add_action( 'delete_'.$this->tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
+				add_action( $this->query_tax_slug.'_edit_form', array( &$this, 'show_metaboxes' ), 100, 1 );
+				add_action( 'created_'.$this->query_tax_slug, array( &$this, 'save_options' ), NGFB_META_SAVE_PRIORITY, 2 );
+				add_action( 'created_'.$this->query_tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
+				add_action( 'edited_'.$this->query_tax_slug, array( &$this, 'save_options' ), NGFB_META_SAVE_PRIORITY, 2 );
+				add_action( 'edited_'.$this->query_tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
+				add_action( 'delete_'.$this->query_tax_slug, array( &$this, 'delete_options' ), NGFB_META_SAVE_PRIORITY, 2 );
+				add_action( 'delete_'.$this->query_tax_slug, array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY, 2 );
 			}
 		}
 
-		public function get_mod( $mod_id, $tax_slug = false ) {
+		public function get_mod( $mod_id, $tax_slug = '' ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 			 * Term
 			 */
 			$mod['is_term'] = true;
-			$mod['tax_slug'] = $tax_slug;
+			$mod['tax_slug'] = SucomUtil::get_term_object( $mod['id'], (string) $tax_slug, 'taxonomy' );
 
 			return apply_filters( $this->p->cf['lca'].'_get_term_mod', $mod, $mod_id, $tax_slug );
 		}
@@ -109,6 +109,8 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 		}
 
 		public function filter_og_img_term_column_content( $value, $column_name, $mod ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
 
 			if ( ! empty( $value ) )
 				return $value;
@@ -132,9 +134,9 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 
 			if ( ! empty( $og_image ) && is_array( $og_image ) ) {
 				$image = reset( $og_image );
-				if ( ! empty( $image['og:image'] ) )
-					$value = $this->get_og_img_column_html( $image );
-			}
+				$value = $this->get_og_img_column_html( $image );
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'no image found for column value' );
 
 			return $value;
 		}
@@ -190,7 +192,7 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 				$this->p->debug->log( 'screen id: '.$screen->id );
 
 			switch ( $screen->id ) {
-				case 'edit-'.$this->tax_slug:
+				case 'edit-'.$this->query_tax_slug:
 					break;
 				default:
 					return;
@@ -198,18 +200,12 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 			}
 
 			$lca = $this->p->cf['lca'];
-			$mod = $this->get_mod( $this->term_id, $this->tax_slug );
-
+			$mod = $this->get_mod( $this->query_term_id, $this->query_tax_slug );
 			if ( $this->p->debug->enabled )
 				$this->p->debug->log( SucomDebug::pretty_array( $mod ) );
 
 			$add_metabox = empty( $this->p->options[ 'plugin_add_to_term' ] ) ? false : true;
-
-			if ( apply_filters( $lca.'_add_metabox_term', 
-				$add_metabox, $this->term_id, $screen->id ) === true ) {
-
-				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'adding metabox for term' );
+			if ( apply_filters( $lca.'_add_metabox_term', $add_metabox, $this->query_term_id ) ) {
 
 				do_action( $lca.'_admin_term_header', $mod, $screen->id );
 
@@ -240,7 +236,7 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 					$_SERVER['REQUEST_URI'] = remove_query_arg( array( $action_query, NGFB_NONCE ) );
 					switch ( $action_name ) {
 						default: 
-							do_action( $lca.'_load_meta_page_term_'.$action_name, $this->term_id );
+							do_action( $lca.'_load_meta_page_term_'.$action_name, $this->query_term_id );
 							break;
 					}
 				}
@@ -248,53 +244,60 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 		}
 
 		public function add_metaboxes() {
-			if ( ! current_user_can( $this->tax_obj->cap->edit_terms ) ) {
+
+			if ( ! current_user_can( $this->query_tax_obj->cap->edit_terms ) ) {
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'insufficient privileges to add metabox for term '.$this->term_id );
+					$this->p->debug->log( 'insufficient privileges to add metabox for term '.$this->query_term_id );
 				return;
 			}
+
+			$lca = $this->p->cf['lca'];
 			$add_metabox = empty( $this->p->options[ 'plugin_add_to_term' ] ) ? false : true;
-			if ( apply_filters( $this->p->cf['lca'].'_add_metabox_term', $add_metabox ) === true )
-				add_meta_box( NGFB_META_NAME, _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
-					array( &$this, 'show_metabox_term' ), 'term', 'normal', 'low' );
+			if ( apply_filters( $this->p->cf['lca'].'_add_metabox_term', $add_metabox, $this->query_term_id ) ) {
+				add_meta_box( $lca.'_social_settings', _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
+					array( &$this, 'show_metabox_social_settings' ), $lca.'-term', 'normal', 'low' );
+			}
 		}
 
 		public function show_metaboxes( $term ) {
-			if ( ! current_user_can( $this->tax_obj->cap->edit_terms ) )
+			if ( ! current_user_can( $this->query_tax_obj->cap->edit_terms ) )
 				return;
+			$lca = $this->p->cf['lca'];
+			$pkg_type = $this->p->check->aop( $lca, true, $this->p->is_avail['aop'] ) ? 
+				_x( 'Pro', 'package type', 'nextgen-facebook' ) :
+				_x( 'Free', 'package type', 'nextgen-facebook' );
+			echo '<h3 id="'.$lca.'-metaboxes">'.$this->p->cf['plugin'][$lca]['name'].' '.$pkg_type.'</h3>'."\n";
 			echo '<div id="poststuff">';
-			do_meta_boxes( 'term', 'normal', $term );
+			do_meta_boxes( $lca.'-term', 'normal', $term );
 			echo '</div>';
 		}
 
-		public function show_metabox_term( $term ) {
-			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'metabox term' );
+		public function show_metabox_social_settings( $term_obj ) {
 
-			$mod = $this->get_mod( $term->term_id, $this->tax_slug );
-			$opts = $this->get_options( $term->term_id );
-			$def_opts = $this->get_defaults( $term->term_id );
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
+			$lca = $this->p->cf['lca'];
+			$metabox = 'social_settings';
+			$mod = $this->get_mod( $term_obj->term_id, $this->query_tax_slug );
+			$tabs = $this->get_social_tabs( $metabox, $mod );
+			$opts = $this->get_options( $term_obj->term_id );
+			$def_opts = $this->get_defaults( $term_obj->term_id );
 			$this->form = new SucomForm( $this->p, NGFB_META_NAME, $opts, $def_opts );
 			wp_nonce_field( NgfbAdmin::get_nonce(), NGFB_NONCE );
 
-			$metabox = 'term';
-			$tabs = apply_filters( $this->p->cf['lca'].'_'.$metabox.'_social_settings_tabs',
-				$this->get_default_tabs(), $mod );
-			if ( empty( $this->p->is_avail['mt'] ) )
-				unset( $tabs['tags'] );
-
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// start timer
+				$this->p->debug->mark( $metabox.' table rows' );	// start timer
 
 			$table_rows = array();
-			foreach ( $tabs as $key => $title )
+			foreach ( $tabs as $key => $title ) {
 				$table_rows[$key] = array_merge( $this->get_table_rows( $metabox, $key, NgfbMeta::$head_meta_info, $mod ), 
-					apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows', 
-						array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+					apply_filters( $lca.'_'.$mod['name'].'_'.$key.'_rows', array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+			}
 			$this->p->util->do_metabox_tabs( $metabox, $tabs, $table_rows );
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// end timer
+				$this->p->debug->mark( $metabox.' table rows' );	// end timer
 		}
 
 		public function clear_cache( $term_id, $term_tax_id = false ) {
@@ -305,6 +308,7 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 			$transients = array(
 				'NgfbHead::get_header_array' => array( 
 					$locale_salt.'_url:'.$sharing_url,
+					$locale_salt.'_url:'.$sharing_url.'_amp:true',
 					$locale_salt.'_url:'.$sharing_url.'_crawler:pinterest',
 				),
 				'NgfbMeta::get_mod_column_content' => array( 
@@ -317,7 +321,8 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 			$deleted = $this->p->util->clear_cache_objects( $transients );
 
 			if ( ! empty( $this->p->options['plugin_cache_info'] ) && $deleted > 0 )
-				$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.', true );
+				$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.',
+					true, true, __FUNCTION__.'_items_removed', true );
 
 			return $term_id;
 		}
@@ -342,25 +347,58 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 			return $ret;
 		}
 
-		public static function get_term_meta( $term_id, $options_name, $single ) {
-			$options_name .= '_term_'.$term_id;
-			/**
-			 * re-create the return value of get_post_meta() and get_user_meta():
-			 *
-			 * If the meta value does not exist and $single is true the function will return an empty string.
-			 * If $single is false an empty array is returned.
-			 */
-			return get_option( $options_name, ( $single === false ? array() : '' ) );
+		public static function get_term_meta( $term_id, $key_name, $single = false ) {
+			static $has_meta_table = null;
+			if ( $has_meta_table === null )	// optimize and check only once
+				$has_meta_table = get_option( 'db_version' ) >= 34370 ? true : false;
+
+			$term_meta = $single === false ? array() : '';
+			if ( $has_meta_table && ! wp_term_is_shared( $term_id ) ) {
+				$term_meta = get_term_meta( $term_id, $key_name, $single );
+				/*
+				 * If the $term_id is invalid, false is returned.
+				 * If the meta value isn't set, an empty string or array is returned.
+				 */
+				if ( ( $single && $term_meta === '' ) || 
+					( ! $single && $term_meta === array() ) ) {
+					$term_meta = get_option( $key_name.'_term_'.$term_id, false );
+					if ( is_array( $term_meta ) ) {
+						$updated = update_term_meta( $term_id, $key_name, $term_meta );
+						if ( ! is_wp_error( $updated ) )
+							delete_option( $key_name.'_term_'.$term_id );
+					}
+				}
+			} else {
+				/*
+				 * Re-create the return value of get_term_meta().
+				 *
+				 * If the meta value does not exist and $single is true the function will return an empty string.
+				 * If $single is false an empty array is returned.
+				 */
+				$term_meta = get_option( $key_name.'_term_'.$term_id, 
+					( $single === false ? array() : '' ) );
+			}
+			return $term_meta;
 		}
 
-		public static function update_term_meta( $term_id, $options_name, $opts ) {
-			$options_name .= '_term_'.$term_id;
-			return update_option( $options_name, $opts );
+		public static function update_term_meta( $term_id, $key_name, $opts ) {
+			static $has_meta_table = null;
+			if ( $has_meta_table === null )	// optimize and check only once
+				$has_meta_table = get_option( 'db_version' ) >= 34370 ? true : false;
+
+			if ( $has_meta_table && ! wp_term_is_shared( $term_id ) )
+				return update_term_meta( $term_id, $key_name, $opts );
+			else return update_option( $key_name.'_term_'.$term_id, $opts );
 		}
 
-		public static function delete_term_meta( $term_id, $options_name ) {
-			$options_name .= '_term_'.$term_id;
-			return delete_option( $options_name );
+		public static function delete_term_meta( $term_id, $key_name ) {
+			static $has_meta_table = null;
+			if ( $has_meta_table === null )	// optimize and check only once
+				$has_meta_table = get_option( 'db_version' ) >= 34370 ? true : false;
+
+			if ( $has_meta_table && ! wp_term_is_shared( $term_id ) )
+				return delete_term_meta( $term_id, $key_name );
+			else return delete_option( $key_name.'_term_'.$term_id );
 		}
 	}
 }

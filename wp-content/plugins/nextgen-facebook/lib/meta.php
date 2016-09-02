@@ -21,7 +21,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 		protected static $head_meta_info = array();
 
 		public static $mod_array = array(
-			'id' => false,
+			'id' => 0,
 			'name' => false,
 			'obj' => false,
 			'use_post' => false,
@@ -35,12 +35,12 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			'post_type' => false,
 			'post_status' => false,
 			'post_author' => false,
-			'post_coauthors' => false,
+			'post_coauthors' => array(),
 			/*
 			 * Term
 			 */
 			'is_term' => false,		// is term module
-			'tax_slug' => false,
+			'tax_slug' => '',		// empty string by default
 			/*
 			 * User
 			 */
@@ -50,29 +50,42 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 		public function __construct() {
 		}
 
-		protected function add_actions() {
-			return $this->must_be_extended( __METHOD__ );
-		}
-
 		public function get_mod( $mod_id ) {
 			return $this->must_be_extended( __METHOD__, self::$mod_array );
 		}
 
-		protected function get_default_tabs() {
-			$tabs = array();
-			foreach( apply_filters( $this->p->cf['lca'].'_social_settings_default_tabs', array(
-				'preview' => _x( 'Preview', 'metabox tab', 'nextgen-facebook' ),
-				'header' => _x( 'Edit Text', 'metabox tab', 'nextgen-facebook' ),
-				'media' => _x( 'Select Media', 'metabox tab', 'nextgen-facebook' ),
-				'tags' => _x( 'Head Tags', 'metabox tab', 'nextgen-facebook' ),
-				'validate' => _x( 'Validate', 'metabox tab', 'nextgen-facebook' ),
-			) ) as $key => $name ) {
-				if ( isset( $this->p->options['plugin_add_tab_'.$key] ) ) {
-					if ( ! empty( $this->p->options['plugin_add_tab_'.$key] ) )
-						$tabs[$key] = $name;
-				} else $tabs[$key] = $name;
+		protected function add_actions() {
+			return $this->must_be_extended( __METHOD__ );
+		}
+
+		public function add_metaboxes() {
+			return $this->must_be_extended( __METHOD__ );
+		}
+
+		public function show_metabox_social_settings( $obj ) {
+			return $this->must_be_extended( __METHOD__ );
+		}
+
+		protected function get_social_tabs( $metabox, array &$mod ) {
+			switch ( $metabox ) {
+				case 'social_settings':
+					$tabs = array(
+						'header' => _x( 'Edit Text', 'metabox tab', 'nextgen-facebook' ),
+						'media' => _x( 'Select Media', 'metabox tab', 'nextgen-facebook' ),
+						'preview' => _x( 'Preview', 'metabox tab', 'nextgen-facebook' ),
+						'tags' => _x( 'Head Tags', 'metabox tab', 'nextgen-facebook' ),
+						'validate' => _x( 'Validate', 'metabox tab', 'nextgen-facebook' ),
+					);
+					// keep it clean and remove demo form pages
+					if ( ! empty( $this->p->options['plugin_hide_pro'] ) )
+						foreach ( array( 'header', 'media' ) as $key )
+							SucomUtil::move_to_end( $tabs, $key );
+					break;
+				default:
+					$tabs = array();	// just in case
+					break;
 			}
-			return $tabs;
+			return apply_filters( $this->p->cf['lca'].'_'.$mod['name'].'_'.$metabox.'_tabs', $tabs, $mod );
 		}
 
 		protected function get_table_rows( &$metabox, &$key, &$head, &$mod ) {
@@ -94,7 +107,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			return $table_rows;
 		}
 
-		public function get_rows_social_preview( &$form, &$head, &$mod ) {
+		public function get_rows_social_preview( $form, $head, $mod ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
@@ -142,30 +155,29 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 				$auto_draft_msg = sprintf( __( 'Save a draft version or publish the %s to update this value.',
 					'nextgen-facebook' ), ucfirst( $mod['post_type'] ) );
 
-				$table_rows[] = $form->get_th_html( _x( 'Short URL',
+				$table_rows[] = $form->get_th_html( _x( 'Sharing URL',
 					'option label', 'nextgen-facebook' ), 'medium' ).
 				'<td class="blank"><em>'.$auto_draft_msg.'</em></td>';
 	
-				$table_rows[] = $form->get_th_html( _x( 'Sharing URL',
+				$table_rows[] = $form->get_th_html( _x( 'Shortened URL',
 					'option label', 'nextgen-facebook' ), 'medium' ).
 				'<td class="blank"><em>'.$auto_draft_msg.'</em></td>';
 	
 			} else {
-				$long_url = $this->p->util->get_sharing_url( $mod, false );	// false or post ID
+				$long_url = $this->p->util->get_sharing_url( $mod, false );	// $add_page = false
 
-				$short_url = apply_filters( $this->p->cf['lca'].'_shorten_url',
+				if ( $mod['is_post'] )
+					$short_url = wp_get_shortlink( $mod['id'], 'post' );
+				else $short_url = apply_filters( $this->p->cf['lca'].'_shorten_url',
 					$long_url, $this->p->options['plugin_shortener'] );
 
-				if ( $long_url === $short_url && $mod['is_post'] )
-					$short_url = wp_get_shortlink();
-
-				$table_rows[] = $form->get_th_html( _x( 'Short URL',
-					'option label', 'nextgen-facebook' ), 'medium' ).
-				'<td>'.$form->get_copy_input( $short_url ).'</td>';
-	
 				$table_rows[] = $form->get_th_html( _x( 'Sharing URL',
 					'option label', 'nextgen-facebook' ), 'medium' ).
 				'<td>'.$form->get_copy_input( $long_url ).'</td>';
+
+				$table_rows[] = $form->get_th_html( _x( 'Shortened URL',
+					'option label', 'nextgen-facebook' ), 'medium' ).
+				'<td>'.$form->get_copy_input( $short_url ).'</td>';
 			}
 
 			$table_rows[] = $form->get_th_html( _x( 'Open Graph Example',
@@ -257,7 +269,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			$sharing_url_encoded = urlencode( $sharing_url );
 
 			$facebook_url = 'https://developers.facebook.com/tools/debug/og/object?q='.$sharing_url_encoded;
-			$google_url = 'https://structured-data-testing-tool.developers.google.com/sdtt/web?#url='.$sharing_url_encoded;
+			$google_url = 'https://search.google.com/structured-data/testing-tool/u/0/#url='.$sharing_url_encoded;
 			$pinterest_url = 'https://developers.pinterest.com/tools/url-debugger/?link='.$sharing_url_encoded;
 			$twitter_url = 'https://dev.twitter.com/docs/cards/validation/validator';
 
@@ -281,6 +293,13 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 		 * Example: get_options_multi( $id, array( 'rp_desc', 'og_desc' ) );
 		 */
 		public function get_options_multi( $mod_id, $idx = false, $filter_options = true ) {
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log_args( array( 
+					'mod_id' => $mod_id, 
+					'idx' => $idx, 
+					'filter_options' => $filter_options, 
+				) );
+			}
 
 			if ( empty( $mod_id ) )
 				return null;
@@ -293,7 +312,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			else {
 				if ( ! is_array( $idx ) )		// convert a string to an array
 					$idx = array( $idx );
-				else $idx = array_unique( $idx );	// just in case
+				else $idx = array_unique( $idx );	// prevent duplicate idx values
 
 				foreach ( $idx as $key ) {
 					if ( $key === 'none' )		// special index keyword
@@ -330,8 +349,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			$defs =& $this->defs[$mod_id];		// shortcut
 			$opts =& $this->p->options;		// shortcut
 
-			if ( ! isset( $defs['options_filtered'] ) || 
-				$defs['options_filtered'] !== true ) {
+			if ( ! NgfbOptions::can_cache() || empty( $defs['options_filtered'] ) ) {
 
 				$defs = array(
 					'options_filtered' => '',
@@ -379,8 +397,16 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 				);
 
 				$defs = apply_filters( $this->p->cf['lca'].'_get_md_defaults', $defs, $this->get_mod( $mod_id ) );
-				$defs['options_filtered'] = true;
-			}
+
+				if ( NgfbOptions::can_cache() ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'setting options_filtered to true' );
+					$defs['options_filtered'] = true;
+				} elseif ( $this->p->debug->enabled )
+					$this->p->debug->log( 'options_filtered value unchanged' );
+
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'get_defaults filter skipped' );
 
 			if ( $idx !== false ) {
 				if ( isset( $defs[$idx] ) )
@@ -533,7 +559,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			return $columns;
 		}
 
-		protected function get_mod_column_content( $value, $column_name, &$mod ) {
+		protected function get_mod_column_content( $value, $column_name, $mod ) {
 
 			$lca = $this->p->cf['lca'];
 
@@ -570,7 +596,8 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 
 			switch ( $column_name ) {
 				case $lca.'_og_img':
-					// set custom image dimensions for this post/term/user id
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'setting custom image dimensions for this post/term/user id' );
 					$this->p->util->add_plugin_image_sizes( false, array(), $mod );
 					break;
 			}
@@ -585,19 +612,29 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 
 		public function get_og_img_column_html( $og_image ) {
 			$value = '';
-			// try and get a smaller thumbnail version if we can
-			if ( isset( $og_image['og:image:id'] ) && 
-				$og_image['og:image:id'] > 0 )
-					list(
-						$og_image['og:image'],
-						$og_image['og:image:width'],
-						$og_image['og:image:height'],
-						$og_image['og:image:cropped'],
-						$og_image['og:image:id']
-					) = $this->p->media->get_attachment_image_src( $og_image['og:image:id'], 'thumbnail', false, false );
 
-			if ( ! empty( $og_image['og:image'] ) )
-				$value .= '<div class="preview_img" style="background-image:url('.$og_image['og:image'].');"></div>';
+			if ( isset( $og_image['og:image:id'] ) && 
+				$og_image['og:image:id'] > 0 ) {
+
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'getting thumbnail for image id '.$og_image['og:image:id'] );
+
+				list(
+					$og_thumb['og:image'],
+					$og_thumb['og:image:width'],
+					$og_thumb['og:image:height'],
+					$og_thumb['og:image:cropped'],
+					$og_thumb['og:image:id']
+				) = $this->p->media->get_attachment_image_src( $og_image['og:image:id'], 'thumbnail', false, false );
+				if ( ! empty( $thumb['og:image'] ) )	// just in case
+					$og_image =& $og_thumb;
+			}
+
+			$media_url = SucomUtil::get_mt_media_url( $og_image, 'og:image' );
+
+			if ( ! empty( $media_url ) )
+				$value .= '<div class="preview_img" style="background-image:url('.$media_url.');"></div>';
+
 			return $value;
 		}
 
@@ -605,10 +642,10 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 			return $this->must_be_extended( __METHOD__, array() );
 		}
 
-		public function get_md_image( $num, $size_name, array &$mod, $check_dupes = true, $force_regen = false, $md_pre = 'og', $mt_pre = 'og' ) {
+		public function get_md_image( $num, $size_name, array $mod, $check_dupes = true, $force_regen = false, $md_pre = 'og', $mt_pre = 'og' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'num' => $num,
 					'size_name' => $size_name,
 					'mod' => $mod,
@@ -723,7 +760,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 		public function get_og_video( $num = 0, $mod_id, $check_dupes = false, $md_pre = 'og', $mt_pre = 'og' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'num' => $num,
 					'mod_id' => $mod_id,
 					'check_dupes' => $check_dupes,
@@ -757,9 +794,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 					if ( $this->p->debug->enabled )
 						$this->p->debug->log( 'fetching video from custom '.$prefix.' url '.$url,
 							get_class( $this ) );	// log extended class name
-					$og_video = $this->p->media->get_video_info( $url, 0, 0, $check_dupes );
-					if ( empty( $og_video ) )	// fallback to the original custom video URL
-						$og_video['og:video:url'] = $url;
+					$og_video = $this->p->media->get_video_info( $url, 0, 0, $check_dupes, true );	// $fallback = true
 					if ( $this->p->util->push_max( $og_ret, $og_video, $num ) ) 
 						return $og_ret;
 				}
@@ -770,7 +805,7 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 		public function get_og_video_preview_image( $mod, $check_dupes = false, $md_pre = 'og' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'mod' => $mod,
 					'check_dupes' => $check_dupes,
 					'md_pre' => $md_pre,
@@ -801,6 +836,83 @@ if ( ! class_exists( 'NgfbMeta' ) ) {
 				$this->p->debug->log( 'use_prev_img is 0 - skipping retrieval of video preview image' );
 
 			return $og_image;
+		}
+
+		protected function get_custom_fields( $md_opts, $all_meta ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
+			if ( ! is_array( $all_meta ) || empty( $all_meta ) )
+				return $md_opts;
+
+			$charset = get_bloginfo( 'charset' );	// required for html_entity_decode()
+
+			foreach ( array( 
+				'plugin_cf_img_url' => 'og_img_url',
+				'plugin_cf_vid_url' => 'og_vid_url',
+				'plugin_cf_vid_embed' => 'og_vid_embed',
+				'plugin_cf_recipe_ingredients' => 'schema_recipe_ingredient',
+			) as $cf_opt_name => $meta_opt_name ) {
+
+				// check that a custom field name has been defined
+				if ( ! empty( $this->p->options[$cf_opt_name] ) )
+					$md_name = $this->p->options[$cf_opt_name];
+				else continue;
+
+				// empty or not, if the array element is set, use it
+				if ( isset( $all_meta[$md_name][0] ) )
+					$mixed =& $all_meta[$md_name][0];
+				else continue;
+
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( $md_name.' custom field found for '.$meta_opt_name.' option' );
+
+				$values = array();
+
+				// decode strings and array elements
+				if ( is_array( $mixed ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $md_name.' is array of '.count( $mixed ).' values (decoding each value)' );
+					foreach ( $mixed as $value )
+						$values[] = html_entity_decode( SucomUtil::decode_utf8( $value ), ENT_QUOTES, $charset );
+				} else {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'decoding '.$md_name.' as string of '.strlen( $mixed ).' chars' );
+					$values[] = html_entity_decode( SucomUtil::decode_utf8( $mixed ), ENT_QUOTES, $charset );
+				}
+
+				switch ( $meta_opt_name ) {
+					case 'schema_recipe_ingredient':
+						// explode text ingredient list into array
+						if ( ! is_array( $mixed ) ) {
+							$values = array_map( 'trim', 
+								explode( PHP_EOL, reset( $values ) ) );
+							if ( $this->p->debug->enabled )
+								$this->p->debug->log( 'exploded '.$md_name.' into array of '.count( $values ).' elements' );
+						}
+						$is_multi = true;		// increment the option name
+						break;
+					default:
+						$is_multi = false;
+						break;
+				}
+
+				// increment the option name, starting with 0
+				if ( $is_multi ) {
+					// remove any old values from the options array
+					$md_opts = SucomUtil::preg_grep_keys( '/^'.$meta_opt_name.'_[0-9]+$/', $md_opts, true );	// $invert = true
+
+					foreach ( $values as $num => $value ) {
+						$md_opts[$meta_opt_name.'_'.$num] = $value;
+						$md_opts[$meta_opt_name.'_'.$num.':is'] = 'disabled';
+					}
+				} else {
+					$md_opts[$meta_opt_name] = reset( $values );	// get first element of $values array
+					$md_opts[$meta_opt_name.':is'] = 'disabled';
+				}
+			}
+
+			return $md_opts;
 		}
 	}
 }

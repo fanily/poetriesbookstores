@@ -34,7 +34,8 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 					array( &$this, 'show_metabox_publishers' ), $this->pagehook, 'normal' );
 
 			// issues a warning notice if the default image size is too small
-			if ( ! SucomUtil::get_const( 'NGFB_CHECK_DEFAULT_IMAGE' ) )
+			// unless the NGFB_CHECK_DEFAULT_IMAGE constant has been defined as false
+			if ( SucomUtil::get_const( 'NGFB_CHECK_DEFAULT_IMAGE' ) !== false )
 				$og_image = $this->p->media->get_default_image( 1, $this->p->cf['lca'].'-opengraph', false );
 		}
 
@@ -72,7 +73,10 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 
 		protected function get_table_rows( $metabox, $key ) {
 			$table_rows = array();
-			$user_names = $this->p->m['util']['user']->get_form_display_names();
+		
+			if ( SucomUtil::get_const( 'NGFB_DEFAULT_AUTHOR_OPTIONS' ) )
+				$user_names = $this->p->m['util']['user']->get_form_display_names();
+
 			$user_contacts = $this->p->m['util']['user']->get_form_contact_fields();
 
 			switch ( $metabox.'-'.$key ) {
@@ -83,12 +87,12 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'og_art_section' ).
 					'<td>'.$this->form->get_select( 'og_art_section', $this->p->util->get_topics() ).'</td>';
 
-					$table_rows['og_site_name'] = $this->form->get_th_html( _x( 'Site Name',
+					$table_rows['og_site_name'] = $this->form->get_th_html( _x( 'Website Name',
 						'option label', 'nextgen-facebook' ), null, 'og_site_name', array( 'is_locale' => true ) ).
 					'<td>'.$this->form->get_input( SucomUtil::get_key_locale( 'og_site_name', $this->p->options ),
 						'long_name', null, null, get_bloginfo( 'name', 'display' ) ).'</td>';
 
-					$table_rows['og_site_description'] = $this->form->get_th_html( _x( 'Site Description',
+					$table_rows['og_site_description'] = $this->form->get_th_html( _x( 'Website Description',
 						'option label', 'nextgen-facebook' ), null, 'og_site_description', array( 'is_locale' => true ) ).
 					'<td>'.$this->form->get_textarea( SucomUtil::get_key_locale( 'og_site_description', $this->p->options ),
 						null, null, null, get_bloginfo( 'description', 'display' ) ).'</td>';
@@ -142,23 +146,27 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'og_author_fallback' ).
 					'<td>'.$this->form->get_checkbox( 'og_author_fallback' ).'</td>';
 
-					$table_rows['og_def_author_id'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Default Author when Missing',
-						'option label', 'nextgen-facebook' ), null, 'og_def_author_id' ).
-					'<td>'.$this->form->get_select( 'og_def_author_id', $user_names, null, null, true ).'</td>';
+					if ( SucomUtil::get_const( 'NGFB_DEFAULT_AUTHOR_OPTIONS' ) ) {
 
-					$table_rows['og_def_author_on_index'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Use Default Author on Indexes',
-						'option label', 'nextgen-facebook' ), null, 'og_def_author_on_index' ).
-					'<td>'.$this->form->get_checkbox( 'og_def_author_on_index' ).' '.
-						_x( 'defines index / archive webpages as articles', 'option comment', 'nextgen-facebook' ).'</td>';
-
-					$table_rows['og_def_author_on_search'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Use Default Author on Search Results',
-						'option label', 'nextgen-facebook' ), null, 'og_def_author_on_search' ).
-					'<td>'.$this->form->get_checkbox( 'og_def_author_on_search' ).' '.
-						_x( 'defines search webpages as articles', 'option comment', 'nextgen-facebook' ).'</td>';
-
+						$table_rows['og_def_author_id'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Default Author when Missing',
+							'option label', 'nextgen-facebook' ), null, 'og_def_author_id' ).
+						'<td>'.$this->form->get_select( 'og_def_author_id', $user_names, null, null, true ).'</td>';
+	
+						$table_rows['og_def_author_on_index'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Use Default Author on Archive',
+							'option label', 'nextgen-facebook' ), null, 'og_def_author_on_index' ).
+						'<td>'.$this->form->get_checkbox( 'og_def_author_on_index' ).' <em>'.
+							_x( 'defines index / archive webpages as articles',
+								'option comment', 'nextgen-facebook' ).'</em></td>';
+	
+						$table_rows['og_def_author_on_search'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Use Default Author on Search Results',
+							'option label', 'nextgen-facebook' ), null, 'og_def_author_on_search' ).
+						'<td>'.$this->form->get_checkbox( 'og_def_author_on_search' ).' <em>'.
+							_x( 'defines search webpages as articles',
+								'option comment', 'nextgen-facebook' ).'</em></td>';
+					}	
 					break;
 
 				case 'og-images':
@@ -168,8 +176,8 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 					'<td>'.$this->form->get_select( 'og_img_max', 
 						range( 0, $this->p->cf['form']['max_media_items'] ), 'short', null, true ).
 					( empty( $this->form->options['og_vid_prev_img'] ) ?
-						'' : ' '._x( '<em>video preview images are enabled</em> (and included first)',
-							'option comment', 'nextgen-facebook' ) ).'</td>';
+						'' : ' <em>'._x( 'video preview images are enabled (and included first)',
+							'option comment', 'nextgen-facebook' ).'</em>' ).'</td>';
 
 					$table_rows['og_img'] = $this->form->get_th_html( _x( 'Open Graph Image Dimensions',
 						'option label', 'nextgen-facebook' ), null, 'og_img_dimensions' ).
@@ -184,7 +192,7 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 					'<td>'.$this->form->get_image_url_input( 'og_def_img' ).'</td>';
 
 					$table_rows['og_def_img_on_index'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Use Default Image on Indexes',
+					$this->form->get_th_html( _x( 'Use Default Image on Archive',
 						'option label', 'nextgen-facebook' ), null, 'og_def_img_on_index' ).
 					'<td>'.$this->form->get_checkbox( 'og_def_img_on_index' ).'</td>';
 
@@ -248,20 +256,23 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'seo_author_field' ).
 					'<td>'.$this->form->get_select( 'seo_author_field', $user_contacts ).'</td>';
 
-					$table_rows['seo_def_author_id'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Default Author when Missing',
-						'option label', 'nextgen-facebook' ), null, 'seo_def_author_id' ).
-					'<td>'.$this->form->get_select( 'seo_def_author_id', $user_names, null, null, true ).'</td>';
+					if ( SucomUtil::get_const( 'NGFB_DEFAULT_AUTHOR_OPTIONS' ) ) {
 
-					$table_rows['seo_def_author_on_index'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Use Default Author on Indexes',
-						'option label', 'nextgen-facebook' ), null, 'seo_def_author_on_index' ).
-					'<td>'.$this->form->get_checkbox( 'seo_def_author_on_index' ).'</td>';
-
-					$table_rows['seo_def_author_on_search'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Use Default Author on Search Results',
-						'option label', 'nextgen-facebook' ), null, 'seo_def_author_on_search' ).
-					'<td>'.$this->form->get_checkbox( 'seo_def_author_on_search' ).'</td>';
+						$table_rows['seo_def_author_id'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Default Author when Missing',
+							'option label', 'nextgen-facebook' ), null, 'seo_def_author_id' ).
+						'<td>'.$this->form->get_select( 'seo_def_author_id', $user_names, null, null, true ).'</td>';
+	
+						$table_rows['seo_def_author_on_index'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Use Default Author on Archive',
+							'option label', 'nextgen-facebook' ), null, 'seo_def_author_on_index' ).
+						'<td>'.$this->form->get_checkbox( 'seo_def_author_on_index' ).'</td>';
+	
+						$table_rows['seo_def_author_on_search'] = '<tr class="hide_in_basic">'.
+						$this->form->get_th_html( _x( 'Use Default Author on Search Results',
+							'option label', 'nextgen-facebook' ), null, 'seo_def_author_on_search' ).
+						'<td>'.$this->form->get_checkbox( 'seo_def_author_on_search' ).'</td>';
+					}
 
 					$table_rows['subsection_google_schema'] = '<td></td><td class="subsection"><h4>'.
 						_x( 'Google Structured Data / Schema Markup',
@@ -283,7 +294,7 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'schema_social_json' ).
 					'<td>'.
 					'<p>'.$this->form->get_checkbox( 'schema_website_json' ).' '.
-						sprintf( __( 'Include <a href="%s">WebSite Information</a> for Google Search',
+						sprintf( __( 'Include <a href="%s">Website Information</a> for Google Search',
 							'nextgen-facebook' ), 'https://developers.google.com/structured-data/site-name' ).'</p>'.
 					'<p>'.$this->form->get_checkbox( 'schema_organization_json' ).
 						sprintf( __( ' Include <a href="%s">Organization Social Profile</a>',
@@ -294,17 +305,13 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 								$this->form->get_select( 'schema_person_id', $users, null, null, true ).'</p>'.
 					'</td>';
 
-					$table_rows['schema_alt_name'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Website Alternate Name',
-						'option label', 'nextgen-facebook' ), null, 'schema_alt_name' ).
-					'<td>'.$this->form->get_input( 'schema_alt_name', 'wide' ).'</td>';
-
-					$table_rows['schema_logo_url'] = $this->form->get_th_html( '<a href="https://developers.google.com/structured-data/customize/logos">'.
-						_x( 'Business / Organization Logo URL', 'option label', 'nextgen-facebook' ).'</a>', null, 'schema_logo_url' ).
+					$table_rows['schema_logo_url'] = $this->form->get_th_html( 
+						'<a href="https://developers.google.com/structured-data/customize/logos" target="_blank">'.
+						_x( 'Organization Logo Image URL', 'option label', 'nextgen-facebook' ).'</a>', null, 'schema_logo_url' ).
 					'<td>'.$this->form->get_input( 'schema_logo_url', 'wide' ).'</td>';
 
 					$table_rows['schema_banner_url'] = '<tr class="hide_in_basic">'.
-					$this->form->get_th_html( _x( 'Business Banner 600x60px Image URL',
+					$this->form->get_th_html( _x( 'Organization Banner (600x60px) URL',
 						'option label', 'nextgen-facebook' ), null, 'schema_banner_url' ).
 					'<td>'.$this->form->get_input( 'schema_banner_url', 'wide' ).'</td>';
 
@@ -313,8 +320,8 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 					'<td>'.$this->form->get_select( 'schema_img_max', 
 						range( 0, $this->p->cf['form']['max_media_items'] ), 'short', null, true ).
 					( empty( $this->form->options['og_vid_prev_img'] ) ?
-						'' : ' '._x( '<em>video preview images are enabled</em> (and included first)',
-							'option comment', 'nextgen-facebook' ) ).'</td>';
+						'' : ' <em>'._x( 'video preview images are enabled (and included first)',
+							'option comment', 'nextgen-facebook' ).'</em>' ).'</td>';
 
 					$table_rows['schema_img'] = $this->form->get_th_html( _x( 'Schema Image Dimensions',
 						'option label', 'nextgen-facebook' ), null, 'schema_img_dimensions' ).
@@ -380,6 +387,11 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 
 				case 'pub-twitter':
 
+					$tc_types = array(
+						'summary' => _x( 'Summary', 'option value', 'nextgen-facebook' ),
+						'summary_large_image' => _x( 'Summary Large Image', 'option value', 'nextgen-facebook' ),
+					);
+
 					$table_rows['tc_site'] = $this->form->get_th_html( _x( 'Twitter Business @username',
 						'option label', 'nextgen-facebook' ), null, 'tc_site', array( 'is_locale' => true ) ).
 					'<td>'.$this->form->get_input( SucomUtil::get_key_locale( 'tc_site', $this->p->options ) ).'</td>';
@@ -390,11 +402,21 @@ if ( ! class_exists( 'NgfbSubmenuGeneral' ) && class_exists( 'NgfbAdmin' ) ) {
 					'<td>'.$this->form->get_input( 'tc_desc_len', 'short' ).' '.
 						_x( 'characters or less', 'option comment', 'nextgen-facebook' ).'</td>';
 
+					$table_rows['tc_type_singular'] = '<tr class="hide_in_basic">'.
+					$this->form->get_th_html( _x( 'Twitter Card for Post / Page Image',
+						'option label', 'nextgen-facebook' ), null, 'tc_type_post' ).
+					'<td>'.$this->form->get_select( 'tc_type_post', $tc_types ).'</td>';
+
+					$table_rows['tc_type_default'] = '<tr class="hide_in_basic">'.
+					$this->form->get_th_html( _x( 'Twitter Card Type by Default',
+						'option label', 'nextgen-facebook' ), null, 'tc_type_default' ).
+					'<td>'.$this->form->get_select( 'tc_type_default', $tc_types ).'</td>';
+
 					$table_rows['tc_sum'] = $this->form->get_th_html( _x( '<em>Summary</em> Card Image Dimensions',
 						'option label', 'nextgen-facebook' ), null, 'tc_sum_dimensions' ).
 					'<td>'.$this->form->get_image_dimensions_input( 'tc_sum', false, false ).'</td>';
 
-					$table_rows['tc_lrgimg'] = $this->form->get_th_html( _x( '<em>Large Image</em> Card Image Dimensions',
+					$table_rows['tc_lrgimg'] = $this->form->get_th_html( _x( '<em>Large Image</em> Card Img Dimensions',
 						'option label', 'nextgen-facebook' ), null, 'tc_lrgimg_dimensions' ).
 					'<td>'.$this->form->get_image_dimensions_input( 'tc_lrgimg', false, false ).'</td>';
 

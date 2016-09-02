@@ -13,12 +13,13 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 	class NgfbCheck {
 
 		private $p;
-		private $active_plugins = array();
+		private $active_plugins = array();	// active site and network plugins
 
 		private static $c = array();
 		private static $extend_checks = array(
 			'seo' => array(
 				'seou' => 'SEO Ultimate',
+				'sq' => 'Squirrly SEO',
 			),
 			'util' => array(
 				'um' => 'Pro Update Manager',
@@ -27,31 +28,43 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 
 		public function __construct( &$plugin ) {
 			$this->p =& $plugin;
+			$this->active_plugins = SucomUtil::active_plugins();
 
-			if ( is_object( $this->p->debug ) && 
-				method_exists( $this->p->debug, 'mark' ) )
-					$this->p->debug->mark();
-
-			$this->active_plugins = NgfbUtil::active_plugins();
-
-			if ( ! is_admin() ) {
+			if ( is_admin() ) {
+				// cleanup incorrect Yoast SEO notifications
+				if ( isset( $this->active_plugins['wordpress-seo/wp-seo.php'] ) )
+					add_action( 'admin_init', array( $this, 'cleanup_wpseo_notifications' ), 15 );
+			} else {
 				// disable jetPack open graph meta tags
-				if ( class_exists( 'JetPack' ) || 
-					isset( $this->active_plugins['jetpack/jetpack.php'] ) ) {
-
+				if ( isset( $this->active_plugins['jetpack/jetpack.php'] ) ) {
 					add_filter( 'jetpack_enable_opengraph', '__return_false', 100 );
 					add_filter( 'jetpack_enable_open_graph', '__return_false', 100 );
 					add_filter( 'jetpack_disable_twitter_cards', '__return_true', 100 );
 				}
-
 				// disable Yoast SEO social meta tags
-				if ( function_exists( 'wpseo_init' ) || 
-					isset( $this->active_plugins['wordpress-seo/wp-seo.php'] ) )
-						add_action( 'template_redirect', array( $this, 'cleanup_wpseo_filters' ), 1000 );
+				if ( isset( $this->active_plugins['wordpress-seo/wp-seo.php'] ) )
+					add_action( 'template_redirect', array( $this, 'cleanup_wpseo_filters' ), 100 );
 			}
-			do_action( $this->p->cf['lca'].'_init_check', $this->active_plugins );
 		}
 
+		// cleanup incorrect Yoast SEO notifications
+		public function cleanup_wpseo_notifications() {
+			if ( method_exists( 'Yoast_Notification_Center', 'remove_notification' ) ) {	// since wpseo v3.3
+				$lca = $this->p->cf['lca'];
+				$info = $this->p->cf['plugin'][$lca];
+				$id = 'wpseo-conflict-'.md5( $info['base'] );
+				$msg = '<style>#'.$id.'{display:none;}</style>';
+				$notif_center = Yoast_Notification_Center::get();
+				if ( ( $notif_obj = $notif_center->get_notification_by_id( $id ) ) && 
+					$notif_obj->message !== $msg ) {
+					update_user_meta( get_current_user_id(), $notif_obj->get_dismissal_key(), 'seen' );
+					$notif_obj = new Yoast_Notification( $msg, array( 'id' => $id ) );
+					$notif_center->add_notification( $notif_obj );
+				}
+			}
+		}
+
+		// disable Yoast SEO social meta tags
 		public function cleanup_wpseo_filters() {
 
 			if ( isset( $GLOBALS['wpseo_og'] ) && is_object( $GLOBALS['wpseo_og'] ) && 
@@ -74,27 +87,35 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 				add_filter( 'wpseo_json_ld_output', '__return_empty_array', 99 );
 		}
 
-		private function get_avail_check( $key ) {
-			switch ( $key ) {
-				case 'aop':
-					$ret = ! SucomUtil::get_const( 'NGFB_PRO_MODULE_DISABLE' ) &&
-					is_dir( NGFB_PLUGINDIR.'lib/pro/' ) ? true : false;
-					break;
-				case 'mt':
-					$ret = ! SucomUtil::get_const( 'NGFB_META_TAGS_DISABLE' ) &&
-					empty( $_SERVER['NGFB_META_TAGS_DISABLE'] ) &&
-					empty( $_GET['NGFB_META_TAGS_DISABLE'] ) ? true : false;	// allow meta tags to be disabled with query argument
-					break;
-				case 'ssb':
-					$ret = ! SucomUtil::get_const( 'NGFB_SOCIAL_SHARING_DISABLE' ) &&
-					empty( $_SERVER['NGFB_SOCIAL_SHARING_DISABLE'] ) &&
-					class_exists( $this->p->cf['lca'].'sharing' ) ? true : false;
-					break;
-				default:
-					$ret = false;
-					break;
-			}
-			return $ret;
+		public function aop( $lca = '', $lic = true, $rv = true ) {
+			$lca = empty( $lca ) ? 
+				$this->p->cf['lca'] : $lca;
+			$kn = $lca.'-'.$lic.'-'.$rv;
+			if ( isset( self::$c[$kn] ) )
+				return self::$c[$kn];
+			$uca = strtoupper( $lca );
+			if ( defined( $uca.'_PLUGINDIR' ) )
+				$pdir = constant( $uca.'_PLUGINDIR' );
+			elseif ( isset( $this->p->cf['plugin'][$lca]['slug'] ) ) {
+				$slug = $this->p->cf['plugin'][$lca]['slug'];
+				if ( ! defined ( 'WPMU_PLUGIN_DIR' ) || 
+					! is_dir( $pdir = WPMU_PLUGIN_DIR.'/'.$slug.'/' ) ) {
+					if ( ! defined ( 'WP_PLUGIN_DIR' ) || 
+						! is_dir( $pdir = WP_PLUGIN_DIR.'/'.$slug.'/' ) )
+							return self::$c[$kn] = false;
+				}
+			} else return self::$c[$kn] = false;
+			$on = 'plugin_'.$lca.'_tid';
+			$ins = is_dir( $pdir.'lib/pro/' ) ? $rv : false;
+			return self::$c[$kn] = $lic === true ? 
+				( ( ! empty( $this->p->options[$on] ) && 
+					$ins && class_exists( 'SucomUpdate' ) &&
+						( $uerr = SucomUpdate::get_umsg( $lca ) ?
+							false : $ins ) ) ? $uerr : false ) : $ins;
+		}
+
+		public function is_aop( $lca = '' ) { 
+			return $this->aop( $lca, true, $this->get_avail_check( 'aop' ) );
 		}
 
 		public function get_avail() {
@@ -126,30 +147,27 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 						 * 3rd Party Plugins
 						 */
 						case 'ecom-edd':
-							$chk['class'] = 'Easy_Digital_Downloads';
 							$chk['plugin'] = 'easy-digital-downloads/easy-digital-downloads.php';
 							break;
 						case 'ecom-marketpress':
-							$chk['class'] = 'MarketPress';
 							$chk['plugin'] = 'wordpress-ecommerce/marketpress.php';
 							break;
 						case 'ecom-woocommerce':
-							$chk['class'] = 'Woocommerce';
 							$chk['plugin'] = 'woocommerce/woocommerce.php';
 							break;
 						case 'ecom-wpecommerce':
-							$chk['class'] = 'WP_eCommerce';
 							$chk['plugin'] = 'wp-e-commerce/wp-shopping-cart.php';
 							break;
 						case 'ecom-yotpowc':	// yotpo-social-reviews-for-woocommerce
 							$chk['function'] = 'wc_yotpo_init';
 							break;
+						case 'event-tribe_events':
+							$chk['plugin'] = 'the-events-calendar/the-events-calendar.php';
+							break;
 						case 'forum-bbpress':
-							$chk['class'] = 'bbPress';
 							$chk['plugin'] = 'bbpress/bbpress.php';
 							break;
 						case 'lang-polylang':
-							$chk['class'] = 'Polylang';
 							$chk['plugin'] = 'polylang/polylang.php';
 							break;
 						case 'media-ngg':
@@ -160,31 +178,33 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 							$chk['plugin'] = 'buddypress-media/index.php';
 							break;
 						case 'seo-aioseop':
-							$chk['class'] = 'All_in_One_SEO_Pack';
+							$chk['plugin'] = 'all-in-one-seo-pack/all_in_one_seo_pack.php';
 							break;
 						case 'seo-autodescription':
-							$chk['function'] = 'the_seo_framework';
 							$chk['plugin'] = 'autodescription/autodescription.php';
 							break;
 						case 'seo-headspace2':
-							$chk['class'] = 'HeadSpace_Plugin';
 							$chk['plugin'] = 'headspace2/headspace.php';
 							break;
 						case 'seo-seou':
-							$chk['class'] = 'SEO_Ultimate';
 							$chk['plugin'] = 'seo-ultimate/seo-ultimate.php';
 							break;
+						case 'seo-sq':
+							$chk['plugin'] = 'squirrly-seo/squirrly.php';
+							break;
 						case 'seo-wpseo':
-							$chk['function'] = 'wpseo_init';
+							$chk['function'] = 'wpseo_init';	// just in case
 							$chk['plugin'] = 'wordpress-seo/wp-seo.php';
 							break;
 						case 'social-buddypress':
-							$chk['class'] = 'BuddyPress';
 							$chk['plugin'] = 'buddypress/bp-loader.php';
 							break;
 						/*
 						 * Pro Version Features / Options
 						 */
+						case 'media-facebook':
+							$chk['optval'] = 'plugin_facebook_api';
+							break;
 						case 'media-gravatar':
 							$chk['optval'] = 'plugin_gravatar_api';
 							break;
@@ -267,42 +287,34 @@ if ( ! class_exists( 'NgfbCheck' ) ) {
 			return apply_filters( $this->p->cf['lca'].'_get_avail', $ret );
 		}
 
+		private function get_avail_check( $key ) {
+			switch ( $key ) {
+				case 'aop':
+					$ret = ! SucomUtil::get_const( 'NGFB_PRO_MODULE_DISABLE' ) &&
+						is_dir( NGFB_PLUGINDIR.'lib/pro/' ) ? true : false;
+					break;
+				case 'mt':
+					$ret = ! SucomUtil::get_const( 'NGFB_META_TAGS_DISABLE' ) &&
+						empty( $_SERVER['NGFB_META_TAGS_DISABLE'] ) &&
+							empty( $_GET['NGFB_META_TAGS_DISABLE'] ) ? true : false;
+					break;
+				case 'ssb':
+					$ret = ! SucomUtil::get_const( 'NGFB_SOCIAL_SHARING_DISABLE' ) &&
+						empty( $_SERVER['NGFB_SOCIAL_SHARING_DISABLE'] ) &&
+							class_exists( $this->p->cf['lca'].'sharing' ) ? true : false;
+					break;
+				default:
+					$ret = false;
+					break;
+			}
+			return $ret;
+		}
+
 		private function has_optval( $opt_name ) { 
 			if ( ! empty( $opt_name ) && 
 				! empty( $this->p->options[$opt_name] ) && 
 					$this->p->options[$opt_name] !== 'none' )
 						return true;
-		}
-
-		public function is_aop( $lca = '' ) { 
-			return $this->aop( $lca, true, $this->get_avail_check( 'aop' ) );
-		}
-
-		public function aop( $lca = '', $lic = true, $rv = true ) {
-			$lca = empty( $lca ) ? 
-				$this->p->cf['lca'] : $lca;
-			$kn = $lca.'-'.$lic.'-'.$rv;
-			if ( isset( self::$c[$kn] ) )
-				return self::$c[$kn];
-			$uca = strtoupper( $lca );
-			if ( defined( $uca.'_PLUGINDIR' ) )
-				$pdir = constant( $uca.'_PLUGINDIR' );
-			elseif ( isset( $this->p->cf['plugin'][$lca]['slug'] ) ) {
-				$slug = $this->p->cf['plugin'][$lca]['slug'];
-				if ( ! defined ( 'WPMU_PLUGIN_DIR' ) || 
-					! is_dir( $pdir = WPMU_PLUGIN_DIR.'/'.$slug.'/' ) ) {
-					if ( ! defined ( 'WP_PLUGIN_DIR' ) || 
-						! is_dir( $pdir = WP_PLUGIN_DIR.'/'.$slug.'/' ) )
-							return self::$c[$kn] = false;
-				}
-			} else return self::$c[$kn] = false;
-			$on = 'plugin_'.$lca.'_tid';
-			$ins = is_dir( $pdir.'lib/pro/' ) ? $rv : false;
-			return self::$c[$kn] = $lic === true ? 
-				( ( ! empty( $this->p->options[$on] ) && 
-					$ins && class_exists( 'SucomUpdate' ) &&
-						( $uerr = SucomUpdate::get_umsg( $lca ) ? 	// use get_umsg() for backwards compat
-							false : $ins ) ) ? $uerr : false ) : $ins;
 		}
 	}
 }

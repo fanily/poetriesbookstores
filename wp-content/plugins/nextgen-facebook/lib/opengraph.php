@@ -56,8 +56,11 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 
 		public function add_html_attributes( $html_attr ) {
 
-			if ( $this->p->debug->enabled )
-				$this->p->debug->mark();
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log_args( array (
+					'html_attr' => $html_attr,
+				) );
+			}
 
 			$prefix_ns = apply_filters( $this->p->cf['lca'].'_og_prefix_ns', array(
 				'og' => 'http://ogp.me/ns#',
@@ -81,7 +84,7 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 			return trim( $html_attr );
 		}
 
-		public function get_array( $use_post = false, &$mod = false, &$og = array(), $crawler_name = 'unknown' ) {
+		public function get_array( $use_post = false, &$mod = false, &$og = array(), $crawler_name = 'none' ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
@@ -158,7 +161,10 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 
 			if ( ! isset( $og['og:locale'] ) ) {
 				// get the current or configured language for og:locale
-				$lang = empty( $this->p->options['fb_lang'] ) ? SucomUtil::get_locale( $mod ) : $this->p->options['fb_lang'];
+				$lang = empty( $this->p->options['fb_lang'] ) ? 
+					SucomUtil::get_locale( $mod ) : $this->p->options['fb_lang'];
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'getting og:locale for lang = '.$lang );
 				$og['og:locale'] = apply_filters( $lca.'_pub_lang', $lang, 'facebook', $mod );
 			}
 
@@ -185,18 +191,28 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 				if ( ! isset( $og['article:author'] ) ) {
 					if ( $mod['is_post'] ) {
 						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'getting name / url for article:author meta tag' );
+							$this->p->debug->log( 'getting names / urls for article:author meta tags' );
+
 						if ( $mod['post_author'] ) {
+
 							$og['article:author'] = $this->p->m['util']['user']->get_og_profile_urls( $mod['post_author'], $crawler_name );
 							$og['article:author:name'] = $this->p->m['util']['user']->get_author_meta( $mod['post_author'],
 								$this->p->options['fb_author_name'] );
+
 						} elseif ( $def_author_id = $this->p->util->get_default_author_id( 'og' ) ) {
+
 							if ( $this->p->debug->enabled )
 								$this->p->debug->log( 'using default author id '.$def_author_id );
+
 							$og['article:author'] = $this->p->m['util']['user']->get_og_profile_urls( $def_author_id, $crawler_name );
 							$og['article:author:name'] = $this->p->m['util']['user']->get_author_meta( $def_author_id,
 								$this->p->options['fb_author_name'] );
-						}
+
+						} else $og['article:author'] = array();
+
+						if ( ! empty( $mod['post_coauthors'] ) )
+							$og['article:author'] = array_merge( $og['article:author'],
+								$this->p->m['util']['user']->get_og_profile_urls( $mod['post_coauthors'], $crawler_name ) );
 					}
 				}
 
@@ -235,7 +251,7 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 						foreach ( $og['og:video'] as $num => $og_video ) {
 							if ( isset( $og_video['og:video:type'] ) && 
 								$og_video['og:video:type'] !== 'text/html' &&
-									SucomUtil::get_mt_media_url( 'og:image', $og_video ) ) {
+									SucomUtil::get_mt_media_url( $og_video, 'og:image' ) ) {
 								$prev_count++;
 								$og['og:video'][$num]['og:video:has_image'] = true;
 							} else $og['og:video'][$num]['og:video:has_image'] = false;
@@ -263,7 +279,7 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 						// add richpin to process both image sizes
 						if ( is_admin() )
 							$img_sizes = SucomUtil::before_key( $img_sizes, 'og', array( 'rp' => $lca.'-richpin' ) );
-						// use only pinterest image size
+						// use only pinterest (rich pin) image size
 						elseif ( $crawler_name === 'pinterest' )
 							$img_sizes = SucomUtil::replace_key( $img_sizes, 'og', array( 'rp' => $lca.'-richpin' ) );
 					}
@@ -305,7 +321,7 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 		public function get_all_videos( $num = 0, array &$mod, $check_dupes = true, $md_pre = 'og', $force_prev = false ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'num' => $num,
 					'mod' => $mod,
 					'check_dupes' => $check_dupes,
@@ -403,7 +419,7 @@ if ( ! class_exists( 'NgfbOpengraph' ) ) {
 		public function get_all_images( $num = 0, $size_name = 'thumbnail', array &$mod, $check_dupes = true, $md_pre = 'og' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'mod' => $mod,

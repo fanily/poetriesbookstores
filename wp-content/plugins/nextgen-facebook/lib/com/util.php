@@ -16,93 +16,159 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 		protected static $is_mobile = null;		// is_mobile cached value
 		protected static $mobile_obj = null;		// SuextMobileDetect class object
-		protected static $plugins_index = null;		// hash of active site and network plugins
+		protected static $plugins_index = null;		// active site and network plugins
 		protected static $site_plugins = null;
 		protected static $network_plugins = null;
 		protected static $crawler_name = null;		// saved crawler name from user-agent
 		protected static $filter_values = array();	// saved filter values
 		protected static $user_exists = array();	// saved user_exists() values
+		protected static $locales = array();		// saved get_locale() values
 
 		private static $pub_lang = array(
 			// https://www.facebook.com/translations/FacebookLocales.xml
 			'facebook' => array(
 				'af_ZA' => 'Afrikaans',
-				'sq_AL' => 'Albanian',
+				'ak_GH' => 'Akan',
+				'am_ET' => 'Amharic',
 				'ar_AR' => 'Arabic',
-				'hy_AM' => 'Armenian',
+				'as_IN' => 'Assamese',
+				'ay_BO' => 'Aymara',
 				'az_AZ' => 'Azerbaijani',
-				'eu_ES' => 'Basque',
 				'be_BY' => 'Belarusian',
-				'bn_IN' => 'Bengali',
-				'bs_BA' => 'Bosnian',
 				'bg_BG' => 'Bulgarian',
+				'bn_IN' => 'Bengali',
+				'br_FR' => 'Breton',
+				'bs_BA' => 'Bosnian',
 				'ca_ES' => 'Catalan',
-				'zh_HK' => 'Chinese (Hong Kong)',
-				'zh_CN' => 'Chinese (Simplified)',
-				'zh_TW' => 'Chinese (Traditional)',
-				'hr_HR' => 'Croatian',
+				'cb_IQ' => 'Sorani Kurdish',
+				'ck_US' => 'Cherokee',
+				'co_FR' => 'Corsican',
 				'cs_CZ' => 'Czech',
+				'cx_PH' => 'Cebuano',
+				'cy_GB' => 'Welsh',
 				'da_DK' => 'Danish',
-				'nl_NL' => 'Dutch',
+				'de_DE' => 'German',
+				'el_GR' => 'Greek',
 				'en_GB' => 'English (UK)',
+				'en_IN' => 'English (India)',
 				'en_PI' => 'English (Pirate)',
 				'en_UD' => 'English (Upside Down)',
 				'en_US' => 'English (US)',
 				'eo_EO' => 'Esperanto',
+				'es_CL' => 'Spanish (Chile)',
+				'es_CO' => 'Spanish (Colombia)',
+				'es_ES' => 'Spanish (Spain)',
+				'es_LA' => 'Spanish',
+				'es_MX' => 'Spanish (Mexico)',
+				'es_VE' => 'Spanish (Venezuela)',
 				'et_EE' => 'Estonian',
-				'fo_FO' => 'Faroese',
-				'tl_PH' => 'Filipino',
+				'eu_ES' => 'Basque',
+				'fa_IR' => 'Persian',
+				'fb_LT' => 'Leet Speak',
+				'ff_NG' => 'Fulah',
 				'fi_FI' => 'Finnish',
+				'fo_FO' => 'Faroese',
 				'fr_CA' => 'French (Canada)',
 				'fr_FR' => 'French (France)',
 				'fy_NL' => 'Frisian',
+				'ga_IE' => 'Irish',
 				'gl_ES' => 'Galician',
-				'ka_GE' => 'Georgian',
-				'de_DE' => 'German',
-				'el_GR' => 'Greek',
+				'gn_PY' => 'Guarani',
+				'gu_IN' => 'Gujarati',
+				'gx_GR' => 'Classical Greek',
+				'ha_NG' => 'Hausa',
 				'he_IL' => 'Hebrew',
 				'hi_IN' => 'Hindi',
+				'hr_HR' => 'Croatian',
+				'ht_HT' => 'Haitian Creole',
 				'hu_HU' => 'Hungarian',
-				'is_IS' => 'Icelandic',
+				'hy_AM' => 'Armenian',
 				'id_ID' => 'Indonesian',
-				'ga_IE' => 'Irish',
+				'ig_NG' => 'Igbo',
+				'is_IS' => 'Icelandic',
 				'it_IT' => 'Italian',
 				'ja_JP' => 'Japanese',
+				'ja_KS' => 'Japanese (Kansai)',
+				'jv_ID' => 'Javanese',
+				'ka_GE' => 'Georgian',
+				'kk_KZ' => 'Kazakh',
 				'km_KH' => 'Khmer',
+				'kn_IN' => 'Kannada',
 				'ko_KR' => 'Korean',
-				'ku_TR' => 'Kurdish',
+				'ku_TR' => 'Kurdish (Kurmanji)',
+				'ky_KG' => 'Kyrgyz',
 				'la_VA' => 'Latin',
-				'lv_LV' => 'Latvian',
-				'fb_LT' => 'Leet Speak',
+				'lg_UG' => 'Ganda',
+				'li_NL' => 'Limburgish',
+				'ln_CD' => 'Lingala',
+				'lo_LA' => 'Lao',
 				'lt_LT' => 'Lithuanian',
+				'lv_LV' => 'Latvian',
+				'mg_MG' => 'Malagasy',
+				'mi_NZ' => 'Māori',
 				'mk_MK' => 'Macedonian',
-				'ms_MY' => 'Malay',
 				'ml_IN' => 'Malayalam',
+				'mn_MN' => 'Mongolian',
+				'mr_IN' => 'Marathi',
+				'ms_MY' => 'Malay',
+				'mt_MT' => 'Maltese',
+				'my_MM' => 'Burmese',
+				'nb_NO' => 'Norwegian (bokmal)',
+				'nd_ZW' => 'Ndebele',
 				'ne_NP' => 'Nepali',
-				'nb_NO' => 'Norwegian (Bokmal)',
-				'nn_NO' => 'Norwegian (Nynorsk)',
-				'ps_AF' => 'Pashto',
-				'fa_IR' => 'Persian',
+				'nl_BE' => 'Dutch (België)',
+				'nl_NL' => 'Dutch',
+				'nn_NO' => 'Norwegian (nynorsk)',
+				'ny_MW' => 'Chewa',
+				'or_IN' => 'Oriya',
+				'pa_IN' => 'Punjabi',
 				'pl_PL' => 'Polish',
+				'ps_AF' => 'Pashto',
 				'pt_BR' => 'Portuguese (Brazil)',
 				'pt_PT' => 'Portuguese (Portugal)',
-				'pa_IN' => 'Punjabi',
+				'qc_GT' => 'Quiché',
+				'qu_PE' => 'Quechua',
+				'rm_CH' => 'Romansh',
 				'ro_RO' => 'Romanian',
 				'ru_RU' => 'Russian',
+				'rw_RW' => 'Kinyarwanda',
+				'sa_IN' => 'Sanskrit',
+				'sc_IT' => 'Sardinian',
+				'se_NO' => 'Northern Sámi',
+				'si_LK' => 'Sinhala',
 				'sk_SK' => 'Slovak',
 				'sl_SI' => 'Slovenian',
-				'es_LA' => 'Spanish',
-				'es_ES' => 'Spanish (Spain)',
+				'sn_ZW' => 'Shona',
+				'so_SO' => 'Somali',
+				'sq_AL' => 'Albanian',
 				'sr_RS' => 'Serbian',
-				'sw_KE' => 'Swahili',
 				'sv_SE' => 'Swedish',
+				'sw_KE' => 'Swahili',
+				'sy_SY' => 'Syriac',
+				'sz_PL' => 'Silesian',
 				'ta_IN' => 'Tamil',
 				'te_IN' => 'Telugu',
+				'tg_TJ' => 'Tajik',
 				'th_TH' => 'Thai',
+				'tk_TM' => 'Turkmen',
+				'tl_PH' => 'Filipino',
+				'tl_ST' => 'Klingon',
 				'tr_TR' => 'Turkish',
+				'tt_RU' => 'Tatar',
+				'tz_MA' => 'Tamazight',
 				'uk_UA' => 'Ukrainian',
+				'ur_PK' => 'Urdu',
+				'uz_UZ' => 'Uzbek',
 				'vi_VN' => 'Vietnamese',
-				'cy_GB' => 'Welsh',
+				'wo_SN' => 'Wolof',
+				'xh_ZA' => 'Xhosa',
+				'yi_DE' => 'Yiddish',
+				'yo_NG' => 'Yoruba',
+				'zh_CN' => 'Simplified Chinese (China)',
+				'zh_HK' => 'Traditional Chinese (Hong Kong)',
+				'zh_TW' => 'Traditional Chinese (Taiwan)',
+				'zu_ZA' => 'Zulu',
+				'zz_TR' => 'Zazaki',
 			),
 			// https://developers.google.com/+/web/api/supported-languages
 			'google' => array(
@@ -267,7 +333,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		}
 
 		public static function is_https( $url = '' ) {
-			if ( ! empty( $url ) ) {
+			if ( ! empty( $url ) && strpos( $url, '://' ) ) {
 				if ( parse_url( $url, PHP_URL_SCHEME ) === 'https' )
 					return true;
 				else return false;
@@ -277,11 +343,12 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			else return false;
 		}
 
-		// returns 'http' or 'https'
 		public static function get_prot( $url = '' ) {
-			if ( self::is_https( $url ) )
-				return 'https';
-			else return 'http';
+			return self::is_https( $url ) ? 'https' : 'http';
+		}
+
+		public static function add_prot( $url = '' ) {
+			return self::get_prot( $url ).'://'.preg_replace( '/^(.*://|//)/', '', $url );
 		}
 
 		public static function get_const( $const, $not_found = null ) {
@@ -310,13 +377,13 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			else return false;
 		}
 
-		public static function sanitize_use_post( $mixed ) {
+		public static function sanitize_use_post( $mixed, $default = false ) {
 			if ( is_array( $mixed ) )
 				$use_post = isset( $mixed['use_post'] ) ?
-					$mixed['use_post'] : false;
+					$mixed['use_post'] : $default;
 			elseif ( is_object( $mixed ) )
 				$use_post = isset( $mixed->use_post ) ?
-					$mixed->use_post : false;
+					$mixed->use_post : $default;
 			else $use_post = $mixed;
 				
 			if ( empty( $use_post ) ||		// boolean false or 0
@@ -332,8 +399,8 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return self::sanitize_key( $name );
 		}
 
-		public static function sanitize_classname( $name ) {
-			$name = preg_replace( '/[:\/\-\.]+/', '', $name );
+		public static function sanitize_classname( $name, $underscore = true ) {
+			$name = preg_replace( '/[:\/\-\.'.( $underscore ? '' : '_' ).']+/', '', $name );
 			return self::sanitize_key( $name );
 		}
 
@@ -412,13 +479,6 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			else return null;
 		}
 
-		public static function a2aa( $a ) {
-			$aa = array();
-			foreach ( $a as $i )
-				$aa[][] = $i;
-			return $aa;
-		}
-
 		public static function crawler_name( $is_crawler_name = '' ) {
 
 			if ( self::$crawler_name === null ) {
@@ -432,6 +492,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 
 					// "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
 					case ( strpos( $ua, 'compatible; googlebot/' ) !== false ):
+						self::$crawler_name = 'google';
+						break;
+
+					// Mozilla/5.0 (compatible; Google-Structured-Data-Testing-Tool +https://search.google.com/structured-data/testing-tool)"
+					case ( strpos( $ua, 'compatible; google-structured-data-testing-tool' ) !== false ):
 						self::$crawler_name = 'google';
 						break;
 
@@ -450,7 +515,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 						self::$crawler_name = 'w3c';
 						break;
 					default:
-						self::$crawler_name = 'unknown';
+						self::$crawler_name = 'none';
 						break;
 				}
 			}
@@ -458,6 +523,13 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			if ( ! empty( $is_crawler_name ) )
 				return $is_crawler_name === self::$crawler_name ? true : false;
 			else return self::$crawler_name;
+		}
+
+		public static function a2aa( $a ) {
+			$aa = array();
+			foreach ( $a as $i )
+				$aa[][] = $i;
+			return $aa;
 		}
 
 		public static function is_assoc( $arr ) {
@@ -475,16 +547,16 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $found;
 		}
 
-		public static function preg_grep_keys( $preg, array &$arr, $invert = false, $replace = false ) {
+		public static function preg_grep_keys( $pattern, array &$input, $invert = false, $replace = false ) {
 			$invert = $invert == false ? 
 				null : PREG_GREP_INVERT;
-			$match = preg_grep( $preg, array_keys( $arr ), $invert );
+			$match = preg_grep( $pattern, array_keys( $input ), $invert );
 			$found = array();
 			foreach ( $match as $key ) {
 				if ( $replace !== false ) {
-					$fixed = preg_replace( $preg, $replace, $key );
-					$found[$fixed] = $arr[$key]; 
-				} else $found[$key] = $arr[$key]; 
+					$fixed = preg_replace( $pattern, $replace, $key );
+					$found[$fixed] = $input[$key]; 
+				} else $found[$key] = $input[$key]; 
 			}
 			return $found;
 		}
@@ -503,16 +575,24 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $opts;
 		}
 
-		public static function next_key( $needle, $arr, $cycle = true ) {
-			$keys = array_keys( $arr );
+		public static function next_key( $needle, array &$input, $loop = true ) {
+			$keys = array_keys( $input );
 			$pos = array_search( $needle, $keys );
 			if ( $pos !== false ) {
 				if ( isset( $keys[ $pos + 1 ] ) )
 					return $keys[ $pos + 1 ];
-				elseif ( $cycle === true )
+				elseif ( $loop === true )
 					return $keys[0];
 			}
 			return false;
+		}
+
+		// move an associative array element to the end
+		public static function move_to_end( array &$array, $key ) {
+			$val = $array[$key];
+			unset( $array[$key] );
+			$array[$key] = $val;
+			return $array;
 		}
 
 		public static function before_key( array &$array, $match_key, $mixed, $add_value = '' ) {
@@ -591,10 +671,10 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		}
 
 		// return the preferred URL (og:image:secure_url, og:image:url, og:image)
-		public static function get_mt_media_url( $prefix, &$arr ) {
-			foreach ( array( ':secure_url', ':url', '' ) as $suffix )
-				if ( ! empty( $arr[$prefix.$suffix] ) )
-					return $media_url = $arr[$prefix.$suffix];
+		public static function get_mt_media_url( &$assoc, $mt_pre = 'og:image' ) {
+			foreach ( array( ':secure_url', ':url', '' ) as $key )
+				if ( ! empty( $assoc[$mt_pre.$key] ) )
+					return $media_url = $assoc[$mt_pre.$key];
 			return '';
 		}
 
@@ -645,26 +725,40 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		}
 
 		// return the custom site name, and if empty, the default site name
-		public static function get_site_name( array &$opts, array &$mod ) {
-			return self::get_locale_opt( 'og_site_name', $opts, $mod, get_bloginfo( 'name', 'display' ) );
+		// $mixed = 'default' | 'current' | post ID | $mod array
+		public static function get_site_name( array &$opts, $mixed = 'current' ) {
+			$site_name = self::get_locale_opt( 'og_site_name', $opts, $mixed );
+			if ( empty( $site_name ) )
+				return get_bloginfo( 'name', 'display' );
+			else return $site_name;
 		}
 
 		// return the custom site description, and if empty, the default site description
 		// $mixed = 'default' | 'current' | post ID | $mod array
-		public static function get_site_description( array &$opts, array &$mod ) {
-			return self::get_locale_opt( 'og_site_description', $opts, $mod, get_bloginfo( 'description', 'display' ) );
+		public static function get_site_description( array &$opts, $mixed = 'current' ) {
+			$site_desc = self::get_locale_opt( 'og_site_description', $opts, $mixed );
+			if ( empty( $site_desc ) )
+				return get_bloginfo( 'description', 'display' );
+			else return $site_desc;
 		}
 
 		// return a localize options value
 		// $mixed = 'default' | 'current' | post ID | $mod array
-		public static function get_locale_opt( $key, array &$opts, $mixed = 'current', $if_empty = null ) {
+		public static function get_locale_opt( $key, array &$opts, $mixed = 'current' ) {
 			$key_locale = self::get_key_locale( $key, $opts, $mixed );
-			if ( $if_empty !== null )
-				return empty( $opts[$key_locale] ) ?
-					$if_empty : $opts[$key_locale];
-			// allow for empty values
-			else return isset( $opts[$key_locale] ) ?
+			$val_locale = isset( $opts[$key_locale] ) ?
 				$opts[$key_locale] : null;
+
+			// fallback to default value for non-existing keys or empty strings
+			if ( ! isset( $opts[$key_locale] ) || $opts[$key_locale] === '' ) {
+				if ( ( $pos = strpos( $key_locale, '#' ) ) > 0 ) {
+					$key_default = SucomUtil::get_key_locale( substr( $key_locale, 0, $pos ), $opts, 'default' );
+					if ( $key_locale !== $key_default ) {
+						return isset( $opts[$key_default] ) ?
+							$opts[$key_default] : $val_locale;
+					} else return $val_locale;
+				} else return $val_locale;
+			} else return $val_locale;
 		}
 
 		// localize an options array key
@@ -683,21 +777,68 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			else return $key_locale;
 		}
 
+		public static function get_multi_key_locale( $prefix, array &$opts, $add_none = false ) {
+			$default = self::get_locale( 'default' );
+			$current = self::get_locale( 'current' );
+			$matches = self::preg_grep_keys( '/^'.$prefix.'_([0-9]+)(#.*)?$/', $opts );
+			$results = array();
+
+			foreach ( $matches as $key => $value ) {
+				$num = preg_replace( '/^'.$prefix.'_([0-9]+)(#.*)?$/', '$1', $key );
+
+				if ( ! empty( $results[$num] ) )	// preserve the first non-blank value
+					continue;
+				elseif ( ! empty( $opts[$prefix.'_'.$num.'#'.$current] ) )	// current locale
+					$results[$num] = $opts[$prefix.'_'.$num.'#'.$current];
+				elseif ( ! empty( $opts[$prefix.'_'.$num.'#'.$default] ) )	// default locale
+					$results[$num] = $opts[$prefix.'_'.$num.'#'.$default];
+				elseif ( ! empty( $opts[$prefix.'_'.$num] ) )			// no locale
+					$results[$num] = $opts[$prefix.'_'.$num];
+				else $results[$num] = $value;					// use value (could be empty)
+			}
+
+			asort( $results );	// sort values for display
+
+			if ( $add_none )
+				$results = array( 'none' => '[None]' ) + $results;	// maintain numeric index
+
+			return $results;
+		}
+
+		public static function get_first_last_next_nums( array &$input ) {
+			$keys = array_keys( $input );
+			if ( ! empty( $keys ) &&
+				! is_numeric( implode( $keys ) ) )	// array cannot be associative
+					return false;
+			sort( $keys );
+			$first = (int) reset( $keys );
+			$last = (int) end( $keys );
+			$next = $last ? $last + 1 : $last;	// next is 0 for an empty array
+			return array( $first, $last, $next );
+		}
+
 		// $mixed = 'default' | 'current' | post ID | $mod array
 		public static function get_locale( $mixed = 'current' ) {
-			switch ( true ) {
-				case ( $mixed === 'default' ):
-					$wp_locale = defined( 'WPLANG' ) && WPLANG ? WPLANG : 'en_US';
-					break;
-				default:
-					$wp_locale = get_locale();
-					break;
-			}
-			return apply_filters( 'sucom_locale', $wp_locale, $mixed );
+			$key = is_array( $mixed ) ?
+				$key = $mixed['name'].'_'.$mixed['id'] : $mixed;
+
+			/*
+			 * We use a class static variable (instead of a method static variable)
+			 * to cache both self::get_locale() and SucomUtil::get_locale() in the
+			 * same variable.
+			 */
+			if ( isset( self::$locales[$key] ) )
+				return self::$locales[$key];
+
+			if ( $mixed === 'default' )
+				$wp_locale = defined( 'WPLANG' ) && WPLANG ? WPLANG : 'en_US';
+			else $wp_locale = get_locale();
+
+			return self::$locales[$key] = apply_filters( 'sucom_locale', $wp_locale, $mixed );
 		}
 
 		public static function get_mod_salt( array $mod ) {
-			return 'locale:'.SucomUtil::get_locale( $mod ).'_'.$mod['name'].':'.$mod['id'];
+			return 'locale:'.self::get_locale( $mod ).'_'.$mod['name'].':'.$mod['id'];
 		}
 
 		public static function restore_checkboxes( &$opts ) {
@@ -820,7 +961,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				case 'id':
 				case 'ID':
 					return isset( $post_obj->ID ) ? 
-						(int) $post_obj->ID : false;
+						(int) $post_obj->ID : 0;
 					break;
 				default:
 					return is_object( $post_obj ) ?
@@ -832,7 +973,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 		public static function maybe_load_post( $id, $force = false ) {
 			global $post;
 			if ( empty( $post ) || $force ) {
-				$post = SucomUtil::get_post_object( $id, 'object' );
+				$post = self::get_post_object( $id, 'object' );
 				return true;
 			} else return false;
 		}
@@ -877,11 +1018,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return apply_filters( 'sucom_is_tag_page', $ret );
 		}
 
-		public static function get_term_object( $term_id = false, $tax_slug = false, $output = 'object' ) {
+		public static function get_term_object( $term_id = 0, $tax_slug = '', $output = 'object' ) {
 			$term_obj = false;	// return false by default
 
 			if ( is_numeric( $term_id ) ) {
-				$term_obj = get_term_by( 'id', $term_id, $tax_slug, OBJECT, 'raw' );
+				$term_obj = get_term( (int) $term_id, (string) $tax_slug, OBJECT, 'raw' );
 
 			} elseif ( apply_filters( 'sucom_is_term_page', is_tax() ) || is_tag() || is_category() ) {
 				$term_obj = get_queried_object();
@@ -889,7 +1030,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			} elseif ( is_admin() ) {
 				if ( ( $tax_slug = self::get_request_value( 'taxonomy' ) ) !== '' &&
 					( $term_id = self::get_request_value( 'tag_ID' ) ) !== '' )
-						$term_obj = get_term_by( 'id', $term_id, $tax_slug, OBJECT, 'raw' );
+						$term_obj = get_term( (int) $term_id, (string) $tax_slug, OBJECT, 'raw' );
 
 			}
 
@@ -900,7 +1041,11 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				case 'ID':
 				case 'term_id':
 					return isset( $term_obj->term_id ) ? 
-						(int) $term_obj->term_id : false;
+						(int) $term_obj->term_id : 0;		// cast as integer
+					break;
+				case 'taxonomy':
+					return isset( $term_obj->taxonomy ) ? 
+						(string) $term_obj->taxonomy : '';	// cast as string
 					break;
 				default:
 					return is_object( $term_obj ) ? 
@@ -974,7 +1119,7 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				case 'id':
 				case 'ID':
 					return isset( $user_obj->ID ) ? 
-						(int) $user_obj->ID : false;
+						(int) $user_obj->ID : 0;
 					break;
 				default:
 					return is_object( $user_obj ) ?
@@ -1210,6 +1355,16 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 			return $content;
 		}
 
+		// used to decode facebook video urls
+		public static function replace_unicode_escape( $str ) {
+			return preg_replace_callback( '/\\\\u([0-9a-f]{4})/i', 
+				array( __CLASS__, 'replace_unicode_escape_callback' ), $str );
+		}
+
+		private static function replace_unicode_escape_callback( $match ) {
+			return mb_convert_encoding( pack( 'H*', $match[1] ), 'UTF-8', 'UCS-2' );
+		}
+
 		public static function json_encode_array( array $data, $options = 0, $depth = 32 ) {
 			if ( function_exists( 'wp_json_encode' ) )
 				return wp_json_encode( $data, $options, $depth );
@@ -1328,6 +1483,84 @@ if ( ! class_exists( 'SucomUtil' ) ) {
 				else $times[$hour_mins] = $hour_mins;
 			} 
 			return $times;
+		}
+
+		public static function get_column_rows( array $table_cells, $row_cols = 2, $hide_in_basic = false ) {
+			sort( $table_cells );
+			$table_rows = array();
+			$per_col = ceil( count( $table_cells ) / $row_cols );
+			foreach ( $table_cells as $num => $cell ) {
+				if ( empty( $table_rows[ $num % $per_col ] ) )	// initialize the array element
+					$table_rows[ $num % $per_col ] = $hide_in_basic ?
+						'<tr class="hide_in_basic">' : '';
+				$table_rows[ $num % $per_col ] .= $cell;	// create the html for each row
+			}
+			return $table_rows;
+		}
+
+		public static function get_theme_slug_version( $stylesheet = null, $theme_root = null ) {
+			$theme = wp_get_theme( $stylesheet, $theme_root );
+			return $theme->get_template().'-'.$theme->Version;
+		}
+
+		public static function get_image_sizes() {
+			global $_wp_additional_image_sizes; 
+			$sizes = array(); 
+			foreach ( get_intermediate_image_sizes() as $size_name )
+				$sizes[$size_name] = self::get_size_info( $size_name );
+			return $sizes;
+		}
+
+		public static function get_size_info( $size_name = 'thumbnail' ) {
+			if ( is_integer( $size_name ) ) 
+				return;
+			if ( is_array( $size_name ) ) 
+				return;
+
+			global $_wp_additional_image_sizes;
+
+			if ( isset( $_wp_additional_image_sizes[$size_name]['width'] ) )
+				$width = intval( $_wp_additional_image_sizes[$size_name]['width'] );
+			else $width = get_option( $size_name.'_size_w' );
+
+			if ( isset( $_wp_additional_image_sizes[$size_name]['height'] ) )
+				$height = intval( $_wp_additional_image_sizes[$size_name]['height'] );
+			else $height = get_option( $size_name.'_size_h' );
+
+			if ( isset( $_wp_additional_image_sizes[$size_name]['crop'] ) )
+				$crop = $_wp_additional_image_sizes[$size_name]['crop'];
+			else $crop = get_option( $size_name.'_crop' );
+
+			if ( ! is_array( $crop ) )
+				$crop = empty( $crop ) ? false : true;
+
+			return array( 'width' => $width, 'height' => $height, 'crop' => $crop );
+		}
+
+		// returns the class and id attributes
+		public static function get_atts_css_attr( array $atts, $css_name, $css_extra = '' ) {
+			$css_class = $css_name.'-'.
+				( empty( $atts['css_class'] ) ?
+					'button' : $atts['css_class'] );
+
+			if ( ! empty( $css_extra ) ) 
+				$css_class = $css_extra.' '.$css_class;
+
+			return 'class="'.$css_class.'" id="'.self::get_atts_src_id( $atts, $css_name ).'"';
+		}
+
+		public static function get_atts_src_id( array $atts, $src_name ) {
+			$src_id = $src_name.'-'.
+				( empty( $atts['css_id'] ) ?
+					'button' : $atts['css_id'] );
+
+			if ( ! empty( $atts['use_post'] ) || is_singular() || in_the_loop() ) {
+				global $post;
+				if ( ! empty( $post->ID ) )
+					$src_id .= '-post-'.$post->ID;
+			}
+
+			return $src_id;
 		}
 	}
 }

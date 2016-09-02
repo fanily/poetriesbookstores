@@ -131,7 +131,7 @@ if ( ! class_exists( 'NgfbSubmenuButtons' ) && class_exists( 'NgfbAdmin' ) ) {
 			$tabs = apply_filters( $lca.'_sharing_buttons_tabs', array(
 				'include' => _x( 'Include Buttons', 'metabox tab', 'nextgen-facebook' ),
 				'position' => _x( 'Buttons Position', 'metabox tab', 'nextgen-facebook' ),
-				'preset' => _x( 'Button Presets', 'metabox tab', 'nextgen-facebook' ),
+				'preset' => _x( 'Buttons Presets', 'metabox tab', 'nextgen-facebook' ),
 			) );
 			$table_rows = array();
 			foreach ( $tabs as $key => $title )
@@ -147,12 +147,8 @@ if ( ! class_exists( 'NgfbSubmenuButtons' ) && class_exists( 'NgfbAdmin' ) ) {
 			$tabs = apply_filters( $lca.'_'.$metabox.'_'.$args['id'].'_tabs', array() );
 
 			if ( empty( $tabs ) ) {
-				$this->p->util->do_table_rows( 
-					apply_filters( $lca.'_'.$metabox.'_'.$args['id'].'_rows',
-						array(), $this->form, $this ),
-					'metabox-'.$metabox.'-'.$args['id'],
-					'metabox-'.$metabox
-				);
+				$this->p->util->do_table_rows( apply_filters( $lca.'_'.$metabox.'_'.$args['id'].'_rows',
+					array(), $this->form, $this ), 'metabox-'.$metabox.'-'.$args['id'], 'metabox-'.$metabox );
 			} else {
 				foreach ( $tabs as $tab => $title )
 					$table_rows[$tab] = apply_filters( $lca.'_'.$metabox.'_'.$args['id'].'_'.$tab.'_rows',
@@ -167,7 +163,7 @@ if ( ! class_exists( 'NgfbSubmenuButtons' ) && class_exists( 'NgfbAdmin' ) ) {
 
 				case 'buttons-include':
 
-					$table_rows[] = $this->form->get_th_html( _x( 'Include on Index Webpages',
+					$table_rows[] = $this->form->get_th_html( _x( 'Include on Archive Webpages',
 						'option label', 'nextgen-facebook' ), null, 'buttons_on_index' ).
 					'<td>'.$this->form->get_checkbox( 'buttons_on_index' ).'</td>';
 

@@ -100,6 +100,9 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 		}
 
 		public function filter_og_img_user_column_content( $value, $column_name, $mod ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
 			if ( ! empty( $value ) )
 				return $value;
 
@@ -122,9 +125,9 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 
 			if ( ! empty( $og_image ) && is_array( $og_image ) ) {
 				$image = reset( $og_image );
-				if ( ! empty( $image['og:image'] ) )
-					$value = $this->get_og_img_column_html( $image );
-			}
+				$value = $this->get_og_img_column_html( $image );
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'no image found for column value' );
 
 			return $value;
 		}
@@ -184,17 +187,11 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 
 			$user_id = SucomUtil::get_user_object( false, 'id' );
 			$mod = $this->get_mod( $user_id );
-
 			if ( $this->p->debug->enabled )
 				$this->p->debug->log( SucomDebug::pretty_array( $mod ) );
 
 			$add_metabox = empty( $this->p->options[ 'plugin_add_to_user' ] ) ? false : true;
-
-			if ( apply_filters( $lca.'_add_metabox_user', 
-				$add_metabox, $user_id, $screen->id ) === true ) {
-
-				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'adding metabox for user' );
+			if ( apply_filters( $lca.'_add_metabox_user', $add_metabox, $user_id ) ) {
 
 				do_action( $lca.'_admin_user_header', $mod, $screen->id );
 
@@ -233,79 +230,82 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 		}
 
 		public function add_metaboxes() {
+
 			$user_id = SucomUtil::get_user_object( false, 'id' );
+
 			if ( ! current_user_can( 'edit_user', $user_id ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'insufficient privileges to add metabox for user ID '.$user_id );
 				return;
 			}
+
+			$lca = $this->p->cf['lca'];
 			$add_metabox = empty( $this->p->options[ 'plugin_add_to_user' ] ) ? false : true;
-			if ( apply_filters( $this->p->cf['lca'].'_add_metabox_user', $add_metabox ) === true )
-				add_meta_box( NGFB_META_NAME, _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
-					array( &$this, 'show_metabox_user' ), 'user', 'normal', 'low' );
+			if ( apply_filters( $this->p->cf['lca'].'_add_metabox_user', $add_metabox, $user_id ) ) {
+				add_meta_box( $lca.'_social_settings', _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
+					array( &$this, 'show_metabox_social_settings' ), $lca.'-user', 'normal', 'low' );
+			}
 		}
 
 		public function show_metabox_section( $user ) {
 			if ( ! current_user_can( 'edit_user', $user->ID ) )
 				return;
-
 			$lca = $this->p->cf['lca'];
-			$is_suffix = ' '.( $this->p->check->aop( $lca, 
-				true, $this->p->is_avail['aop'] ) ? 
-					_x( 'Pro', 'package type', 'wpsso' ) :
-					_x( 'Free', 'package type', 'wpsso' ) );
-
-			echo '<h3 id="'.$lca.'-metaboxes">'.
-				$this->p->cf['plugin'][$lca]['name'].
-				$is_suffix.'</h3>'."\n";
+			$pkg_type = $this->p->check->aop( $lca, true, $this->p->is_avail['aop'] ) ? 
+				_x( 'Pro', 'package type', 'nextgen-facebook' ) :
+				_x( 'Free', 'package type', 'nextgen-facebook' );
+			echo '<h3 id="'.$lca.'-metaboxes">'.$this->p->cf['plugin'][$lca]['name'].' '.$pkg_type.'</h3>'."\n";
 			echo '<div id="poststuff">';
-			do_meta_boxes( 'user', 'normal', $user );
+			do_meta_boxes( $lca.'-user', 'normal', $user );
 			echo '</div>'."\n";
 		}
 
-		public function show_metabox_user( $user ) {
-			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'metabox user' );
+		public function show_metabox_social_settings( $user_obj ) {
 
-			$mod = $this->get_mod( $user->ID );
-			$opts = $this->get_options( $user->ID );
-			$def_opts = $this->get_defaults( $user->ID );
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
+			$lca = $this->p->cf['lca'];
+			$metabox = 'social_settings';
+			$mod = $this->get_mod( $user_obj->ID );
+			$tabs = $this->get_social_tabs( $metabox, $mod );
+			$opts = $this->get_options( $user_obj->ID );
+			$def_opts = $this->get_defaults( $user_obj->ID );
 			$this->form = new SucomForm( $this->p, NGFB_META_NAME, $opts, $def_opts );
 			wp_nonce_field( NgfbAdmin::get_nonce(), NGFB_NONCE );
 
-			$metabox = 'user';
-			$tabs = apply_filters( $this->p->cf['lca'].'_'.$metabox.'_social_settings_tabs',
-				$this->get_default_tabs(), $mod );
-			if ( empty( $this->p->is_avail['mt'] ) )
-				unset( $tabs['tags'] );
-
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// start timer
+				$this->p->debug->mark( $metabox.' table rows' );	// start timer
 
 			$table_rows = array();
-			foreach ( $tabs as $key => $title )
+			foreach ( $tabs as $key => $title ) {
 				$table_rows[$key] = array_merge( $this->get_table_rows( $metabox, $key, NgfbMeta::$head_meta_info, $mod ), 
-					apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows', 
-						array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+					apply_filters( $lca.'_'.$mod['name'].'_'.$key.'_rows', array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+			}
 			$this->p->util->do_metabox_tabs( $metabox, $tabs, $table_rows );
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// end timer
+				$this->p->debug->mark( $metabox.' table rows' );	// end timer
 		}
 
-		public function get_form_display_names() {
-			$user_ids = array();
-			foreach ( get_users() as $user ) 
-				$user_ids[$user->ID] = $user->display_name;
-			$user_ids[0] = 'none';
-			return $user_ids;
+		public function get_form_display_names( $roles = array( 'author', 'editor', 'administrator' ) ) {
+			foreach ( $roles as $role ) {
+				$query_args = array( 
+					'role' => $role,
+					'fields' => array( 'ID', 'display_name' ),
+				);
+				foreach ( get_users( $query_args ) as $user ) 
+					$user_ids[$user->ID] = $user->display_name;
+			}
+			asort( $user_ids );
+			return array_merge( array( 0 => 'none' ), $user_ids );
 		}
 
 		public function get_form_contact_fields( $fields = array() ) { 
 			return array_merge( 
 				array( 'none' => '[None]' ), 	// make sure none is first
 				$this->add_contact_methods( array( 
-					'author' => 'Author Index', 
+					'author' => 'Author Archive', 
 					'url' => 'Website'
 				) )
 			);
@@ -421,48 +421,57 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 		// returns an array of urls (or author names for the pinterest crawler)
 		public function get_og_profile_urls( $user_ids, $crawler_name = null ) {
 			$ret = array();
+
+			if ( empty( $user_ids ) )
+				return $ret;
+
 			if ( $crawler_name === null )
 				$crawler_name = SucomUtil::crawler_name();
-			if ( ! empty( $user_ids ) ) {
-				if ( ! is_array( $user_ids ) )
-					$user_ids = array( $user_ids );
-				foreach ( $user_ids as $user_id ) {
-					if ( ! empty( $user_id ) ) {
 
-						if ( $crawler_name === 'pinterest' )
-							$val = $this->get_author_meta( $user_id, $this->p->options['rp_author_name'] );
-						else $val = $this->get_author_website( $user_id, $this->p->options['og_author_field'] );
+			if ( ! is_array( $user_ids ) )
+				$user_ids = array( $user_ids );
 
-						if ( ! empty( $val ) )	// make sure we don't add empty values
-							$ret[] = $val;
-					}
-				}
+			foreach ( $user_ids as $user_id ) {
+				if ( empty( $user_id ) )
+					continue;
+
+				if ( $crawler_name === 'pinterest' )
+					$val = $this->get_author_meta( $user_id, $this->p->options['rp_author_name'] );
+				else $val = $this->get_author_website( $user_id, $this->p->options['og_author_field'] );
+
+				if ( ! empty( $val ) )	// make sure we don't add empty values
+					$ret[] = $val;
 			}
+
 			return $ret;
 		}
 
 		public function get_author_meta( $user_id, $field_id ) {
-			$name = '';
+			$value = '';
 			$is_user = SucomUtil::user_exists( $user_id );
 			if ( $is_user ) {
 				switch ( $field_id ) {
 					case 'none':
 						break;
 					case 'fullname':
-						$name = get_the_author_meta( 'first_name', $user_id ).' '.
+						$value = get_the_author_meta( 'first_name', $user_id ).' '.
 							get_the_author_meta( 'last_name', $user_id );
 						break;
+					case 'description':
+						$value = preg_replace( '/[\s\n\r]+/s', ' ', 
+							get_the_author_meta( $field_id, $user_id ) );
+						break;
 					default:
-						$name = get_the_author_meta( $field_id, $user_id );
+						$value = get_the_author_meta( $field_id, $user_id );
 						break;
 				}
-				$name = trim( $name );	// just in case
+				$value = trim( $value );	// just in case
 			} elseif ( $this->p->debug->enabled )
 				$this->p->debug->log( 'user id '.$user_id.' is not a wordpress user' );
-			$name = apply_filters( $this->p->cf['lca'].'_get_author_meta', $name, $user_id, $field_id, $is_user );
+			$value = apply_filters( $this->p->cf['lca'].'_get_author_meta', $value, $user_id, $field_id, $is_user );
 			if ( $this->p->debug->enabled )
-				$this->p->debug->log( 'user id '.$user_id.' '.$field_id.': '.$name );
-			return $name;
+				$this->p->debug->log( 'user id '.$user_id.' '.$field_id.': '.$value );
+			return $value;
 		}
 
 		public function get_author_website( $user_id, $field_id = 'url' ) {
@@ -666,6 +675,7 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 			$transients = array(
 				'NgfbHead::get_header_array' => array( 
 					$locale_salt.'_url:'.$sharing_url,
+					$locale_salt.'_url:'.$sharing_url.'_amp:true',
 					$locale_salt.'_url:'.$sharing_url.'_crawler:pinterest',
 				),
 				'NgfbMeta::get_mod_column_content' => array( 
@@ -678,7 +688,8 @@ if ( ! class_exists( 'NgfbUser' ) ) {
 			$deleted = $this->p->util->clear_cache_objects( $transients );
 
 			if ( ! empty( $this->p->options['plugin_cache_info'] ) && $deleted > 0 )
-				$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.', true );
+				$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.', 
+					true, true, __FUNCTION__.'_items_removed', true );
 
 			return $user_id;
 		}

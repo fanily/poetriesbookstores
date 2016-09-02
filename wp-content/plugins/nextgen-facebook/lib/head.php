@@ -13,28 +13,44 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 	class NgfbHead {
 
 		private $p;
+		private static $dnc_const = array(
+			'DONOTCACHEPAGE' => true,	// wp super cache and w3tc
+			'COMET_CACHE_ALLOWED' => false,	// comet cache
+			'QUICK_CACHE_ALLOWED' => false,	// quick cache
+			'ZENCACHE_ALLOWED' => false,	// zencache
+		);
 
 		public function __construct( &$plugin ) {
 			$this->p =& $plugin;
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
 			$this->p->util->add_plugin_filters( $this, array( 
-				'head_cache_salt' => 1,		// modify the cache salt for certain crawlers
+				'head_cache_salt' => 2,		// modify the cache salt for certain crawlers
 			) );
+
 			add_action( 'wp_head', array( &$this, 'add_header' ), NGFB_HEAD_PRIORITY );
 			add_action( 'amp_post_template_head', array( $this, 'add_header' ), NGFB_HEAD_PRIORITY );
+
+			if ( ! empty( $this->p->options['add_link_rel_shortlink'] ) )
+				remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+
+			// disable page caching for the pinterest crawler (allows for customized meta tags)
+			$crawler_name = SucomUtil::crawler_name();
+			if ( $crawler_name === 'pinterest' )
+				NgfbConfig::set_variable_constants( self::$dnc_const );	// define "do not cache" constants
 		}
 
-		public function filter_head_cache_salt( $salt ) {
+		public function filter_head_cache_salt( $salt, $crawler_name ) {
+			if ( $this->p->is_avail['amp_endpoint'] && 
+				is_amp_endpoint() )
+					$salt .= '_amp:true';
 
-			if ( $this->p->is_avail['amp_endpoint'] && is_amp_endpoint() )
-				$salt .= '_amp:true';
-
-			$crawler_name = SucomUtil::crawler_name();
 			switch ( $crawler_name ) {
 				case 'pinterest':
 					$salt .= '_crawler:'.$crawler_name;
 					break;
 			}
-
 			return $salt;
 		}
 
@@ -49,8 +65,13 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$read_cache = true;
 			$mt_og = array();
 
-			if ( $this->p->debug->enabled )
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log( 'WP_LANG = '.SucomUtil::get_const( 'WP_LANG' ) );
+				$this->p->debug->log( 'default locale = '.SucomUtil::get_locale( 'default' ) );
+				$this->p->debug->log( 'current locale = '.SucomUtil::get_locale( 'current' ) );
+				$this->p->debug->log( 'mod locale = '.SucomUtil::get_locale( $mod ) );
 				$this->p->util->log_is_functions();
+			}
 
 			if ( $this->p->is_avail['mt'] )
 				echo $this->get_header_html( $use_post, $mod, $read_cache, $mt_og );
@@ -84,7 +105,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 					switch ( $key ) {
 						case ( strpos( $key, '_js_' ) !== false ? true : false ):
 						case ( strpos( $key, '_css_' ) !== false ? true : false ):
-						case ( preg_match( '/_(html|key|secret|tid)$/', $key ) ? true : false ):
+						case ( preg_match( '/_(html|key|secret|tid|token)$/', $key ) ? true : false ):
 							$opts[$key] = '[removed]';
 							break;
 					}
@@ -111,7 +132,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 					case 'property-article:author:name':
 					case ( strpos( $mt_match, 'name-schema:' ) === 0 ? true : false ):
 
-						if ( ! isset( $head_info[$mt[3]] ) )
+						if ( ! isset( $head_info[$mt[3]] ) )	// only save the first meta tag value
 							$head_info[$mt[3]] = $mt[5];
 						break;
 
@@ -119,7 +140,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 						$mt_match, $m ) ? true : false ):
 
 						if ( ! empty( $mt[5] ) )
-							$has_media[$m[1]] = true;		// optimize media loop
+							$has_media[$m[1]] = true;	// optimize media loop
 						break;
 				}
 			}
@@ -178,9 +199,9 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$lca = $this->p->cf['lca'];
 			if ( ! is_array( $mod ) )
 				$mod = $this->p->util->get_page_mod( $use_post );	// get post/user/term id, module name, and module object reference
+			$crawler_name = SucomUtil::crawler_name();
 			$cmt_begin = $lca.' meta tags begin';
 			$cmt_end = $lca.' meta tags end';
-			$crawler_name = SucomUtil::crawler_name();
 
 			// extra begin/end meta tag for duplicate meta tags check
 			$html = "\n\n".'<!-- '.$cmt_begin.' -->'."\n".
@@ -216,15 +237,19 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$lca = $this->p->cf['lca'];
 			if ( ! is_array( $mod ) )
 				$mod = $this->p->util->get_page_mod( $use_post );	// get post/user/term id, module name, and module object reference
-			$author_id = false;
 			$sharing_url = $this->p->util->get_sharing_url( $mod );
+			$crawler_name = SucomUtil::crawler_name();
+			$author_id = false;
 			$header_array = array();
+
+			if ( $this->p->debug->enabled )
+				$this->p->debug->log( 'crawler_name is '.$crawler_name );
 
 			if ( $this->p->is_avail['cache']['transient'] ) {
 
 				// head_cache_salt filter may add amp true/false and/or crawler name
 				$cache_salt = __METHOD__.'('.apply_filters( $lca.'_head_cache_salt',
-					SucomUtil::get_mod_salt( $mod ).'_url:'.$sharing_url ).')';
+					SucomUtil::get_mod_salt( $mod ).'_url:'.$sharing_url, $crawler_name ).')';
 				$cache_id = $lca.'_'.md5( $cache_salt );
 				$cache_type = 'object cache';
 
@@ -258,10 +283,6 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			if ( $this->p->debug->enabled && $author_id !== false )
 				$this->p->debug->log( 'author_id is '.$author_id );
 
-			$crawler_name = SucomUtil::crawler_name();
-			if ( $this->p->debug->enabled )
-				$this->p->debug->log( 'crawler_name is '.$crawler_name );
-
 			/*
 			 * Open Graph
 			 */
@@ -278,9 +299,10 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$mt_name = array();
 			if ( ! empty( $this->p->options['add_meta_name_author'] ) ) {
 				// fallback for authors without a Facebook page URL in their user profile
-				if ( empty( $mt_og['article:author'] ) )	// check for empty array
-					$mt_name['author'] = $this->p->m['util']['user']->get_author_meta( $author_id,
-						$this->p->options['fb_author_name'] );
+				if ( empty( $mt_og['article:author'] ) &&
+					is_object( $this->p->m['util']['user'] ) )	// just in case
+						$mt_name['author'] = $this->p->m['util']['user']->get_author_meta( $author_id,
+							$this->p->options['fb_author_name'] );
 			}
 
 			if ( ! empty( $this->p->options['add_meta_name_canonical'] ) )
@@ -303,7 +325,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$link_rel = array();
 
 			if ( ! empty( $this->p->options['add_link_rel_author'] ) ) {
-				if ( ! empty( $author_id ) )
+				if ( ! empty( $author_id ) && is_object( $this->p->m['util']['user'] ) )	// just in case
 					$link_rel['author'] = $this->p->m['util']['user']->get_author_website( $author_id, 
 						$this->p->options['seo_author_field'] );
 			}
@@ -311,6 +333,13 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			if ( ! empty( $this->p->options['add_link_rel_publisher'] ) ) {
 				if ( ! empty( $this->p->options['seo_publisher_url'] ) )
 					$link_rel['publisher'] = $this->p->options['seo_publisher_url'];
+			}
+
+			if ( ! empty( $this->p->options['add_link_rel_shortlink'] ) ) {
+				if ( $mod['is_post'] )
+					$link_rel['shortlink'] = wp_get_shortlink( $mod['id'], 'post' );
+				else $link_rel['shortlink'] = apply_filters( $lca.'_shorten_url',
+					$mt_og['og:url'], $this->p->options['plugin_shortener'] );
 			}
 
 			$link_rel = apply_filters( $lca.'_link_rel', $link_rel, $use_post, $mod );
@@ -323,7 +352,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			/*
 			 * JSON-LD script array - execute before merge to set some internal $mt_og meta tags
 			 */
-			$mt_json_array = $this->p->schema->get_json_array( $use_post, $mod, $mt_og, $author_id );
+			$mt_json_array = $this->p->schema->get_json_array( $use_post, $mod, $mt_og, $author_id, $crawler_name );
 
 			/*
 			 * Clean-up open graph meta tags
@@ -344,17 +373,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			/*
 			 * Generator meta tags
 			 */
-			$mt_gen = array();
-
-			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
-				if ( empty( $info['version'] ) )	// only active extensions
-					continue;
-				$ins = $this->p->check->aop( $ext, false );
-				$mt_gen['generator'][] = $info['short'].( $ins ? ' Pro' : '' ).
-					' '.$info['version'].'/'.( $this->p->check->aop( $ext,
-						true, $this->p->is_avail['aop'] ) ?
-							'L' : ( $ins ? 'U' : 'G' ) );
-			}
+			$mt_gen['generator'] = $this->get_mt_gen();
 
 			/*
 			 * Combine and return all meta tags
@@ -366,7 +385,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 				$this->get_mt_array( 'meta', 'name', $mt_tc, $mod ),
 				$this->get_mt_array( 'meta', 'itemprop', $mt_schema, $mod ),
 				$this->get_mt_array( 'meta', 'name', $mt_name, $mod ),		// seo description is last
-				$this->p->schema->get_noscript_array( $mod, $mt_og, $author_id ),
+				$this->p->schema->get_noscript_array( $mod, $mt_og, $author_id, $crawler_name ),
 				$mt_json_array
 			);
 
@@ -569,6 +588,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 
 					switch ( $match_name ) {
 						case 'og:url':
+						case 'og:secure_url':
 						case 'og:image':
 						case 'og:image:url':
 						case 'og:image:secure_url':
@@ -580,6 +600,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 						case 'twitter:image':
 						case 'twitter:player':
 						case 'canonical':
+						case 'shortlink':
 						case 'menu':
 						case 'url':
 							$parts[5] = SucomUtil::esc_url_encode( $parts[5] );
@@ -598,7 +619,10 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 							break;
 					}
 
-					if ( ! empty( $this->p->options['add_'.$parts[1].'_'.$parts[2].'_'.$parts[3]] ) ) {
+					// convert mixed case itemprop names (for example) to lower case
+					$add_key = strtolower( 'add_'.$parts[1].'_'.$parts[2].'_'.$parts[3] );
+
+					if ( ! empty( $this->p->options[$add_key] ) ) {
 						$parts[0] = ( empty( $parts[6] ) ? '' : '<!-- '.$parts[6].' -->' ).
 							'<'.$parts[1].' '.$parts[2].'="'.$match_name.'" '.$parts[4].'="'.$parts[5].'"/>'."\n";
 					} elseif ( $this->p->debug->enabled )
@@ -633,6 +657,20 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 				}
 			}
 			return $parts;
+		}
+
+		private function get_mt_gen() {
+			$mt_gen = array();
+			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
+				if ( empty( $info['version'] ) )	// only active extensions
+					continue;
+				$ins = $this->p->check->aop( $ext, false );
+				$mt_gen[] = $info['short'].( $ins ? ' Pro' : '' ).
+					' '.$info['version'].'/'.( $this->p->check->aop( $ext,
+						true, $this->p->is_avail['aop'] ) ?
+							'L' : ( $ins ? 'U' : 'G' ) );
+			}
+			return $mt_gen;
 		}
 	}
 }

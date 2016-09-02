@@ -13,7 +13,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 	class NgfbMedia {
 
 		private $p;
-		private $default_img_preg = array(
+		private $def_img_preg = array(
 			'html_tag' => 'img',
 			'pid_attr' => 'data-[a-z]+-pid',
 			'ngg_src' => '[^\'"]+\/cache\/([0-9]+)_(crop)?_[0-9]+x[0-9]+_[^\/\'"]+|[^\'"]+-nggid0[1-f]([0-9]+)-[^\'"]+',
@@ -26,13 +26,19 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
+			add_action( 'init', array( &$this, 'allow_img_data_attributes' ) );
+
 			// prevent image_downsize from lying about image width and height
 			if ( is_admin() )
 				add_filter( 'editor_max_image_size', array( &$this, 'editor_max_image_size' ), 10, 3 );
 
-			add_filter( 'init', array( &$this, 'allow_img_data_attributes' ) );
 			add_filter( 'wp_get_attachment_image_attributes', array( &$this, 'add_attachment_image_attributes' ), 10, 2 );
 			add_filter( 'get_image_tag', array( &$this, 'add_image_tag' ), 10, 6 );
+		}
+
+		public function allow_img_data_attributes() {
+			global $allowedposttags;
+			$allowedposttags['img']['data-wp-pid'] = true;
 		}
 
 		// note that $size_name can be a string or an array()
@@ -42,11 +48,6 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 				strpos( $size_name, $this->p->cf['lca'].'-' ) === 0 )
 					$max_sizes = array( 0, 0 );
 			return $max_sizes;
-		}
-
-		public function allow_img_data_attributes() {
-			global $allowedposttags;
-			$allowedposttags['img']['data-wp-pid'] = true;
 		}
 
 		// $attr = apply_filters( 'wp_get_attachment_image_attributes', $attr, $attachment );
@@ -62,36 +63,10 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			return $html;
 		}
 
-		public function get_size_info( $size_name = 'thumbnail' ) {
-			if ( is_integer( $size_name ) ) 
-				return;
-			if ( is_array( $size_name ) ) 
-				return;
-
-			global $_wp_additional_image_sizes;
-
-			if ( isset( $_wp_additional_image_sizes[$size_name]['width'] ) )
-				$width = intval( $_wp_additional_image_sizes[$size_name]['width'] );
-			else $width = get_option( $size_name.'_size_w' );
-
-			if ( isset( $_wp_additional_image_sizes[$size_name]['height'] ) )
-				$height = intval( $_wp_additional_image_sizes[$size_name]['height'] );
-			else $height = get_option( $size_name.'_size_h' );
-
-			if ( isset( $_wp_additional_image_sizes[$size_name]['crop'] ) )
-				$crop = $_wp_additional_image_sizes[$size_name]['crop'];
-			else $crop = get_option( $size_name.'_crop' );
-
-			if ( ! is_array( $crop ) )
-				$crop = empty( $crop ) ? false : true;
-
-			return array( 'width' => $width, 'height' => $height, 'crop' => $crop );
-		}
-
 		public function get_post_images( $num = 0, $size_name = 'thumbnail', $post_id, $check_dupes = true, $md_pre = 'og' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'post_id' => $post_id,
@@ -139,7 +114,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_featured( $num = 0, $size_name = 'thumbnail', $post_id, $check_dupes = true, $force_regen = false ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'post_id' => $post_id,
@@ -202,7 +177,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_attachment_image( $num = 0, $size_name = 'thumbnail', $attach_id, $check_dupes = true, $force_regen = false ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'num' => $num,
 					'size_name' => $size_name,
 					'attach_id' => $attach_id,
@@ -223,9 +198,11 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 						$og_image['og:image:cropped'],
 						$og_image['og:image:id']
 					) = $this->get_attachment_image_src( $attach_id, $size_name, $check_dupes, $force_regen );
+
 					if ( ! empty( $og_image['og:image'] ) &&
 						$this->p->util->push_max( $og_ret, $og_image, $num ) )
 							return $og_ret;
+
 				} elseif ( $this->p->debug->enabled )
 					$this->p->debug->log( 'attachment id '.$attach_id.' is not an image' );
 			}
@@ -235,7 +212,8 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_attached_images( $num = 0, $size_name = 'thumbnail', $post_id, $check_dupes = true, $force_regen = false ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->mark();
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'post_id' => $post_id,
@@ -274,6 +252,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 						$og_image['og:image:cropped'],
 						$og_image['og:image:id']
 					) = $this->get_attachment_image_src( $pid, $size_name, $check_dupes, $force_regen );
+
 					if ( ! empty( $og_image['og:image'] ) &&
 						$this->p->util->push_max( $og_ret, $og_image, $num ) )
 							break;	// stop here and apply the 'ngfb_attached_images' filter
@@ -316,15 +295,17 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 				'force_regen' => $force_regen,
 			) );
 
-			if ( $this->p->debug->enabled )
-				$this->p->debug->args( $args );
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->mark();
+				$this->p->debug->log_args( $args );
+			}
 
 			$lca = $this->p->cf['lca'];
-			$size_info = $this->get_size_info( $size_name );
+			$size_info = SucomUtil::get_size_info( $size_name );
 			$img_url = '';
 			$img_width = -1;
 			$img_height = -1;
-			$img_cropped = $size_info['crop'] === false ? 0 : 1;	// get_size_info() returns false, true, or an array
+			$img_cropped = empty( $size_info['crop'] ) ? 0 : 1;	// get_size_info() returns false, true, or an array
 
 			if ( $this->p->is_avail['media']['ngg'] === true && 
 				strpos( $pid, 'ngg-' ) === 0 ) {
@@ -355,7 +336,8 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 					$img_meta['height'] === $size_info['height'] )
 						$use_full = true;
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'full size image '.$img_meta['file'].' dimensions '.$img_meta['width'].'x'.$img_meta['height'] );
+					$this->p->debug->log( 'full size image '.$img_meta['file'].' dimensions '.
+						$img_meta['width'].'x'.$img_meta['height'] );
 			} elseif ( $this->p->debug->enabled ) {
 				if ( isset( $img_meta['file'] ) )
 					$this->p->debug->log( 'full size image '.$img_meta['file'].' dimensions are missing' );
@@ -406,8 +388,8 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 
 					// depending on cropping, one or both sides of the image must be accurate
 					// if not, attempt to create a resized image by calling image_make_intermediate_size()
-					if ( ( empty( $size_info['crop'] ) && ( ! $is_accurate_width && ! $is_accurate_height ) ) ||
-						( ! empty( $size_info['crop'] ) && ( ! $is_accurate_width || ! $is_accurate_height ) ) ) {
+					if ( ( ! $img_cropped && ( ! $is_accurate_width && ! $is_accurate_height ) ) ||
+						( $img_cropped && ( ! $is_accurate_width || ! $is_accurate_height ) ) ) {
 
 						if ( $this->p->debug->enabled ) {
 							if ( empty( $img_meta['sizes'][$size_name] ) )
@@ -418,21 +400,25 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 								( empty( $img_meta['sizes'][$size_name]['height'] ) ? 0 : 
 									$img_meta['sizes'][$size_name]['height'] ).') does not match '.
 								$size_name.' ('.$size_info['width'].'x'.$size_info['height'].
-									( $img_cropped === 0 ? '' : ' cropped' ).')' );
+									( $img_cropped ? ' cropped' : '' ).')' );
 						}
 
-						$fullsizepath = get_attached_file( $pid );
-						$resized = image_make_intermediate_size( $fullsizepath, 
-							$size_info['width'], $size_info['height'], $size_info['crop'] );
+						if ( $this->can_make_size( $img_meta, $size_info ) ) {
 
-						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'WordPress image_make_intermediate_size() reported '.
-								( $resized === false ? 'failure' : 'success' ) );
-
-						if ( $resized !== false ) {
-							$img_meta['sizes'][$size_name] = $resized;
-							wp_update_attachment_metadata( $pid, $img_meta );
-						}
+							$fullsizepath = get_attached_file( $pid );
+							$resized = image_make_intermediate_size( $fullsizepath, 
+								$size_info['width'], $size_info['height'], $size_info['crop'] );
+	
+							if ( $this->p->debug->enabled )
+								$this->p->debug->log( 'WordPress image_make_intermediate_size() reported '.
+									( $resized === false ? 'failure' : 'success' ) );
+	
+							if ( $resized !== false ) {
+								$img_meta['sizes'][$size_name] = $resized;
+								wp_update_attachment_metadata( $pid, $img_meta );
+							}
+						} elseif ( $this->p->debug->enabled )
+							$this->p->debug->log( 'skipped image_make_intermediate_size()' );
 					}
 				} elseif ( $this->p->debug->enabled )
 					$this->p->debug->log( 'image metadata check skipped: plugin_auto_img_resize option is disabled' );
@@ -450,11 +436,18 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 				return self::reset_image_src_info();
 			}
 
-			// 'ngfb_attached_accept_img_dims' is hooked by the NgfbProCheckImgSize class / module.
-			if ( apply_filters( $lca.'_attached_accept_img_dims', true, $img_url, $img_width, $img_height, $size_name, $pid ) ) {
+			// check if image exceeds hard-coded limits (dimensions, ratio, etc.)
+			$img_size_within_limits = $this->img_size_within_limits( $pid, $size_name, $img_width, $img_height );
+
+			// ngfb_attached_accept_img_dims is hooked by the NgfbProCheckImgSize class / module.
+			if ( apply_filters( $lca.'_attached_accept_img_dims', $img_size_within_limits, 
+				$img_url, $img_width, $img_height, $size_name, $pid ) ) {
+
 				if ( ! $check_dupes || $this->p->util->is_uniq_url( $img_url, $size_name ) ) {
+
 					if ( $this->p->debug->enabled )
 						$this->p->debug->log( 'applying rewrite_url filter for '.$img_url );
+
 					return self::reset_image_src_info( array( apply_filters( $lca.'_rewrite_url', $img_url ),
 						$img_width, $img_height, $img_cropped, $pid ) );
 				}
@@ -466,7 +459,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_default_image( $num = 1, $size_name = 'thumbnail', $check_dupes = true, $force_regen = false ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'check_dupes' => $check_dupes,
@@ -526,7 +519,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_content_images( $num = 0, $size_name = 'thumbnail', $mod = true, $check_dupes = true, $content = '' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'size_name' => $size_name,
 					'mod' => $mod,
@@ -555,14 +548,14 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			}
 
 			$og_image = SucomUtil::get_mt_prop_image( 'og' );
-			$size_info = $this->get_size_info( $size_name );
-			$img_preg = $this->default_img_preg;
+			$size_info = SucomUtil::get_size_info( $size_name );
+			$img_preg = $this->def_img_preg;
 
 			// allow the html_tag and pid_attr regex to be modified
 			foreach( array( 'html_tag', 'pid_attr' ) as $type ) {
 				$filter_name = $this->p->cf['lca'].'_content_image_preg_'.$type;
 				if ( has_filter( $filter_name ) ) {
-					$img_preg[$type] = apply_filters( $filter_name, $this->default_img_preg[$type] );
+					$img_preg[$type] = apply_filters( $filter_name, $this->def_img_preg[$type] );
 					if ( $this->p->debug->enabled )
 						$this->p->debug->log( 'filtered image preg '.$type.' = \''.$img_preg[$type].'\'' );
 				}
@@ -570,7 +563,16 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 
 			// img attributes in order of preference
 			if ( preg_match_all( '/<(('.$img_preg['html_tag'].')[^>]*? ('.$img_preg['pid_attr'].')=[\'"]([0-9]+)[\'"]|'.
-				'(img)[^>]*? (data-share-src|src)=[\'"]([^\'"]+)[\'"])[^>]*>/s', $content, $all_matches, PREG_SET_ORDER ) ) {
+				'(img)[^>]*? (data-share-src|data-lazy-src|data-src|src)=[\'"]([^\'"]+)[\'"])[^>]*>/s', 
+					$content, $all_matches, PREG_SET_ORDER ) ) {
+
+				if ( isset( $this->p->options['plugin_content_img_max'] ) &&
+					count( $all_matches ) > $this->p->options['plugin_content_img_max'] ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'limiting matches returned from '.count( $all_matches ).
+							' to '.$this->p->options['plugin_content_img_max'] );
+					$all_matches = array_splice( $all_matches, 0, $this->p->options['plugin_content_img_max'] );
+				}
 
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( count( $all_matches ).' x matching <'.$img_preg['html_tag'].'/> html tag(s) found' );
@@ -585,7 +587,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 						$attr_value = $img_arr[4];	// id
 					} else {
 						$tag_name = $img_arr[5];	// img
-						$attr_name = $img_arr[6];	// data-share-src|src
+						$attr_name = $img_arr[6];	// data-share-src|data-lazy-src|data-src|src
 						$attr_value = $img_arr[7];	// url
 					}
 
@@ -628,6 +630,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 
 							break;
 
+						// data-share-src|data-lazy-src|data-src|src
 						default:
 							// prevent duplicates by silently ignoring ngg images (already processed by the ngg module)
 							if ( $this->p->is_avail['media']['ngg'] === true && 
@@ -671,11 +674,14 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 
 							if ( ! empty( $og_image['og:image'] ) ) {
 
-								foreach ( array( 'width', 'height' ) as $key )
-									if ( preg_match( '/ '.$key.'=[\'"]?([0-9]+)[\'"]?/i', $tag_value, $match ) ) 
-										$og_image['og:image:'.$key] = $match[1];
+								// don't read / trust the image width / height attributes by default
+								if ( SucomUtil::get_const( 'NGFB_USE_IMG_WIDTH_HEIGHT' ) ) {
+									foreach ( array( 'width', 'height' ) as $key )
+										if ( preg_match( '/ '.$key.'=[\'"]?([0-9]+)[\'"]?/i', $tag_value, $match ) ) 
+											$og_image['og:image:'.$key] = $match[1];
+								}
 
-								// get the width and height of the image file using http / https
+								// get the actual width and height of the image file using http / https
 								if ( empty( $og_image['og:image:width'] ) || $og_image['og:image:width'] < 0 ||
 									empty( $og_image['og:image:height'] ) || $og_image['og:image:height'] < 0 ) {
 
@@ -689,18 +695,20 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 										$og_image['og:image:width'].'x'.$og_image['og:image:height'] );
 							}
 
+							// check if image exceeds hard-coded limits (dimensions, ratio, etc.)
+							$img_size_within_limits = $this->img_size_within_limits( $og_image['og:image'], 
+								$size_name, $og_image['og:image:width'], $og_image['og:image:height'],
+									__( 'Content', 'nextgen-facebook' ) );
+
 							// 'ngfb_content_accept_img_dims' is hooked by the NgfbProCheckImgSize class / module.
 							if ( apply_filters( $this->p->cf['lca'].'_content_accept_img_dims', 
-								true, $og_image, $size_name, $attr_name, $content_passed ) ) {
-
-								// data-share-src attribute used and/or image size is acceptable
-								// check for relative urls, just in case
-								$og_image['og:image'] = $this->p->util->fix_relative_url( $og_image['og:image'] );
-
-							} else $og_image = array();
+								$img_size_within_limits, $og_image, $size_name, $attr_name, $content_passed ) )
+									$og_image['og:image'] = $this->p->util->fix_relative_url( $og_image['og:image'] );
+							else $og_image = array();
 
 							break;
 					}
+
 					if ( ! empty( $og_image['og:image'] ) && 
 						( $check_dupes === false || $this->p->util->is_uniq_url( $og_image['og:image'], $size_name ) ) )
 							if ( $this->p->util->push_max( $og_ret, $og_image, $num ) )
@@ -716,7 +724,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 		public function get_default_video( $num = 0, $check_dupes = true ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'check_dupes' => $check_dupes,
 				) );
@@ -733,7 +741,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 					$this->p->debug->log( 'using default video url = '.$embed_url );
 
 				// fallback to video url if necessary
-				$og_video = $this->get_video_info( $embed_url, 0, 0, $check_dupes, true );
+				$og_video = $this->get_video_info( $embed_url, 0, 0, $check_dupes, true );	// $fallback = true
 				if ( ! empty( $og_video ) && 
 					$this->p->util->push_max( $og_ret, $og_video, $num ) ) 
 						return $og_ret;
@@ -741,13 +749,10 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			return $og_ret;
 		}
 
-		/*
-		 * Check the content for generic <iframe|embed/> html tags. Apply ngfb_content_videos filter for more specialized checks.
-		 */
 		public function get_content_videos( $num = 0, $mod = true, $check_dupes = true, $content = '' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array(
+				$this->p->debug->log_args( array(
 					'num' => $num,
 					'mod' => $mod,
 					'check_dupes' => $check_dupes,
@@ -775,17 +780,25 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			}
 
 			// detect standard iframe/embed tags - use the ngfb_content_videos filter for additional html5/javascript methods
-			// the src url must contain '/embed|embed_code|swf|video|v/' in to be recognized as an embedded video url
-			if ( preg_match_all( '/<(iframe|embed)[^<>]*? src=[\'"]([^\'"<>]+\/(embed|embed_code|swf|video|v)\/[^\'"<>]+)[\'"][^<>]*>/i',
-				$content, $all_matches, PREG_SET_ORDER ) ) {
+			if ( preg_match_all( '/<(iframe|embed)[^<>]*? (data-share-src|data-lazy-src|data-src|src)=[\'"]'.
+				'([^\'"<>]+\/(embed\/|embed_code\/|swf\/|v\/|video\/|video\.php\?)[^\'"<>]+)[\'"][^<>]*>/i',
+					$content, $all_matches, PREG_SET_ORDER ) ) {
+
+				if ( isset( $this->p->options['plugin_content_vid_max'] ) &&
+					count( $all_matches ) > $this->p->options['plugin_content_vid_max'] ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'limiting matches returned from '.count( $all_matches ).
+							' to '.$this->p->options['plugin_content_vid_max'] );
+					$all_matches = array_splice( $all_matches, 0, $this->p->options['plugin_content_vid_max'] );
+				}
 
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( count( $all_matches ).' x video <iframe|embed/> html tag(s) found' );
 
 				foreach ( $all_matches as $media ) {
 					if ( $this->p->debug->enabled )
-						$this->p->debug->log( '<'.$media[1].'/> html tag found = '.$media[2] );
-					$embed_url = $media[2];
+						$this->p->debug->log( '<'.$media[1].'/> html tag found '.$media[2].' = '.$media[3] );
+					$embed_url = $media[3];
 					if ( ! empty( $embed_url ) && 
 						( $check_dupes == false || 
 							$this->p->util->is_uniq_url( $embed_url, 'video' ) ) ) {	// $context = 'video'
@@ -808,10 +821,13 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			// additional filters / Pro modules may detect other embedded video markup
 			$filter_name = $this->p->cf['lca'].'_content_videos';
 			if ( has_filter( $filter_name ) ) {
+
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'applying filter '.$filter_name ); 
+
 				// should return an array of arrays
 				if ( ( $all_matches = apply_filters( $filter_name, false, $content ) ) !== false ) {
+
 					if ( is_array( $all_matches ) ) {
 						if ( $this->p->debug->enabled )
 							$this->p->debug->log( count( $all_matches ).' x videos returned by '.$filter_name.' filter' );
@@ -857,7 +873,7 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			$og_video = apply_filters( $filter_name, $og_video, $embed_url, $embed_width, $embed_height );
 
 			foreach ( array( 'og:video', 'og:image' ) as $prefix ) {
-				$media_url = SucomUtil::get_mt_media_url( $prefix, $og_video );
+				$media_url = SucomUtil::get_mt_media_url( $og_video, $prefix );
 				$have_media[$prefix] = empty( $media_url ) ? false : true;
 
 				if ( ! $media_url || 
@@ -885,7 +901,23 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			else return $og_video;
 		}
 
-		public function check_image_id_min_max( $pid, $size_name, $img_width, $img_height, $media_lib, $msg_id ) {
+		// $img_name cam be an image ID or URL
+		// $src_name can be 'Media Library', 'NextGEN Gallery', 'Content', etc.
+		public function img_size_within_limits( $img_name, $size_name, $img_width, $img_height, $src_name = '' ) {
+
+			$lca =& $this->p->cf['lca'];
+			$min =& $this->p->cf['head']['limit_min'];
+			$max =& $this->p->cf['head']['limit_max'];
+			$save_msg = false;
+
+			if ( strpos( $size_name, $lca.'-' ) !== 0 )	// only check our own sizes
+				return true;
+
+			if ( $src_name === '' )
+				$src_name = __( 'Media Library', 'nextgen-facebook' );
+
+			if ( strpos( $img_name, '://' ) === false )
+				$img_name = 'ID '.$img_name;
 
 			if ( $img_width > 0 && $img_height > 0 )	// just in case
 				$img_ratio = $img_width >= $img_height ? 
@@ -894,35 +926,50 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 			else $img_ratio = 0;
 
 			switch ( $size_name ) {
-				case $this->p->cf['lca'].'-opengraph':
+				case $lca.'-opengraph':
 					$std_name = 'Facebook / Open Graph';
-					$max_ratio = $this->p->cf['head']['max']['og_img_ratio'];
-					$min_width = $this->p->cf['head']['min']['og_img_width'];
-					$min_height = $this->p->cf['head']['min']['og_img_height'];
+					$min_width = $min['og_img_width'];
+					$min_height = $min['og_img_height'];
+					$max_ratio = $max['og_img_ratio'];
 					break;
-				case $this->p->cf['lca'].'-schema':
+
+				case $lca.'-schema':
 					$std_name = 'Google / Schema';
-					$max_ratio = 0;
-					$min_width = $this->p->cf['head']['min']['schema_img_width'];
-					$min_height = 0;
+					$min_width = $min['schema_img_width'];
+					$min_height = $min['schema_img_height'];
+					$max_ratio = $max['schema_img_ratio'];
 					break;
+
+				case $lca.'-schema-article':
+					$std_name = 'Google / Schema Article';
+					$min_width = $min['article_img_width'];
+					$min_height = $min['article_img_height'];
+					$max_ratio = $max['article_img_ratio'];
+					break;
+
 				default:
-					$max_ratio = 0;
 					$min_width = 0;
 					$min_height = 0;
+					$max_ratio = 0;
 					break;
 			}
+
+			// filter name example: ngfb_opengraph_img_size_limits
+			list( $min_width, $min_height, $max_ratio ) = apply_filters( SucomUtil::sanitize_hookname( $size_name ).'_img_size_limits',
+				array( $min_width, $min_height, $max_ratio ) );
 
 			// check the maximum image aspect ratio
 			if ( $max_ratio > 0 && $img_ratio >= $max_ratio ) {
 
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'exiting early: image ID '.$pid.' rejected - '.$img_width.'x'.$img_height.
-						' aspect ratio is equal to/or greater than '.$max_ratio.':1' );
+					$this->p->debug->log( 'exiting early: '.strtolower( $src_name ).' image '.$img_name.' rejected - '.
+						$img_width.'x'.$img_height.' aspect ratio is equal to/or greater than '.$max_ratio.':1' );
 
 				if ( is_admin() ) {
-					$reject_notice = $this->p->msgs->get( 'notice-image-rejected', array( 'size_label' => $size_label ) );
-					$this->p->notice->err( sprintf( __( '%1$s image ID %2$s ignored &mdash; the resulting image of %3$s has an aspect ratio equal to/or greater than %4$d:1.', 'nextgen-facebook' ), $media_lib, $pid, $img_width.'x'.$img_height, $max_ratio ).' '.$reject_notice, false, true, $msg_id, true );
+					$size_label = $this->p->util->get_image_size_label( $size_name );
+					$reject_notice = $this->p->msgs->get( 'notice-image-rejected', 
+						array( 'size_label' => $size_label, 'hard_limit' => true ) );
+					$this->p->notice->err( sprintf( __( '%1$s image %2$s ignored &mdash; the resulting image of %3$s has an <strong>aspect ratio equal to/or greater than %4$d:1 allowed by the %5$s standard</strong>.', 'nextgen-facebook' ), $src_name, $img_name, $img_width.'x'.$img_height, $max_ratio, $std_name ).' '.$reject_notice, $save_msg );
 				}
 				return false;
 			}
@@ -932,16 +979,57 @@ if ( ! class_exists( 'NgfbMedia' ) ) {
 				( $img_width < $min_width || $img_height < $min_height ) ) {
 
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'exiting early: image ID '.$pid.' rejected - '.$img_width.'x'.$img_height.
-						' smaller than minimum '.$min_width.'x'.$min_height.' for '.$size_name );
+					$this->p->debug->log( 'exiting early: '.strtolower( $src_name ).' image '.$img_name.' rejected - '.
+						$img_width.'x'.$img_height.' smaller than minimum '.$min_width.'x'.$min_height.' for '.$size_name );
 
 				if ( is_admin() ) {
-					$reject_notice = $this->p->msgs->get( 'notice-image-rejected', array( 'size_label' => $size_label ) );
-					$this->p->notice->err( sprintf( __( '%1$s image ID %2$s ignored &mdash; the resulting image of %3$s is smaller than the minimum %4$s allowed by the %5$s standard.', 'nextgen-facebook' ), $media_lib, $pid, $img_width.'x'.$img_height, $min_width.'x'.$min_height, $std_name ).' '.$reject_notice, false, true, $msg_id, true );
+					$size_label = $this->p->util->get_image_size_label( $size_name );
+					$reject_notice = $this->p->msgs->get( 'notice-image-rejected', 
+						array( 'size_label' => $size_label, 'hard_limit' => true ) );
+					$this->p->notice->err( sprintf( __( '%1$s image %2$s ignored &mdash; the resulting image of %3$s is <strong>smaller than the minimum of %4$s allowed by the %5$s standard</strong>.', 'nextgen-facebook' ), $src_name, $img_name, $img_width.'x'.$img_height, $min_width.'x'.$min_height, $std_name ).' '.$reject_notice, $save_msg );
 				}
 				return false;
 			}
+
 			return true;
+		}
+
+		public function can_make_size( $img_meta, $size_info ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
+			$full_width = empty( $img_meta['width'] ) ? 0 : $img_meta['width'];
+			$full_height = empty( $img_meta['height'] ) ? 0 : $img_meta['height'];
+
+			$is_sufficient_w = $full_width >= $size_info['width'] ? true : false;
+			$is_sufficient_h = $full_height >= $size_info['height'] ? true : false;
+
+			$img_cropped = empty( $size_info['crop'] ) ? 0 : 1;
+			$upscale_multiplier = 1;
+
+			if ( $this->p->options['plugin_upscale_images'] ) {
+				$img_info = (array) self::get_image_src_info();
+				$upscale_multiplier = 1 + ( apply_filters( $this->p->cf['lca'].'_image_upscale_max',
+					$this->p->options['plugin_upscale_img_max'], $img_info ) / 100 );
+				$upscale_full_width = round( $full_width * $upscale_multiplier );
+				$upscale_full_height = round( $full_height * $upscale_multiplier );
+				$is_sufficient_w = $upscale_full_width >= $size_info['width'] ? true : false;
+				$is_sufficient_h = $upscale_full_height >= $size_info['height'] ? true : false;
+			}
+
+
+			if ( ( ! $img_cropped && ( ! $is_sufficient_w && ! $is_sufficient_h ) ) ||
+				( $img_cropped && ( ! $is_sufficient_w || ! $is_sufficient_h ) ) )
+					$ret = false;
+			else $ret = true;
+
+			if ( $this->p->debug->enabled )
+				$this->p->debug->log( 'full size image of '.$full_width.'x'.$full_height.( $upscale_multiplier !== 1 ? 
+					' ('.$upscale_full_width.'x'.$upscale_full_height.' upscaled by '.$upscale_multiplier.')' : '' ).
+					( $ret ? ' sufficient' : ' too small' ).' to create size '.$size_info['width'].'x'.$size_info['height'].
+					( $img_cropped ? ' cropped' : '' ) );
+
+			return $ret;
 		}
 	}
 }

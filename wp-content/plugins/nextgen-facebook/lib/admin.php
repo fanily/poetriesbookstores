@@ -56,9 +56,6 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					add_action( 'network_admin_edit_'.NGFB_SITE_OPTIONS_NAME, array( &$this, 'save_site_options' ) );
 					add_filter( 'network_admin_plugin_action_links', array( &$this, 'add_plugin_action_links' ), 10, 2 );
 				}
-
-				add_filter( 'get_user_option_wpseo_dismissed_conflicts', 
-					array( &$this, 'dismiss_wpseo_notice' ), 10, 3 );
 			}
 
 		}
@@ -119,7 +116,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					isset( $info['base'] ) && SucomUtil::active_plugins( $info['base'] ) ) {
 					$has_ext_tid = true;	// found at least one active plugin with an auth id
 					if ( ! $this->p->check->aop( $ext, false ) )
-						$this->p->notice->err( $this->p->msgs->get( 'notice-pro-not-installed', 
+						$this->p->notice->warn( $this->p->msgs->get( 'notice-pro-not-installed', 
 							array( 'lca' => $ext ) ) );
 				}
 			}
@@ -339,10 +336,11 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 						_x( 'Support Forum', 'plugin action link', 'nextgen-facebook' ).'</a>';
 
 				if ( ! empty( $info['url']['purchase'] ) ) {
+					$purchase_url = add_query_arg( 'utm_source', 'plugin-action-links', $info['url']['purchase'] );
 					if ( $this->p->check->aop( $ext, false, $this->p->is_avail['aop'] ) )
-						$links[] = '<a href="'.$info['url']['purchase'].'">'.
+						$links[] = '<a href="'.$purchase_url.'">'.
 							_x( 'Purchase Pro License(s)', 'plugin action link', 'nextgen-facebook' ).'</a>';
-					else $links[] = '<a href="'.$info['url']['purchase'].'">'.
+					else $links[] = '<a href="'.$purchase_url.'">'.
 						_x( 'Purchase Pro Version', 'plugin action link', 'nextgen-facebook' ).'</a>';
 				}
 			}
@@ -374,18 +372,16 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				$clear_cache_link = wp_nonce_url( $this->p->util->get_admin_url( '?'.$this->p->cf['lca'].
 					'-action=clear_all_cache' ), NgfbAdmin::get_nonce(), NGFB_NONCE );
 	
-				$this->p->notice->inf( __( 'Plugin settings have been saved.', 'nextgen-facebook' ).' '.
+				$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ).' '.
 					sprintf( __( 'Wait %1$d seconds for cache objects to expire or <a href="%2$s">%3$s</a> now.',
 						'nextgen-facebook' ), $this->p->options['plugin_object_cache_exp'], $clear_cache_link,
 							_x( 'Clear All Cache(s)', 'submit button', 'nextgen-facebook' ) ), true );
 			} else {
-				$this->p->notice->inf( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
-				$this->p->util->clear_all_cache( true, true );	// $clear_ext_cache = true, $run_only_once = true
+				$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
+				$this->p->util->clear_all_cache( true, __FUNCTION__, true );
 			}
 
-			// filter_head_attributes() is disabled when the wpsso-schema-json-ld extension is active
-			if ( apply_filters( $this->p->cf['lca'].'_add_schema_head_attributes', true ) )
-				$this->check_tmpl_head_elements();
+			$this->check_tmpl_head_elements();
 
 			return $opts;
 		}
@@ -422,7 +418,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 			$opts = $this->p->opt->sanitize( $opts, $def_opts, $network );
 			$opts = apply_filters( $this->p->cf['lca'].'_save_site_options', $opts, $def_opts, $network );
 			update_site_option( NGFB_SITE_OPTIONS_NAME, $opts );
-			$this->p->notice->inf( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
+			$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
 			wp_redirect( $this->p->util->get_admin_url( $page ).'&settings-updated=true' );
 			exit;	// stop here
 		}
@@ -462,7 +458,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 							break;
 
 						case 'clear_all_cache': 
-							$this->p->util->clear_all_cache();
+							$this->p->util->clear_all_cache( true );	// $clear_external = true
 							break;
 
 						case 'clear_metabox_prefs': 
@@ -471,7 +467,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 							//$user_name = trim( $user->first_name.' '.$user->last_name );
 							$user_name = $user->display_name;
 							NgfbUser::delete_metabox_prefs( $user_id );
-							$this->p->notice->inf( sprintf( __( 'Metabox layout preferences for user ID #%d "%s" have been reset.',
+							$this->p->notice->upd( sprintf( __( 'Metabox layout preferences for user ID #%d "%s" have been reset.',
 								'nextgen-facebook' ), $user_id, $user_name ) );
 							break;
 
@@ -481,13 +477,13 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 							//$user_name = trim( $user->first_name.' '.$user->last_name );
 							$user_name = $user->display_name;
 							delete_user_option( $user_id, NGFB_DISMISS_NAME );
-							$this->p->notice->inf( sprintf( __( 'Hidden notices for user ID #%d "%s" have been cleared.',
+							$this->p->notice->upd( sprintf( __( 'Hidden notices for user ID #%d "%s" have been cleared.',
 								'nextgen-facebook' ), $user_id, $user_name ) );
 							break;
 
 						case 'change_show_options': 
 							if ( isset( $this->p->cf['form']['show_options'][$_GET['show-opts']] ) ) {
-								$this->p->notice->inf( sprintf( 'Option preference saved &mdash; viewing "%s" by default.',
+								$this->p->notice->upd( sprintf( 'Option preference saved &mdash; viewing "%s" by default.',
 									$this->p->cf['form']['show_options'][$_GET['show-opts']] ) );
 								NgfbUser::save_pref( array( 'show_opts' => $_GET['show-opts'] ) );
 							}
@@ -620,7 +616,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				parse_str( parse_url( $location, PHP_URL_QUERY ), $parts );
 
 				if ( strpos( $parts['wp_http_referer'], $referer_match ) ) {
-					$this->p->notice->inf( __( 'Profile updated.' ), true );
+					$this->p->notice->upd( __( 'Profile updated.' ), true );
 					return add_query_arg( 'updated', true, $parts['wp_http_referer'] );
 				}
 			}
@@ -697,15 +693,15 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 		}
 
 		protected function get_submit_buttons( $submit_text = '', $class = 'submit-buttons' ) {
+			$lca = $this->p->cf['lca'];
+
 			if ( empty( $submit_text ) ) 
 				$submit_text = _x( 'Save All Plugin Settings', 'submit button', 'nextgen-facebook' );
 
 			$show_opts_next = SucomUtil::next_key( NgfbUser::show_opts(), $this->p->cf['form']['show_options'] );
 			$show_opts_text = sprintf( _x( 'View %s by Default', 'submit button', 'nextgen-facebook' ),
-				_x( $this->p->cf['form']['show_options'][$show_opts_next],
-					'option value', 'nextgen-facebook' ) );
-			$show_opts_url = $this->p->util->get_admin_url( '?'.$this->p->cf['lca'].
-				'-action=change_show_options&show-opts='.$show_opts_next );
+				_x( $this->p->cf['form']['show_options'][$show_opts_next], 'option value', 'nextgen-facebook' ) );
+			$show_opts_url = $this->p->util->get_admin_url( '?'.$lca.'-action=change_show_options&show-opts='.$show_opts_next );
 
 			// Save All Plugin Settings and View All / Basic Options by Default
 			$action_buttons = '<input type="submit" class="button-primary" value="'.$submit_text.'" />'.
@@ -713,26 +709,30 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					wp_nonce_url( $show_opts_url, NgfbAdmin::get_nonce(), NGFB_NONCE ) ).'<br/>';	// NGFB_NONCE is an md5() string
 
 			// Secondary Action Buttons
-			foreach ( apply_filters( $this->p->cf['lca'].'_secondary_action_buttons', array(
+			foreach ( apply_filters( $lca.'_secondary_action_buttons', array(
 				'clear_all_cache' => _x( 'Clear All Cache(s)', 'submit button', 'nextgen-facebook' ),
 				'check_for_updates' => _x( 'Check for Pro Update(s)', 'submit button', 'nextgen-facebook' ),
 				'clear_metabox_prefs' => _x( 'Reset Metabox Layout', 'submit button', 'nextgen-facebook' ),
 				'clear_hidden_notices' => _x( 'Reset Hidden Notices', 'submit button', 'nextgen-facebook' ),
 			), $this->menu_id, $this->menu_name, $this->menu_lib ) as $action => $label ) {
 
-				// only show the clear_all_cache button on setting and submenu pages
-				if ( $action === 'clear_all_cache' && 
-					$this->menu_lib !== 'setting' && 
-						$this->menu_lib !== 'submenu' )
-							continue;
-
-				// don't show the check_for_updates button on profile pages
-				if ( $action === 'check_for_updates' && 
-					$this->menu_lib === 'profile' )
-						continue;
+				switch ( $action ) {
+					case 'clear_all_cache':
+						// only show the clear_all_cache button on setting and submenu pages
+						if ( $this->menu_lib !== 'setting' && 
+							$this->menu_lib !== 'submenu' )
+								continue 2;
+						break;
+					case 'check_for_updates':
+						// don't show the check_for_updates button on profile pages
+						if ( $this->menu_lib === 'profile' ||
+							empty( $this->p->options['plugin_'.$lca.'_tid'] ) )
+								continue 2;
+						break;
+				}
 
 				$action_buttons .= $this->form->get_button( $label, 'button-secondary', null, 
-					wp_nonce_url( $this->p->util->get_admin_url( '?'.$this->p->cf['lca'].'-action='.$action ),
+					wp_nonce_url( $this->p->util->get_admin_url( '?'.$lca.'-action='.$action ),
 						NgfbAdmin::get_nonce(), NGFB_NONCE ) );	// NGFB_NONCE is an md5() string
 			}
 
@@ -849,7 +849,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 							'status' => $this->p->options['schema_organization_json'] ?
 								'on' : 'rec',
 						),
-						'(code) Google WebSite Markup' => array(
+						'(code) Google Website Markup' => array(
 							'status' => $this->p->options['schema_website_json'] ?
 								'on' : 'rec',
 						),
@@ -905,13 +905,16 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 						 *	'article#tech:no_load' => 'Item Type TechArticle',
 						 */
 						list( $id, $stub, $action ) = SucomUtil::get_lib_stub_action( $id_key );
-						$classname = SucomUtil::sanitize_classname( $ext.'pro'.$sub.$id );
-						$off = $this->p->is_avail[$sub][$id] ? 'rec' : 'off';
+						$classname = SucomUtil::sanitize_classname( $ext.'pro'.$sub.$id, false );	// $underscore = false
+						$status_off = $this->p->is_avail[$sub][$id] ? 'rec' : 'off';
+						$purchase_url = empty( $info['url']['purchase'] ) ? 
+							'' : add_query_arg( 'utm_source', 'status-pro-feature', $info['url']['purchase'] );
 
 						$features[$label] = array( 
 							'td_class' => self::$pkg_aop[$ext] ? '' : 'blank',
-							'purchase' => empty( $info['url']['purchase'] ) ? '' : $info['url']['purchase'],
-							'status' => class_exists( $classname ) ? ( self::$pkg_aop[$ext] ? 'on' : $off ) : $off,
+							'purchase' => $purchase_url,
+							'status' => class_exists( $classname ) ?
+								( self::$pkg_aop[$ext] ? 'on' : $status_off ) : $status_off,
 						);
 					}
 				}
@@ -1001,7 +1004,9 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 		}
 
 		public function show_metabox_purchase() {
-			$purchase_url = $this->p->cf['plugin'][$this->p->cf['lca']]['url']['purchase'];
+			$info =& $this->p->cf['plugin'][$this->p->cf['lca']];
+			$purchase_url = empty( $info['url']['purchase'] ) ? 
+				'' : add_query_arg( 'utm_source', 'side-purchase', $info['url']['purchase'] );
 			echo '<table class="sucom-setting '.$this->p->cf['lca'].'" side><tr><td>';
 			echo $this->p->msgs->get( 'side-purchase' );
 			echo '<p class="centered">';
@@ -1013,12 +1018,10 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 		}
 
 		public function show_metabox_help() {
-			echo '<table class="sucom-setting '.$this->p->cf['lca'].'" side><tr><td>';
-
+			echo '<table class="sucom-setting '.
+				$this->p->cf['lca'].'" side><tr><td>';
 			$this->show_follow_icons();
-
-			echo '<p>'.sprintf( __( 'The development of %1$s is mostly driven by customer requests &mdash; we welcome your comments and suggestions. ;-)',
-				'nextgen-facebook' ), $this->p->cf['plugin'][$this->p->cf['lca']]['short'] ).'</p>';
+			echo $this->p->msgs->get( 'side-help-support' );
 
 			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
 				if ( empty( $info['version'] ) )	// filter out extensions that are not installed
@@ -1146,8 +1149,9 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 						'plugin action link', 'nextgen-facebook' ).'</a> (ZIP)';
 
 				if ( ! empty( $info['url']['purchase'] ) ) {
+					$purchase_url = add_query_arg( 'utm_source', 'license-action-links', $info['url']['purchase'] );
 					if ( $lca === $ext || $this->p->check->aop( $lca, false, $this->p->is_avail['aop'] ) )
-						$links .= ' | <a href="'.$info['url']['purchase'].'" target="_blank">'.
+						$links .= ' | <a href="'.$purchase_url.'" target="_blank">'.
 							_x( 'Purchase Pro License(s)', 'plugin action link', 'nextgen-facebook' ).'</a>';
 					else $links .= ' | <em>'._x( 'Purchase Pro License(s)', 'plugin action link', 'nextgen-facebook' ).'</em>';
 				}
@@ -1236,7 +1240,6 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 
 			$lca = $this->p->cf['lca'];
 			$base = $this->p->cf['plugin'][$lca]['base'];
-			$purchase_url = $this->p->cf['plugin'][$lca]['url']['purchase'];
 			$err_pre =  __( 'Plugin conflict detected', 'nextgen-facebook' ) . ' &mdash; ';
 			$log_pre = 'plugin conflict detected - ';	// don't translate the debug 
 
@@ -1347,18 +1350,31 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					}
 				}
 			}
+
+			// Squirrly SEO
+			if ( $this->p->is_avail['seo']['sq'] ) {
+				$opts = json_decode( get_option( 'sq_options' ), true );
+				if ( ! empty( $opts['sq_auto_facebook'] ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $log_pre.'squirrly seo open graph meta tags are enabled' );
+					$this->p->notice->err( $err_pre.sprintf( __( 'please uncheck \'<em>Add the Social Open Graph objects</em>\' in the <a href="%s">Squirrly SEO</a> Social Media Options.', 'nextgen-facebook' ), get_admin_url( null, 'admin.php?page=sq_seo' ) ) );
+				}
+				if ( ! empty( $opts['sq_auto_twitter'] ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $log_pre.'squirrly seo twitter card meta tags are enabled' );
+					$this->p->notice->err( $err_pre.sprintf( __( 'please uncheck \'<em>Add the Twitter card in your tweets</em>\' in the <a href="%s">Squirrly SEO</a> Social Media Options.', 'nextgen-facebook' ), get_admin_url( null, 'admin.php?page=sq_seo' ) ) );
+				}
+				if ( ! empty( $opts['sq_auto_jsonld'] ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $log_pre.'squirrly seo json-ld markup is enabled' );
+					$this->p->notice->err( $err_pre.sprintf( __( 'please uncheck the \'<em>adds the Json-LD metas for Semantic SEO</em>\' option in the <a href="%s">Squirrly SEO</a> settings.', 'nextgen-facebook' ), get_admin_url( null, 'admin.php?page=sq_seo' ) ) );
+				}
+			}
 		}
 
 		public function check_tmpl_head_elements() {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
-
-			// filter_head_attributes() is disabled when the wpsso-schema-json-ld extension is active
-			if ( ! apply_filters( $this->p->cf['lca'].'_add_schema_head_attributes', true ) ) {
-				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'exiting early: schema head attributes disabled' );
-				return;
-			}
 
 			// only check if using the default filter name
 			if ( empty( $this->p->options['plugin_head_attr_filter_name'] ) ||
@@ -1371,8 +1387,8 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					continue;
 
 				if ( strpos( $html, '<head>' ) !== false ) {
-					$this->p->notice->err( $this->p->msgs->get( 'notice-header-tmpl-no-head-attr' ),
-						true, true, 'notice-header-tmpl-no-head-attr', false );
+					$this->p->notice->warn( $this->p->msgs->get( 'notice-header-tmpl-no-head-attr' ),
+						true, true, 'notice-header-tmpl-no-head-attr-'.SucomUtil::get_theme_slug_version(), true );
 					break;
 				}
 			}
@@ -1413,22 +1429,13 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 
 				if ( fwrite( $fh, $php ) ) {
 					fclose( $fh );
-					$this->p->notice->inf( sprintf( __( 'The %1$s template has been successfully updated and saved. A backup copy of the original template is available in %2$s.', 'nextgen-facebook' ), $base, $backup ), true );
+					$this->p->notice->upd( sprintf( __( 'The %1$s template has been successfully updated and saved. A backup copy of the original template is available in %2$s.', 'nextgen-facebook' ), $base, $backup ), true );
 					$have_changes = true;
 				}
 			}
 			if ( $have_changes === true )
-				$this->p->notice->trunc_id( 'notice-header-tmpl-no-head-attr', 'all' );	// just in case
-		}
-
-		// dismiss an incorrect yoast seo conflict notification
-		public function dismiss_wpseo_notice( $dismissed, $opt_name, $user_obj ) {
-			$lca = $this->p->cf['lca'];
-			$base = $this->p->cf['plugin'][$lca]['base'];
-			if ( ! is_array( $dismissed['open_graph'] ) ||
-				! in_array( $base, $dismissed['open_graph'] ) )
-					$dismissed['open_graph'][] = $base;
-			return $dismissed;
+				$this->p->notice->trunc_id( 'notice-header-tmpl-no-head-attr-'.
+					SucomUtil::get_theme_slug_version(), 'all' );	// just in case
 		}
 
 		public function get_site_use( &$form, $network = false, $name, $force = false ) {

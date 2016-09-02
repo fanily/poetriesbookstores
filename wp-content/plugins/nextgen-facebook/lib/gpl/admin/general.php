@@ -44,17 +44,17 @@ if ( ! class_exists( 'NgfbGplAdminGeneral' ) ) {
 			'<td class="blank">'.$this->p->options['og_vid_max'].'</td>';
 
 			$table_rows['og_vid_https'] = '<tr class="hide_in_basic">'.
-			$form->get_th_html( _x( 'Use HTTPS for Video API',
+			$form->get_th_html( _x( 'Use HTTPS for Video API Requests',
 				'option label', 'nextgen-facebook' ), null, 'og_vid_https' ).
-			'<td class="blank"><input type="checkbox" disabled="disabled" /> '.
+			'<td class="blank"><input type="checkbox" disabled="disabled" /> <em>'.
 				sprintf( _x( 'uses %s', 'option comment', 'nextgen-facebook' ),
-					str_replace( NGFB_PLUGINDIR, NGFB_PLUGINSLUG.'/', NGFB_CURL_CAINFO ) ).'</td>';
+					str_replace( NGFB_PLUGINDIR, NGFB_PLUGINSLUG.'/', NGFB_PHP_CURL_CAINFO ) ).'</em></td>';
 
-			$table_rows['og_vid_prev_img'] = $form->get_th_html( _x( 'Include Video Preview Image(s)',
+			$table_rows['og_vid_prev_img'] = $form->get_th_html( _x( 'Include Video Preview Images',
 				'option label', 'nextgen-facebook' ), null, 'og_vid_prev_img' ).
-			'<td class="blank"><input type="checkbox" disabled="disabled" />'.' '.
-				_x( 'video preview images are included first',
-					'option comment', 'nextgen-facebook' ).'</td>';
+			'<td class="blank"><input type="checkbox" disabled="disabled" />'.' <em>'.
+				_x( 'video preview images are included first', 
+					'option comment', 'nextgen-facebook' ).'</em></td>';
 
 			$table_rows['og_vid_html_type'] = $form->get_th_html( _x( 'Include Embed text/html Type',
 				'option label', 'nextgen-facebook' ), null, 'og_vid_html_type' ).
@@ -70,7 +70,7 @@ if ( ! class_exists( 'NgfbGplAdminGeneral' ) ) {
 			'<td class="blank">'.$this->p->options['og_def_vid_url'].'</td>';
 
 			$table_rows['og_def_vid_on_index'] = '<tr class="hide_in_basic">'.
-			$form->get_th_html( _x( 'Use Default Video on Indexes',
+			$form->get_th_html( _x( 'Use Default Video on Archive',
 				'option label', 'nextgen-facebook' ), null, 'og_def_vid_on_index' ).
 			'<td class="blank"><input type="checkbox" disabled="disabled" /></td>';
 

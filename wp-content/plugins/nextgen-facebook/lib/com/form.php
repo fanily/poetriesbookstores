@@ -34,7 +34,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 				$this->p->cf['plugin'][$this->menu_ext]['text_domain'] : false;
 		}
 
-		public function get_hidden( $name, $value = '' ) {
+		public function get_hidden( $name, $value = '', $is_checkbox = false ) {
 			if ( empty( $name ) )
 				return;	// just in case
 
@@ -43,20 +43,21 @@ if ( ! class_exists( 'SucomForm' ) ) {
 				$this->in_options( $name ) ?
 					$this->options[$name] : $value;
 
-			return '<input type="hidden" name="'.esc_attr( $this->options_name.'['.$name.']' ).'" value="'.esc_attr( $value ).'" />';
+			return ( $is_checkbox ? $this->get_hidden( 'is_checkbox_'.$name, 1, false ) : '' ).
+				'<input type="hidden" name="'.esc_attr( $this->options_name.
+					'['.$name.']' ).'" value="'.esc_attr( $value ).'" />';
 		}
 
 		public function get_checkbox( $name, $class = '', $id = '', $disabled = false, $force = null ) {
 			if ( empty( $name ) )
 				return;	// just in case
 
-			if ( $this->in_options( $name.':is' ) && 
-				$this->options[$name.':is'] === 'disabled' )
-					$disabled = true;
+			if ( $this->get_options( $name.':is' ) === 'disabled' )
+				$disabled = true;
 
 			if ( $force !== null )
 				$checked = checked( $force, 1, false );
-			elseif ( ! $disabled && $this->in_options( $name ) )
+			elseif ( $this->in_options( $name ) )
 				$checked = checked( $this->options[$name], 1, false );
 			elseif ( $this->in_defaults( $name ) )
 				$checked = checked( $this->defaults[$name], 1, false );
@@ -78,18 +79,17 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return $this->get_checkbox( $name, $class, $id, true, $force );
 		}
 
-		public function get_radio( $name, $values = array(), $class = '', $id = '', $is_assoc = false, $disabled = false ) {
+		public function get_radio( $name, $values = array(), $class = '', $id = '', $is_assoc = null, $disabled = false ) {
 
 			if ( empty( $name ) || 
 				! is_array( $values ) )
 					return;
 
-			if ( $is_assoc == false ) 
+			if ( $is_assoc === null ) 
 				$is_assoc = SucomUtil::is_assoc( $values );
 
-			if ( $this->in_options( $name.':is' ) && 
-				$this->options[$name.':is'] === 'disabled' )
-					$disabled = true;
+			if ( $this->get_options( $name.':is' ) === 'disabled' )
+				$disabled = true;
 
 			$html = '';
 
@@ -97,7 +97,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 
 				// if the array is NOT associative (so regular numbered array), 
 				// then the description is used as the saved value as well
-				if ( $is_assoc == false )
+				if ( $is_assoc === false )
 					$val = $desc;
 
 				if ( $this->text_domain )
@@ -116,7 +116,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return $html;
 		}
 
-		public function get_no_radio( $name, $values = array(), $class = '', $id = '', $is_assoc = false ) {
+		public function get_no_radio( $name, $values = array(), $class = '', $id = '', $is_assoc = null ) {
 			return $this->get_radio( $name, $values, $class, $id, $is_assoc, true );
 		}
 
@@ -227,7 +227,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return $html;
 		}
 
-		public function get_no_select( $name, $values = array(), $class = '', $id = '', $is_assoc = false, $selected = false, $on_change = false ) {
+		public function get_no_select( $name, $values = array(), $class = '', $id = '', $is_assoc = null, $selected = false, $on_change = false ) {
 			return $this->get_select( $name, $values, $class, $id, $is_assoc, true, $selected, $on_change );
 		}
 
@@ -263,7 +263,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			foreach ( $size_names as $size_name ) {
 				if ( ! is_string( $size_name ) ) 
 					continue;
-				$size = $this->p->media->get_size_info( $size_name );
+				$size = SucomUtil::get_size_info( $size_name );
 				$html .= '<option value="'.esc_attr( $size_name ).'" ';
 				if ( $this->in_options( $name ) )
 					$html .= selected( $this->options[$name], $size_name, false );
@@ -281,21 +281,23 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			if ( empty( $name ) ) 
 				return;	// just in case
 
-			if ( $disabled || ( $this->in_options( $name.':is' ) && $this->options[$name.':is'] === 'disabled' ) )
+			if ( $disabled || $this->get_options( $name.':is' ) === 'disabled' )
 				return $this->get_no_input( $name, $class, $id, $placeholder );
 
 			$value = $this->in_options( $name ) ?
 				$this->options[$name] : '';
 
-			if ( empty( $placeholder ) && ( $pos = strpos( $name, '#' ) ) > 0 ) {
+			if ( $placeholder === '' && ( $pos = strpos( $name, '#' ) ) > 0 ) {
 				$key_default = SucomUtil::get_key_locale( substr( $name, 0, $pos ), $this->options, 'default' );
 				if ( $name !== $key_default )
-					$placeholder = $this->options[$key_default];
+					$placeholder = isset( $this->options[$key_default] ) ?
+						$this->options[$key_default] : '';
 			}
 
 			$html = '';
 			if ( ! empty( $len ) && ! empty( $id ) )
 				$html .= $this->get_text_len_js( 'text_'.$id );
+
 			$html .= '<input type="text" name="'.esc_attr( $this->options_name.'['.$name.']' ).'"'.
 				( empty( $class ) ? '' : ' class="'.esc_attr( $class ).'"' ).
 				( empty( $id ) ? ' id="text_'.esc_attr( $name ).'"' : ' id="text_'.esc_attr( $id ).'"' ).
@@ -303,6 +305,37 @@ if ( ! class_exists( 'SucomForm' ) ) {
 				( $this->get_placeholder_events( 'input', $placeholder ) ).' value="'.esc_attr( $value ).'" />'.
 				( empty( $len ) ? '' : ' <div id="text_'.esc_attr( $id ).'-lenMsg"></div>' );
 
+			return $html;
+		}
+
+		public function get_input_multi( $name_prefix, $class = '', $id = '', $start = 0, $end = 99, $disabled = false ) {
+			if ( empty( $name_prefix ) ) 
+				return;	// just in case
+
+			$html = '';
+			$show_first = 5;
+			foreach ( range( $start, $end, 1 ) as $num ) {
+				$name = $name_prefix.'_'.$num;
+				$next_num = $num + 1;
+				$class_value = empty( $class ) ? 'multi' : 'multi '.esc_attr( $class );
+				$id_value = empty( $id ) ? 'text_'.$name : 'text_'.$id.'_'.$num;
+				$id_value_next = empty( $id ) ? 'text_'.$name_prefix.'_'.$next_num : 'text_'.$id.'_'.$next_num;
+				$input_value = $this->in_options( $name ) ? $this->options[$name] : '';
+
+				if ( $disabled && $num >= $show_first && empty( $input_value ) )
+					continue;
+				elseif ( $disabled || $this->get_options( $name.':is' ) === 'disabled' )
+					$html .= $this->get_no_input( $name, $class_value, $id_value );
+				else {
+					$html .= '<input type="text" name="'.esc_attr( $this->options_name.'['.$name.']' ).'"'.
+						' class="'.esc_attr( $class_value ).'" id="'.esc_attr( $id_value ).'" value="'.esc_attr( $input_value ).'"'.
+						( empty( $input_value ) && empty( $last_value ) && 	// always add one more blank
+							$num >= $show_first ? ' style="display:none;"' : '' ).
+						' onFocus="jQuery(\'#'.esc_attr( $id_value_next ).'\').show();" />'."\n";
+
+					$last_value = $input_value;
+				}
+			}
 			return $html;
 		}
 
@@ -314,7 +347,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			} else {
 				$value = $this->in_options( $name ) ?
 					$this->options[$name] : '';
-				if ( $this->in_options( $name.':is' ) && $this->options[$name.':is'] === 'disabled' )
+				if ( $this->get_options( $name.':is' ) === 'disabled' )
 					$disabled = true;
 			}
 
@@ -336,14 +369,6 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return $this->get_no_input_value( $value, 'datepicker', '', 'yyyy-mm-dd' );
 		}
 
-		public function get_no_input( $name = '', $class = '', $id = '', $placeholder = '' ) {
-			if ( empty( $name ) ) 
-				return $this->get_no_input_value( '', $class, $id, $placeholder );
-			else return $this->get_hidden( $name ).
-					$this->get_no_input_value( ( $this->in_options( $name ) ?
-						$this->options[$name] : '' ), $class, $id, $placeholder );
-		}
-
 		public function get_no_input_options( $name, &$opts, $class = '', $id = '', $placeholder = '' ) {
 			$value = isset( $opts[$name] ) ? $opts[$name] : '';
 			return $this->get_no_input_value( $value, $class, $id, $placeholder );
@@ -353,8 +378,16 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return '<input type="text" disabled="disabled"'.
 				( empty( $class ) ? '' : ' class="'.esc_attr( $class ).'"' ).
 				( empty( $id ) ? '' : ' id="text_'.esc_attr( $id ).'"' ).
-				( empty( $placeholder ) ? '' : ' placeholder="'.esc_attr( $placeholder ).'"' ).
+				( $placeholder === '' ? '' : ' placeholder="'.esc_attr( $placeholder ).'"' ).
 				' value="'.esc_attr( $value ).'" />';
+		}
+
+		public function get_no_input( $name = '', $class = '', $id = '', $placeholder = '' ) {
+			if ( empty( $name ) ) 
+				return $this->get_no_input_value( '', $class, $id, $placeholder );
+			else return $this->get_hidden( $name ).
+				$this->get_no_input_value( ( $this->in_options( $name ) ?
+					$this->options[$name] : '' ), $class, $id, $placeholder );
 		}
 
 		public function get_image_upload_input( $opt_prefix, $placeholder = '', $disabled = false ) {
@@ -478,13 +511,16 @@ if ( ! class_exists( 'SucomForm' ) ) {
 		public function get_textarea( $name, $class = '', $id = '', $len = 0, $placeholder = '', $disabled = false ) {
 			if ( empty( $name ) ) 
 				return;	// just in case
-			if ( $this->in_options( $name.':is' ) && 
-				$this->options[$name.':is'] === 'disabled' )
-					$disabled = true;
+
+			if ( $this->get_options( $name.':is' ) === 'disabled' )
+				$disabled = true;
+
 			$html = '';
 			$value = $this->in_options( $name ) ? $this->options[$name] : '';
+
 			if ( ! empty( $len ) && ! empty( $id ) )
 				$html .= $this->get_text_len_js( 'textarea_'.$id );
+
 			$html .= '<textarea '.
 				( $disabled ? ' disabled="disabled"' : ' name="'.esc_attr( $this->options_name.'['.$name.']' ).'"' ).
 				( empty( $class ) ? '' : ' class="'.esc_attr( $class ).'"' ).
@@ -493,6 +529,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 				( empty( $len ) ? '' : ' rows="'.( round( $len / 100 ) + 1 ).'"' ).
 				( $this->get_placeholder_events( 'textarea', $placeholder ) ).'>'.stripslashes( esc_attr( $value ) ).'</textarea>'.
 				( empty( $len ) || $disabled ? '' : ' <div id="textarea_'.esc_attr( $id ).'-lenMsg"></div>' );
+
 			return $html;
 		}
 
@@ -500,7 +537,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			return $this->get_textarea( $name, $class, $id, $len, $placeholder, true );
 		}
 
-		public function get_no_textarea_value( $value, $class = '', $id = '', $len = 0, $placeholder = '' ) {
+		public function get_no_textarea_value( $value = '', $class = '', $id = '', $len = 0, $placeholder = '' ) {
 			return '<textarea disabled="disabled"'.
 				( empty( $class ) ? '' : ' class="'.esc_attr( $class ).'"' ).
 				( empty( $id ) ? '' : ' id="textarea_'.esc_attr( $id ).'"' ).
@@ -512,12 +549,14 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			$js = $newtab === true ? 
 				'window.open(\''.esc_url( $url ).'\', \'_blank\');' :
 				'location.href=\''.esc_url( $url ).'\';';
+
 			$html = '<input type="button" '.
 				( $disabled ? ' disabled="disabled"' : '' ).
 				( empty( $class ) ? '' : ' class="'.esc_attr( $class ).'"' ).
 				( empty( $id ) ? '' : ' id="button_'.esc_attr( $id ).'"' ).
 				( empty( $url ) || $disabled ? '' : ' onClick="'.$js.'"' ).
 				' value="'.esc_attr( $value ).'" />';
+
 			return $html;
 		}
 
@@ -550,7 +589,7 @@ if ( ! class_exists( 'SucomForm' ) ) {
 		}
 
 		private function get_placeholder_events( $type = 'input', $placeholder ) {
-			if ( empty( $placeholder ) )
+			if ( $placeholder === '' )
 				return '';
 
 			$js_if_empty = 'if ( this.value == \'\' ) this.value = \''.esc_js( $placeholder ).'\';';
@@ -572,6 +611,10 @@ if ( ! class_exists( 'SucomForm' ) ) {
 			&$auto_draft_msg = 'Save a draft version or publish to update this value.' ) {
 
 			foreach ( $form_rows as $key => $val ) {
+				if ( empty( $val ) ) {
+					$table_rows[$key] = '';	// placeholder
+					continue;
+				}
 
 				if ( ! empty( $val['no_auto_draft'] ) &&
 					( empty( $mod['post_status'] ) || $mod['post_status'] === 'auto-draft' ) ) {

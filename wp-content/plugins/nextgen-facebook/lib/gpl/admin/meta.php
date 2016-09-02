@@ -32,10 +32,8 @@ if ( ! class_exists( 'NgfbGplAdminMeta' ) ) {
 				$this->p->debug->mark();
 
 			$table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-about-msg' ).'</td>';
-
-			$table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-feature-msg' ).'</td>';
+				$this->p->msgs->get( 'pro-feature-msg' ).
+				'</td>';
 
 			$form_rows = array(
 				'og_title' => array(
@@ -99,16 +97,13 @@ if ( ! class_exists( 'NgfbGplAdminMeta' ) ) {
 			$media_info = $this->p->og->get_the_media_info( $this->p->cf['lca'].'-opengraph', 
 				array( 'pid', 'img_url' ), $mod, 'none', 'og', $head );	// md_pre = none
 
-			if ( $mod['is_post'] )
-				$table_rows[] = '<td colspan="2" align="center">'.
-					$this->p->msgs->get( 'pro-about-msg-media' ).'</td>';
-			else $table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-about-msg' ).'</td>';
-
 			$table_rows[] = '<td colspan="2" align="center">'.
-				$this->p->msgs->get( 'pro-feature-msg' ).'</td>';
+				( $mod['is_post'] ? $this->p->msgs->get( 'pro-about-msg-post-media' ) : '' ).
+				$this->p->msgs->get( 'pro-feature-msg' ).
+				'</td>';
 
 			$form_rows['subsection_opengraph'] = array(
+				'tr_class' => 'hide_in_basic',
 				'td_class' => 'subsection top',
 				'header' => 'h4',
 				'label' => _x( 'All Social Websites / Open Graph', 'metabox title', 'nextgen-facebook' )
@@ -177,7 +172,7 @@ if ( ! class_exists( 'NgfbGplAdminMeta' ) ) {
 			}
 			$form_rows['og_vid_prev_img'] = array(
 				'tr_class' => 'hide_in_basic',
-				'label' => _x( 'Include Preview Image(s)', 'option label', 'nextgen-facebook' ),
+				'label' => _x( 'Include Preview Images', 'option label', 'nextgen-facebook' ),
 				'th_class' => 'medium', 'tooltip' => 'meta-og_vid_prev_img', 'td_class' => 'blank',
 					'content' => $form->get_no_checkbox( 'og_vid_prev_img' ),
 			);

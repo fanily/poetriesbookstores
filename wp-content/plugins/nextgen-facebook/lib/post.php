@@ -32,8 +32,11 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 				add_action( 'edit_attachment', array( &$this, 'save_options' ), NGFB_META_SAVE_PRIORITY );
 				add_action( 'edit_attachment', array( &$this, 'clear_cache' ), NGFB_META_CACHE_PRIORITY );
 
-				if ( ! empty( $this->p->options['plugin_shortlink'] ) )
+				if ( ! empty( $this->p->options['plugin_shortlink'] ) ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'adding get_shortlink filter' );
 					add_action( 'get_shortlink', array( &$this, 'get_shortlink' ), 9000, 4 );
+				}
 			}
 
 			// add the columns when doing AJAX as well to allow Quick Edit to add the required columns
@@ -44,9 +47,12 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 				$post_type_names = $this->p->util->get_post_types( 'names' );
 				if ( is_array( $post_type_names ) ) {
 					foreach ( $post_type_names as $post_type ) {
+						// https://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns
 						add_filter( 'manage_'.$post_type.'_posts_columns', 
 							array( $this, 'add_column_headings' ), 10, 1 );
-						add_action( 'manage_'.$post_type.'_posts_custom_column', 
+
+						// https://codex.wordpress.org/Plugin_API/Action_Reference/manage_$post_type_posts_custom_column
+						add_action( 'manage_'.$post_type.'_posts_custom_column', 	// since wp v3.1
 							array( $this, 'show_column_content',), 10, 2 );
 					}
 				}
@@ -81,25 +87,40 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 		}
 
 		public function get_shortlink( $shortlink, $post_id, $context, $allow_slugs ) {
+			if ( $this->p->debug->enabled ) {
+				$this->p->debug->log_args( array( 
+					'shortlink' => $shortlink, 
+					'post_id' => $post_id, 
+					'context' => $context, 
+					'allow_slugs' => $allow_slugs, 
+				) );
+			}
+
 			if ( isset( $this->p->options['plugin_shortener'] ) &&
 				$this->p->options['plugin_shortener'] !== 'none' ) {
 
 					$post_type = get_post_type( $post_id );				// post type name
 					$post_status = get_post_status( $post_id );			// post status name
 
-					if ( empty( $post_type ) || empty( $post_status ) ) {
+					if ( empty( $post_type ) ) {
 						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'exiting early: incomplete post object' );
+							$this->p->debug->log( 'exiting early: post_type is empty' );
+						return $shortlink;
+					} elseif ( empty( $post_status ) ) {
+						if ( $this->p->debug->enabled )
+							$this->p->debug->log( 'exiting early: post_status is empty' );
 						return $shortlink;
 					} elseif ( $post_status === 'auto-draft' ) {
 						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'exiting early: post is an auto-draft' );
+							$this->p->debug->log( 'exiting early: post_status is auto-draft' );
 						return $shortlink;
 					}
 
-					$long_url = $this->p->util->get_sharing_url( $post_id );
+					$long_url = $this->p->util->get_sharing_url( $post_id, false );	// $add_page = false
+
 					$short_url = apply_filters( $this->p->cf['lca'].'_shorten_url',
 						$long_url, $this->p->options['plugin_shortener'] );
+
 					if ( $long_url !== $short_url )	// just in case
 						return $short_url;
 			}
@@ -116,6 +137,9 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 		}
 
 		public function filter_og_img_post_column_content( $value, $column_name, $mod ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->mark();
+
 			if ( ! empty( $value ) )
 				return $value;
 
@@ -135,13 +159,11 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 			if ( empty( $og_image ) )
 				$og_image = $this->p->media->get_default_image( 1, $size_name, $check_dupes, $force_regen );
 
-			if ( ! empty( $og_image ) && 
-				is_array( $og_image ) ) {
-
+			if ( ! empty( $og_image ) && is_array( $og_image ) ) {
 				$image = reset( $og_image );
-				if ( ! empty( $image['og:image'] ) )
-					$value = $this->get_og_img_column_html( $image );
-			}
+				$value = $this->get_og_img_column_html( $image );
+			} elseif ( $this->p->debug->enabled )
+				$this->p->debug->log( 'no image found for column value' );
 
 			return $value;
 		}
@@ -174,33 +196,36 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 					break;
 			}
 
-			$lca = $this->p->cf['lca'];
 			$post_obj = SucomUtil::get_post_object();
-			$post_id = empty( $post_obj->ID ) ? 0 : $post_obj->ID;
+			$post_id = empty( $post_obj->ID ) ?
+				0 : $post_obj->ID;
 
-			// make sure we have at least a post type and post status
-			if ( $post_obj === false || 
-				empty( $post_obj->post_type ) || 
-					empty( $post_obj->post_status ) ) {
+			// make sure we have at least a post type and status
+			if ( ! is_object( $post_obj ) ) {
 				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'exiting early: incomplete post object' );
+					$this->p->debug->log( 'exiting early: post_obj is not an object' );
+				return;
+			} elseif ( empty( $post_obj->post_type ) ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: post_type is empty' );
+				return;
+			} elseif ( empty( $post_obj->post_status ) ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: post_status is empty' );
 				return;
 			}
 
+			$lca = $this->p->cf['lca'];
 			$mod = $this->get_mod( $post_id );
-
 			if ( $this->p->debug->enabled )
 				$this->p->debug->log( SucomDebug::pretty_array( $mod ) );
 
-			if ( $post_obj->post_status !== 'auto-draft' ) {
-
+			if ( $post_obj->post_status === 'auto-draft' ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'head meta skipped: post_status is auto-draft' );
+			} else {
 				$add_metabox = empty( $this->p->options['plugin_add_to_'.$post_obj->post_type] ) ? false : true;
-
-				if ( apply_filters( $lca.'_add_metabox_post', 
-					$add_metabox, $post_id, $post_obj->post_type ) === true ) {
-
-					if ( $this->p->debug->enabled )
-						$this->p->debug->log( 'adding metabox for post' );
+				if ( apply_filters( $lca.'_add_metabox_post', $add_metabox, $post_id ) ) {
 
 					// hooked by woocommerce module to load front-end libraries and start a session
 					do_action( $lca.'_admin_post_header', $mod, $screen->id );
@@ -222,8 +247,7 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 							$this->check_post_header( $post_id, $post_obj );
 					}
 				}
-			} elseif ( $this->p->debug->enabled )
-				$this->p->debug->log( 'skipped head meta: post_status is auto-draft' );
+			} 
 
 			$action_query = $lca.'-action';
 			if ( ! empty( $_GET[$action_query] ) ) {
@@ -285,9 +309,8 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 			$lca = $this->p->cf['lca'];
 			$charset = get_bloginfo( 'charset' );
 			$permalink = get_permalink( $post_id );
-			$permalink_html = SucomUtil::encode_emoji( htmlentities( urldecode( $permalink ), 
+			$permalink_encoded = SucomUtil::encode_emoji( htmlentities( urldecode( $permalink ), 
 				ENT_QUOTES, $charset, false ) );	// double_encode = false
-			$permalink_no_meta = add_query_arg( array( 'NGFB_META_TAGS_DISABLE' => 1 ), $permalink );
 			$check_opts = apply_filters( $lca.'_check_head_meta_options',
 				SucomUtil::preg_grep_keys( '/^add_/', $this->p->options, false, '' ), $post_id );
 
@@ -298,13 +321,11 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 			else $notice_suffix = '';
 
 			$this->p->notice->inf( sprintf( __( 'Checking %1$s for duplicate meta tags', 'nextgen-facebook' ), 
-				'<a href="'.$permalink.'">'.$permalink_html.'</a>' ).$notice_suffix.'...', true );
+				'<a href="'.$permalink.'">'.$permalink_encoded.'</a>' ).$notice_suffix.'...', true );
 
 			// use the permalink and have get_head_meta() remove our own meta tags
 			// to avoid issues with caching plugins that ignore query arguments
-			if ( ( $metas = $this->p->util->get_head_meta( $permalink, 
-				'/html/head/link|/html/head/meta', true ) ) !== false ) {
-
+			if ( ( $metas = $this->p->util->get_head_meta( $permalink, '/html/head/link|/html/head/meta', true ) ) !== false ) {
 				foreach( array(
 					'link' => array( 'rel' ),
 					'meta' => array( 'name', 'itemprop', 'property' ),
@@ -327,83 +348,59 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 		}
 
 		public function add_metaboxes() {
-			if ( ( $post_obj = SucomUtil::get_post_object() ) === false ||
-				empty( $post_obj->post_type ) ) {
 
+			if ( ( $post_obj = SucomUtil::get_post_object() ) === false || 
+				empty( $post_obj->post_type ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'exiting early: object without post type' );
 				return;
-			}
+			} else $post_id = empty( $post_obj->ID ) ? 0 : $post_obj->ID;
 
-			$lca = $this->p->cf['lca'];
-			$post_id = empty( $post_obj->ID ) ? 0 : $post_obj->ID;
-			$user_can_edit = false;		// deny by default
-
-			switch ( $post_obj->post_type ) {
-				case 'page' :
-					if ( current_user_can( 'edit_page', $post_id ) )
-						$user_can_edit = true;
-					break;
-				default :
-					if ( current_user_can( 'edit_post', $post_id ) )
-						$user_can_edit = true;
-					break;
-			}
-
-			if ( $user_can_edit === false ) {
+			if ( ( $post_obj->post_type === 'page' && ! current_user_can( 'edit_page', $post_id ) ) || 
+				! current_user_can( 'edit_post', $post_id ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'insufficient privileges to add metabox for '.$post_obj->post_type.' ID '.$post_id );
 				return;
 			}
 
+			$lca = $this->p->cf['lca'];
 			$add_metabox = empty( $this->p->options[ 'plugin_add_to_'.$post_obj->post_type ] ) ? false : true;
-
-			if ( apply_filters( $lca.'_add_metabox_post', $add_metabox, $post_id ) === true )
-				add_meta_box( NGFB_META_NAME, _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
-					array( &$this, 'show_metabox_post' ), $post_obj->post_type, 'normal', 'low' );
+			if ( apply_filters( $lca.'_add_metabox_post', $add_metabox, $post_id ) ) {
+				add_meta_box( $lca.'_social_settings', _x( 'Social Settings', 'metabox title', 'nextgen-facebook' ),
+					array( &$this, 'show_metabox_social_settings' ), $post_obj->post_type, 'normal', 'low' );
+			}
 		}
 
-		public function show_metabox_post( $post_obj ) {
-			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'metabox post' );
-
-			$lca = $this->p->cf['lca'];
-			$post_id = empty( $post_obj->ID ) ? 0 : $post_obj->ID;
+		public function show_metabox_social_settings( $post_obj ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->log( 'post_id is '.$post_id );
-				$this->p->debug->log( 'post_type is '.
-					( empty( $post_obj->post_type ) ?
-						'empty' : $post_obj->post_type ) );
-				$this->p->debug->log( 'post_status is '.
-					( empty( $post_obj->post_status ) ?
-						'empty' : $post_obj->post_status ) );
+				$this->p->debug->mark();
+				$this->p->debug->log( 'post_id is '.( empty( $post_obj->ID ) ? 0 : $post_obj->ID ) );
+				$this->p->debug->log( 'post_type is '.( empty( $post_obj->post_type ) ? 'empty' : $post_obj->post_type ) );
+				$this->p->debug->log( 'post_status is '.( empty( $post_obj->post_status ) ? 'empty' : $post_obj->post_status ) );
 			}
 
-			$mod = $this->get_mod( $post_id );
-			$opts = $this->get_options( $post_id );				// sanitized when saving
-			$def_opts = $this->get_defaults( $post_id );			// get the complete array
+			$lca = $this->p->cf['lca'];
+			$metabox = 'social_settings';
+			$mod = $this->get_mod( $post_obj->ID );
+			$tabs = $this->get_social_tabs( $metabox, $mod );
+			$opts = $this->get_options( $post_obj->ID );
+			$def_opts = $this->get_defaults( $post_obj->ID );
 			$this->form = new SucomForm( $this->p, NGFB_META_NAME, $opts, $def_opts );
-			wp_nonce_field( NgfbAdmin::get_nonce(), NGFB_NONCE );		// NGFB_NONCE is an md5() string
-
-			$metabox = 'post';
-			$tabs = apply_filters( $lca.'_'.$metabox.'_social_settings_tabs',
-				$this->get_default_tabs(), $mod );
-			if ( empty( $this->p->is_avail['mt'] ) )
-				unset( $tabs['tags'] );
+			wp_nonce_field( NgfbAdmin::get_nonce(), NGFB_NONCE );
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// start timer
+				$this->p->debug->mark( $metabox.' table rows' );	// start timer
 
 			$table_rows = array();
-			foreach ( $tabs as $key => $title )
+			foreach ( $tabs as $key => $title ) {
 				$table_rows[$key] = array_merge( $this->get_table_rows( $metabox, $key, NgfbMeta::$head_meta_info, $mod ), 
-					apply_filters( $lca.'_'.$metabox.'_'.$key.'_rows', 
-						array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+					apply_filters( $lca.'_'.$mod['name'].'_'.$key.'_rows', array(), $this->form, NgfbMeta::$head_meta_info, $mod ) );
+			}
 			$this->p->util->do_metabox_tabs( $metabox, $tabs, $table_rows );
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'table rows' );	// end timer
+				$this->p->debug->mark( $metabox.' table rows' );	// end timer
 		}
 
 		protected function get_table_rows( &$metabox, &$key, &$head, &$mod ) {
@@ -414,19 +411,19 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 				'nextgen-facebook' ), ucfirst( $mod['post_type'] ) );
 
 			$table_rows = array();
-			switch ( $metabox.'-'.$key ) {
-				case 'post-preview':
+			switch ( $key ) {
+				case 'preview':
 					$table_rows = $this->get_rows_social_preview( $this->form, $head, $mod );
 					break;
 
-				case 'post-tags':	
+				case 'tags':	
 					if ( $is_auto_draft )
 						$table_rows[] = '<td><blockquote class="status-info"><p class="centered">'.
 							$auto_draft_msg.'</p></blockquote></td>';
 					else $table_rows = $this->get_rows_head_tags( $this->form, $head, $mod );
 					break; 
 
-				case 'post-validate':
+				case 'validate':
 					if ( $is_auto_draft )
 						$table_rows[] = '<td><blockquote class="status-info"><p class="centered">'.
 							$auto_draft_msg.'</p></blockquote></td>';
@@ -437,7 +434,62 @@ if ( ! class_exists( 'NgfbPost' ) ) {
 		}
 
 		public function clear_cache( $post_id, $rel_id = false ) {
-			$this->p->util->clear_post_cache( $post_id );
+			switch ( get_post_status( $post_id ) ) {
+				case 'draft':
+				case 'pending':
+				case 'future':
+				case 'private':
+				case 'publish':
+					$lca = $this->p->cf['lca'];
+					$locale = SucomUtil::get_locale( $post_id );
+					$permalink = get_permalink( $post_id );
+					$sharing_url = $this->p->util->get_sharing_url( $post_id );
+					$locale_salt = 'locale:'.$locale.'_post:'.$post_id;
+
+					// transients persist from one page load to another
+					$transients = array(
+						'SucomCache::get' => array(
+							'url:'.$permalink,
+						),
+						'NgfbHead::get_header_array' => array( 
+							$locale_salt.'_url:'.$sharing_url,
+							$locale_salt.'_url:'.$sharing_url.'_amp:true',
+							$locale_salt.'_url:'.$sharing_url.'_crawler:pinterest',
+						),
+						'NgfbMeta::get_mod_column_content' => array( 
+							$locale_salt.'_column:'.$lca.'_og_img',
+							$locale_salt.'_column:'.$lca.'_og_desc',
+						),
+					);
+					$transients = apply_filters( $lca.'_post_cache_transients', $transients, $post_id, $locale, $sharing_url );
+
+					// wp objects are only available for the duration of a single page load
+					$wp_objects = array(
+						'SucomWebpage::get_content' => array(
+							$locale_salt.'_filtered',
+							$locale_salt.'_unfiltered',
+						),
+						'SucomWebpage::get_hashtags' => array(
+							$locale_salt,
+						),
+					);
+					$wp_objects = apply_filters( $lca.'_post_cache_objects', $wp_objects, $post_id, $locale, $sharing_url );
+
+					$deleted = $this->p->util->clear_cache_objects( $transients, $wp_objects );
+
+					if ( ! empty( $this->p->options['plugin_cache_info'] ) && $deleted > 0 )
+						$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.', 
+							true, true, __FUNCTION__.'_items_removed', true );
+
+					if ( function_exists( 'w3tc_pgcache_flush_post' ) )	// w3 total cache
+						w3tc_pgcache_flush_post( $post_id );
+
+					if ( function_exists( 'wp_cache_post_change' ) )	// wp super cache
+						wp_cache_post_change( $post_id );
+
+					break;
+			}
+
 			return $post_id;
 		}
 

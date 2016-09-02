@@ -33,6 +33,7 @@ if ( ! class_exists( 'SucomCache' ) ) {
 			$this->p =& $plugin;
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
+
 			$this->verify_certs = empty( $this->p->options['plugin_verify_certs'] ) ? 0 : 1;
 			$this->base_dir = trailingslashit( constant( $this->p->cf['uca'].'_CACHEDIR' ) );
 			$this->base_url = trailingslashit( constant( $this->p->cf['uca'].'_CACHEURL' ) );
@@ -90,7 +91,7 @@ if ( ! class_exists( 'SucomCache' ) ) {
 		public function clear( $url, $url_ext = '' ) {
 
 			$get_url = preg_replace( '/#.*$/', '', $url );	// remove the fragment
-			$cache_salt = __CLASS__.'::salt(url:'.$get_url.')';
+			$cache_salt = __CLASS__.'::get(url:'.$get_url.')';
 			$cache_id = $this->p->cf['lca']. '_'.md5( $cache_salt );	// add a prefix to the object cache id
 
 			/*
@@ -119,9 +120,7 @@ if ( ! class_exists( 'SucomCache' ) ) {
 					$url_ext = '.'.$url_ext;
 			}
 
-			$cache_id = md5( $cache_salt );		// no lca prefix on filenames
-			$cache_file = $this->base_dir.$cache_id.$url_ext;
-
+			$cache_file = $this->base_dir.md5( $cache_salt ).$url_ext;
 			if ( file_exists( $cache_file ) && @unlink( $cache_file ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'clear file cache: '.$cache_file );
@@ -138,8 +137,8 @@ if ( ! class_exists( 'SucomCache' ) ) {
 					$this->p->debug->log( 'exiting early: curl extension not available' );
 				return $return == 'url' ? $url : false;
 
-			} elseif ( defined( $this->p->cf['uca'].'_CURL_DISABLE' ) && 
-				constant( $this->p->cf['uca'].'_CURL_DISABLE' ) ) {
+			} elseif ( defined( $this->p->cf['uca'].'_PHP_CURL_DISABLE' ) && 
+				constant( $this->p->cf['uca'].'_PHP_CURL_DISABLE' ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'exiting early: curl has been disabled' );
 				return $return == 'url' ? $url : false;
@@ -161,10 +160,9 @@ if ( ! class_exists( 'SucomCache' ) ) {
 			if ( ! empty( $url_frag ) ) 
 				$url_frag = '#'.$url_frag;
 
-			$cache_salt = __CLASS__.'::salt(url:'.$get_url.')';
-			$cache_id = md5( $cache_salt );		// no lca prefix on filenames
-			$cache_file = $this->base_dir.$cache_id.$url_ext;
-			$cache_url = $this->base_url.$cache_id.$url_ext.$url_frag;
+			$cache_salt = __CLASS__.'::get(url:'.$get_url.')';	// SucomCache::get()
+			$cache_file = $this->base_dir.md5( $cache_salt ).$url_ext;
+			$cache_url = $this->base_url.md5( $cache_salt ).$url_ext.$url_frag;
 			$cache_data = false;
 
 			// return immediately if the cache contains what we need
@@ -205,25 +203,25 @@ if ( ! class_exists( 'SucomCache' ) ) {
 			curl_setopt( $ch, CURLOPT_TIMEOUT, $this->timeout );
 			curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $this->connect_timeout );
 
-			if( ini_get('safe_mode') || ini_get('open_basedir') ) {
+			if ( ini_get('safe_mode') || ini_get('open_basedir') ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'PHP safe_mode or open_basedir defined, cannot use CURLOPT_FOLLOWLOCATION' );
 			} else {
-				curl_setopt( $ch, CURLOPT_MAXREDIRS, 3 );
+				curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
 				curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
 			}
 
-			if ( defined( $this->p->cf['uca'].'_CURL_USERAGENT' ) ) 
+			if ( defined( $this->p->cf['uca'].'_PHP_CURL_USERAGENT' ) ) 
 				curl_setopt( $ch, CURLOPT_USERAGENT, 
-					constant( $this->p->cf['uca'].'_CURL_USERAGENT' ) );
+					constant( $this->p->cf['uca'].'_PHP_CURL_USERAGENT' ) );
 
-			if ( defined( $this->p->cf['uca'].'_CURL_PROXY' ) ) 
+			if ( defined( $this->p->cf['uca'].'_PHP_CURL_PROXY' ) ) 
 				curl_setopt( $ch, CURLOPT_PROXY, 
-					constant( $this->p->cf['uca'].'_CURL_PROXY' ) );
+					constant( $this->p->cf['uca'].'_PHP_CURL_PROXY' ) );
 
-			if ( defined( $this->p->cf['uca'].'_CURL_PROXYUSERPWD' ) ) 
+			if ( defined( $this->p->cf['uca'].'_PHP_CURL_PROXYUSERPWD' ) ) 
 				curl_setopt( $ch, CURLOPT_PROXYUSERPWD, 
-					constant( $this->p->cf['uca'].'_CURL_PROXYUSERPWD' ) );
+					constant( $this->p->cf['uca'].'_PHP_CURL_PROXYUSERPWD' ) );
 
 			if ( empty( $this->verify_certs) ) {
 				curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
@@ -232,9 +230,9 @@ if ( ! class_exists( 'SucomCache' ) ) {
 				curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
 				curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 1 );
 
-				if ( defined( $this->p->cf['uca'].'_CURL_CAINFO' ) ) 
+				if ( defined( $this->p->cf['uca'].'_PHP_CURL_CAINFO' ) ) 
 					curl_setopt( $ch, CURLOPT_CAINFO, 
-						constant( $this->p->cf['uca'].'_CURL_CAINFO' ) );
+						constant( $this->p->cf['uca'].'_PHP_CURL_CAINFO' ) );
 			}
 
 			if ( $curl_userpwd !== false )

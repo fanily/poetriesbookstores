@@ -80,7 +80,7 @@ if ( ! class_exists( 'SucomDebug' ) ) {
 			else return round( $mem / 1048576, 2).' mb'; 
 		}
 
-		public function args( $args = array(), $class_idx = 1, $function_idx = false ) { 
+		public function log_args( array $arr, $class_idx = 1, $function_idx = false ) { 
 			if ( $this->enabled !== true ) 
 				return;
 
@@ -95,12 +95,31 @@ if ( ! class_exists( 'SucomDebug' ) ) {
 			elseif ( $function_idx === false )
 				$function_idx = 2;
 
-			$this->log( 'args '.self::pretty_array( $args, true ), $class_idx, $function_idx ); 
+			$this->log( 'args '.self::pretty_array( $arr, true ), $class_idx, $function_idx );
+		}
+
+		public function log_arr( $name, array $arr, $class_idx = 1, $function_idx = false ) {
+			if ( $this->enabled !== true ) 
+				return;
+
+			if ( is_int( $class_idx ) ) {
+				if ( $function_idx === false )
+					$function_idx = $class_idx;
+				$class_idx++;
+			}
+
+			if ( is_int( $function_idx ) )
+				$function_idx++;
+			elseif ( $function_idx === false )
+				$function_idx = 2;
+
+			$this->log( $name.' '.trim( print_r( self::pretty_array( $arr ), true ) ), $class_idx, $function_idx );
 		}
 
 		public function log( $input = '', $class_idx = 1, $function_idx = false ) {
 			if ( $this->enabled !== true ) 
 				return;
+
 			$log_msg = '';
 			$stack = debug_backtrace();
 
@@ -248,9 +267,8 @@ if ( ! class_exists( 'SucomDebug' ) ) {
 		public static function get_hooks( $hook = '' ) {
 			global $wp_filter;
 
-			$hooks = isset( $wp_filter[$hook] ) ?
-				$wp_filter[$hook] : array();  
-			$hooks = call_user_func_array( 'array_merge', $hooks );
+			$hooks = empty( $wp_filter[$hook] ) ?
+				array() : call_user_func_array( 'array_merge', $wp_filter[$hook] );
 		
 			foreach( $hooks as &$item ) {
 				// function name as string or static class method eg. 'Foo::Bar'

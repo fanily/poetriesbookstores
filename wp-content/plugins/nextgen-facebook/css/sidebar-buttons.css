@@ -1,6 +1,6 @@
 /* Save an empty style text box to reload the default example styles.
  * These styles are provided as examples only - modifications may be 
- * necessary to customize the layout for your website. Social sharing
+ * necessary to customize the layout for your website. Social share
  * buttons can be aligned vertically, horizontally, floated, etc.
  */
 
@@ -29,7 +29,7 @@
 	*/
 }
 
-/* show a large sharing icon at the top
+/* show a large share icon at the top
  * using javascript, this header can be hovered/clicked to 
  * show/hide the sidebar
 #ngfb-sidebar-header { 
@@ -86,6 +86,10 @@
 #ngfb-sidebar .ngfb-buttons div.twitter-button,
 #ngfb-sidebar .ngfb-preset-large_share_vertical
 	.ngfb-buttons div.twitter-button { height:20px; line-height:20px; }
+
+#ngfb-sidebar .ngfb-buttons div.fb-share-button,
+#ngfb-sidebar .ngfb-preset-large_share_vertical
+	.ngfb-buttons div.fb-share-button { height:40px; line-height:40px;}
 
 #ngfb-sidebar .ngfb-buttons div.gplus-button,
 #ngfb-sidebar .ngfb-preset-large_share_vertical

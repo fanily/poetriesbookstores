@@ -67,7 +67,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 			$this->p =& $plugin;
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'action / filter setup' );	// begin timer
+				$this->p->debug->mark( 'sharing action / filter setup' );	// begin timer
 
 			$this->plugin_filepath = $plugin_filepath;
 
@@ -103,6 +103,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 				$this->p->util->add_plugin_filters( $this, array( 
 					'save_options' => 3,			// update the sharing css file
 					'option_type' => 2,			// identify option type for sanitation
+					'post_social_settings_tabs' => 2,	// $tabs, $mod
 					'post_cache_transients' => 4,		// clear transients on post save
 					'secondary_action_buttons' => 4,	// add a reload default styles button
 				) );
@@ -118,7 +119,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 			}
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->mark( 'action / filter setup' );	// end timer
+				$this->p->debug->mark( 'sharing action / filter setup' );	// end timer
 		}
 
 		private function set_objects() {
@@ -149,7 +150,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 			$def_opts = $this->p->util->add_ptns_to_opts( $def_opts, 'buttons_add_to' );
 			$plugin_dir = trailingslashit( realpath( dirname( $this->plugin_filepath ) ) );
 			$url_path = parse_url( trailingslashit( plugins_url( '', $this->plugin_filepath ) ), PHP_URL_PATH );	// relative URL
-			$tabs = apply_filters( $this->p->cf['lca'].'_sharing_styles_tabs', $this->p->cf['sharing']['style'] );
+			$tabs = apply_filters( $this->p->cf['lca'].'_sharing_styles_tabs', $this->p->cf['sharing']['styles'] );
 
 			foreach ( $tabs as $id => $name ) {
 				$buttons_css_file = $plugin_dir.'css/'.$id.'-buttons.css';
@@ -185,12 +186,9 @@ jQuery("#ngfb-sidebar-header").click( function(){
 		}
 
 		public function filter_option_type( $type, $key ) {
+
 			if ( ! empty( $type ) )
 				return $type;
-
-			// remove localization for more generic match
-			if ( strpos( $key, '#' ) !== false )
-				$key = preg_replace( '/#.*$/', '', $key );
 
 			switch ( $key ) {
 				// integer options that must be 1 or more (not zero)
@@ -232,6 +230,11 @@ jQuery("#ngfb-sidebar-header").click( function(){
 			return $type;
 		}
 
+		public function filter_post_social_settings_tabs( $tabs, $mod ) {
+			return SucomUtil::after_key( $tabs, 'media', 'buttons',
+				_x( 'Sharing Buttons', 'metabox tab', 'nextgen-facebook' ) );
+		}
+
 		public function filter_post_cache_transients( $transients, $post_id, $locale, $sharing_url ) {
 			$locale_salt = 'locale:'.$locale.'_post:'.$post_id;
 			$show_on = apply_filters( $this->p->cf['lca'].'_buttons_show_on', 
@@ -253,7 +256,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 				$features['(sharing) Sharing Buttons'] = array(
 					'classname' => $ext.'Sharing',
 				);
-			if ( ! empty( $info['lib']['submenu']['style'] ) )
+			if ( ! empty( $info['lib']['submenu']['styles'] ) )
 				$features['(sharing) Sharing Stylesheet'] = array(
 					'status' => $this->p->options['buttons_use_social_css'] ? 'on' : 'off',
 				);
@@ -286,7 +289,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 		}
 
 		public function filter_secondary_action_buttons( $actions, $menu_id, $menu_name, $menu_lib ) {
-			if ( $menu_id === 'style' )
+			if ( $menu_id === 'styles' )
 				$actions['reload_default_sharing_styles'] = _x( 'Reload Default Styles', 'submit button', 'nextgen-facebook' );
 			return $actions;
 		}
@@ -295,7 +298,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 			$opts =& $this->p->options;
 			$def_opts = $this->p->opt->get_defaults();
 			$tabs = apply_filters( $this->p->cf['lca'].'_sharing_styles_tabs', 
-				$this->p->cf['sharing']['style'] );
+				$this->p->cf['sharing']['styles'] );
 
 			foreach ( $tabs as $id => $name )
 				if ( isset( $opts['buttons_css_'.$id] ) &&
@@ -304,7 +307,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 
 			$this->update_sharing_css( $opts );
 			$this->p->opt->save_options( NGFB_OPTIONS_NAME, $opts, false );
-			$this->p->notice->inf( __( 'All sharing styles have been reloaded with their default settings and saved.', 'nextgen-facebook' ) );
+			$this->p->notice->upd( __( 'All sharing styles have been reloaded with their default settings and saved.', 'nextgen-facebook' ) );
 		}
 
 		public function wp_enqueue_styles() {
@@ -316,10 +319,10 @@ jQuery("#ngfb-sidebar-header").click( function(){
 				}
 				if ( ! empty( $this->p->options['buttons_enqueue_social_css'] ) ) {
 					if ( $this->p->debug->enabled )
-						$this->p->debug->log( 'wp_enqueue_style = '.$this->p->cf['lca'].'_sharing_buttons' );
-					wp_register_style( $this->p->cf['lca'].'_sharing_buttons', self::$sharing_css_url, 
+						$this->p->debug->log( 'wp_enqueue_style = '.$this->p->cf['lca'].'_sharing_css' );
+					wp_register_style( $this->p->cf['lca'].'_sharing_css', self::$sharing_css_url, 
 						false, $this->p->cf['plugin'][$this->p->cf['lca']]['version'] );
-					wp_enqueue_style( $this->p->cf['lca'].'_sharing_buttons' );
+					wp_enqueue_style( $this->p->cf['lca'].'_sharing_css' );
 				} else {
 					if ( ! is_readable( self::$sharing_css_file ) ) {
 						if ( $this->p->debug->enabled )
@@ -350,7 +353,7 @@ jQuery("#ngfb-sidebar-header").click( function(){
 
 			$css_data = '';
 			$tabs = apply_filters( $this->p->cf['lca'].'_sharing_styles_tabs', 
-				$this->p->cf['sharing']['style'] );
+				$this->p->cf['sharing']['styles'] );
 
 			foreach ( $tabs as $id => $name )
 				if ( isset( $opts['buttons_css_'.$id] ) )
@@ -379,8 +382,9 @@ jQuery("#ngfb-sidebar-header").click( function(){
 				} elseif ( $this->p->debug->enabled ) {
 					$this->p->debug->log( 'updated css file '.self::$sharing_css_file.' ('.$written.' bytes written)' );
 					if ( is_admin() )
-						$this->p->notice->inf( sprintf( __( 'Updated the <a href="%1$s">%2$s</a> stylesheet (%3$d bytes written).',
-							'nextgen-facebook' ), self::$sharing_css_url, self::$sharing_css_file, $written ), true );
+						$this->p->notice->upd( sprintf( __( 'Updated the <a href="%1$s">%2$s</a> stylesheet (%3$d bytes written).',
+							'nextgen-facebook' ), self::$sharing_css_url, self::$sharing_css_file, $written ), 
+								true, true, 'updated_'.self::$sharing_css_file, true );
 				}
 				fclose( $fh );
 			} else {
@@ -625,25 +629,25 @@ jQuery("#ngfb-sidebar-header").click( function(){
 				ksort( $sorted_ids );
 
 				$atts['use_post'] = $use_post;
-				$atts['css_id'] = $css_type = $type.'-buttons';
+				$atts['css_id'] = $css_type_name = $type.'-buttons';
 
 				if ( ! empty( $this->p->options['buttons_preset_'.$type] ) ) {
 					$atts['preset_id'] = $this->p->options['buttons_preset_'.$type];
-					$css_preset = $lca.'-preset-'.$atts['preset_id'];
-				} else $css_preset = '';
+					$css_preset_name = $lca.'-preset-'.$atts['preset_id'];
+				} else $css_preset_name = '';
 
 				$buttons_html = $this->get_html( $sorted_ids, $atts, $mod );
 
 				if ( trim( $buttons_html ) ) {
 					$html = '
-<!-- '.$lca.' '.$css_type.' begin -->
+<!-- '.$lca.' '.$css_type_name.' begin -->
 <!-- generated on '.date( 'c' ).' -->
 <div class="'.
-	( $css_preset ? $css_preset.' ' : '' ).
-	( $use_post ? $lca.'-'.$css_type.'">' : '" id="'.$lca.'-'.$css_type.'">' ).
+	( $css_preset_name ? $css_preset_name.' ' : '' ).
+	( $use_post ? $lca.'-'.$css_type_name.'">' : '" id="'.$lca.'-'.$css_type_name.'">' ).
 $buttons_html."\n".
-'</div><!-- .'.$lca.'-'.$css_type.' -->
-<!-- '.$lca.' '.$css_type.' end -->'."\n\n";
+'</div><!-- .'.$lca.'-'.$css_type_name.' -->
+<!-- '.$lca.' '.$css_type_name.' end -->'."\n\n";
 
 					if ( $this->p->is_avail['cache']['transient'] ) {
 						set_transient( $cache_id, $html, $this->p->options['plugin_object_cache_exp'] );
@@ -675,61 +679,65 @@ $buttons_html."\n".
 		}
 
 		// get_html() is called by the widget, shortcode, function, and perhaps some filter hooks
-		public function get_html( array &$ids, array &$atts, &$mod = false ) {
+		public function get_html( array $ids, array $atts, $mod = false ) {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
 			$lca = $this->p->cf['lca'];
-			$use_post = isset( $atts['use_post'] ) ?
-				$atts['use_post'] : true;
+			$atts['use_post'] = isset( $atts['use_post'] ) ? $atts['use_post'] : true;	// maintain backwards compat
+			$atts['add_page'] = isset( $atts['add_page'] ) ? $atts['add_page'] : true;	// used by get_sharing_url()
+			$atts['preset_id'] = isset( $atts['preset_id'] ) ? SucomUtil::sanitize_key( $atts['preset_id'] ) : '';
+			$atts['filter_id'] = isset( $atts['filter_id'] ) ? SucomUtil::sanitize_key( $atts['filter_id'] ) : '';
+
 			if ( ! is_array( $mod ) )
-				$mod = $this->p->util->get_page_mod( $use_post );	// get post/user/term id, module name, and module object reference
+				$mod = $this->p->util->get_page_mod( $atts['use_post'] );	// get post/user/term id, module name, and module object reference
 
 			$html_ret = '';
 			$html_begin = "\n".'<div class="ngfb-buttons '.SucomUtil::get_locale( $mod ).'">'."\n";
 			$html_end = "\n".'</div><!-- .ngfb-buttons.'.SucomUtil::get_locale( $mod ).' -->';
 
-			$preset_id = empty( $atts['preset_id'] ) ? 
-				'' : preg_replace( '/[^a-z0-9\-_]/', '', $atts['preset_id'] );
-			$filter_id = empty( $atts['filter_id'] ) ? 
-				'' : preg_replace( '/[^a-z0-9\-_]/', '', $atts['filter_id'] );
-
 			// possibly dereference the opts variable to prevent passing on changes
-			if ( empty( $preset_id ) && empty( $filter_id ) )
+			if ( empty( $atts['preset_id'] ) && empty( $atts['filter_id'] ) )
 				$custom_opts =& $this->p->options;
 			else $custom_opts = $this->p->options;
 
 			// apply the presets to $custom_opts
-			if ( ! empty( $preset_id ) && ! empty( $this->p->cf['opt']['preset'] ) ) {
-				if ( isset( $this->p->cf['opt']['preset'][$preset_id] ) &&
-					is_array( $this->p->cf['opt']['preset'][$preset_id] ) ) {
-
+			if ( ! empty( $atts['preset_id'] ) && ! empty( $this->p->cf['opt']['preset'] ) ) {
+				if ( isset( $this->p->cf['opt']['preset'][$atts['preset_id']] ) &&
+					is_array( $this->p->cf['opt']['preset'][$atts['preset_id']] ) ) {
 					if ( $this->p->debug->enabled )
-						$this->p->debug->log( 'applying preset_id '.$preset_id.' to options' );
-					$custom_opts = array_merge( $custom_opts, 
-						$this->p->cf['opt']['preset'][$preset_id] );
-
+						$this->p->debug->log( 'applying preset_id '.$atts['preset_id'].' to options' );
+					$custom_opts = array_merge( $custom_opts, $this->p->cf['opt']['preset'][$atts['preset_id']] );
 				} elseif ( $this->p->debug->enabled )
-					$this->p->debug->log( $preset_id.' preset_id missing or not array'  );
+					$this->p->debug->log( $atts['preset_id'].' preset_id missing or not array'  );
 			} 
 
-			if ( ! empty( $filter_id ) ) {
-				$filter_name = $lca.'_sharing_html_'.$filter_id.'_options';
+			// apply the filter_id if the filter name has hooks
+			if ( ! empty( $atts['filter_id'] ) ) {
+				$filter_name = $lca.'_sharing_html_'.$atts['filter_id'].'_options';
 				if ( has_filter( $filter_name ) ) {
-
 					if ( $this->p->debug->enabled )
-						$this->p->debug->log( 'applying filter_id '.$filter_id.' to options ('.$filter_name.')' );
+						$this->p->debug->log( 'applying filter_id '.$atts['filter_id'].' to options ('.$filter_name.')' );
 					$custom_opts = apply_filters( $filter_name, $custom_opts );
-
 				} elseif ( $this->p->debug->enabled )
 					$this->p->debug->log( 'no filter(s) found for '.$filter_name );
 			}
 
+			$saved_atts = $atts;
 			foreach ( $ids as $id ) {
 				if ( isset( $this->website[$id] ) ) {
 					if ( method_exists( $this->website[$id], 'get_html' ) ) {
 						if ( $this->allow_for_platform( $id ) ) {
+
+							$atts['src_id'] = SucomUtil::get_atts_src_id( $atts, $id );	// uses 'css_id' and 'use_post'
+							$atts['url'] = empty( $atts['url'] ) ? 				// used by get_inline_vals()
+								$this->p->util->get_sharing_url( $mod, 
+									$atts['add_page'], $atts['src_id'] ) : 
+								apply_filters( $lca.'_sharing_url', $atts['url'], 
+									$mod, $atts['add_page'], $atts['src_id'] );
 							$html_ret .= $this->website[$id]->get_html( $atts, $custom_opts, $mod )."\n";
+							$atts = $saved_atts;	// restore the common $atts array
+
 						} elseif ( $this->p->debug->enabled )
 							$this->p->debug->log( $id.' not allowed for platform' );
 					} elseif ( $this->p->debug->enabled )
@@ -739,8 +747,10 @@ $buttons_html."\n".
 			}
 
 			$html_ret = trim( $html_ret );
+
 			if ( ! empty( $html_ret ) )
 				$html_ret = $html_begin.$html_ret.$html_end;
+
 			return $html_ret;
 		}
 
@@ -882,27 +892,6 @@ $buttons_html."\n".
 		script_pos.parentNode.insertBefore( js, script_pos );
 	};
 </script>'."\n";
-		}
-
-		public static function get_css_class_id( $css_name, &$atts = array(), $css_class_extra = '' ) {
-
-			foreach ( array( 'css_class', 'css_id' ) as $key )
-				if ( empty( $atts[$key] ) )
-					$atts[$key] = 'button';
-
-			$css_class = $css_name.'-'.$atts['css_class'];
-			$css_id = $css_name.'-'.$atts['css_id'];
-
-			if ( is_singular() || in_the_loop() ) {
-				global $post;
-				if ( ! empty( $post->ID ) )
-					$css_id .= '-post-'.$post->ID;
-			}
-
-			if ( ! empty( $css_class_extra ) ) 
-				$css_class = $css_class_extra.' '.$css_class;
-
-			return 'class="'.$css_class.'" id="'.$css_id.'"';
 		}
 
 		public function have_buttons_for_type( $type ) {

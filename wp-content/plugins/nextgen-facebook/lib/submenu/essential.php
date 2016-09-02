@@ -34,26 +34,23 @@ if ( ! class_exists( 'NgfbSubmenuEssential' ) && class_exists( 'NgfbAdmin' ) ) {
 					array( &$this, 'show_metabox_advanced' ), $this->pagehook, 'normal' );
 
 			// issues a warning notice if the default image size is too small
-			if ( ! SucomUtil::get_const( 'NGFB_CHECK_DEFAULT_IMAGE' ) )
+			// unless the NGFB_CHECK_DEFAULT_IMAGE constant has been defined as false
+			if ( SucomUtil::get_const( 'NGFB_CHECK_DEFAULT_IMAGE' ) !== false )
 				$og_image = $this->p->media->get_default_image( 1, $this->p->cf['lca'].'-opengraph', false );
 		}
 
 		public function show_metabox_general() {
 			$metabox = $this->menu_id;
 			$key = 'general';
-			$table_rows[$key] = array_merge( $this->get_table_rows( $metabox, $key ),
-				apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows',
-					array(), $this->form, false ) );        // $network = false
-			$this->p->util->do_table_rows( $table_rows[$key], 'metabox-'.$metabox.'-'.$key );
+			$this->p->util->do_table_rows( apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows',
+				$this->get_table_rows( $metabox, $key ), $this->form, false ), 'metabox-'.$metabox.'-'.$key );
 		}
 
 		public function show_metabox_advanced() {
 			$metabox = $this->menu_id;
 			$key = 'advanced';
-			$table_rows[$key] = array_merge( $this->get_table_rows( $metabox, $key ),
-				apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows',
-					array(), $this->form, false ) );        // $network = false
-			$this->p->util->do_table_rows( $table_rows[$key], 'metabox-'.$metabox.'-'.$key );
+			$this->p->util->do_table_rows( apply_filters( $this->p->cf['lca'].'_'.$metabox.'_'.$key.'_rows',
+				$this->get_table_rows( $metabox, $key ), $this->form, false ), 'metabox-'.$metabox.'-'.$key );
 		}
 
 		protected function get_table_rows( $metabox, $key ) {
@@ -68,12 +65,12 @@ if ( ! class_exists( 'NgfbSubmenuEssential' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'og_art_section' ).
 					'<td>'.$this->form->get_select( 'og_art_section', $this->p->util->get_topics() ).'</td>';
 
-					$table_rows['og_site_name'] = $this->form->get_th_html( _x( 'Site Name',
+					$table_rows['og_site_name'] = $this->form->get_th_html( _x( 'Website Name',
 						'option label', 'nextgen-facebook' ), null, 'og_site_name', array( 'is_locale' => true ) ).
 					'<td>'.$this->form->get_input( SucomUtil::get_key_locale( 'og_site_name', $this->p->options ),
 						null, null, null, get_bloginfo( 'name', 'display' ) ).'</td>';
 
-					$table_rows['og_site_description'] = $this->form->get_th_html( _x( 'Site Description',
+					$table_rows['og_site_description'] = $this->form->get_th_html( _x( 'Website Description',
 						'option label', 'nextgen-facebook' ), null, 'og_site_description', array( 'is_locale' => true ) ).
 					'<td>'.$this->form->get_textarea( SucomUtil::get_key_locale( 'og_site_description', $this->p->options ),
 						null, null, null, get_bloginfo( 'description', 'display' ) ).'</td>';
@@ -123,7 +120,7 @@ if ( ! class_exists( 'NgfbSubmenuEssential' ) && class_exists( 'NgfbAdmin' ) ) {
 						'option label', 'nextgen-facebook' ), null, 'schema_social_json' ).
 					'<td>'.
 					'<p>'.$this->form->get_checkbox( 'schema_website_json' ).' '.
-						sprintf( __( 'Include <a href="%s">WebSite Information</a> for Google Search',
+						sprintf( __( 'Include <a href="%s">Website Information</a> for Google Search',
 							'nextgen-facebook' ), 'https://developers.google.com/structured-data/site-name' ).'</p>'.
 					'<p>'.$this->form->get_checkbox( 'schema_organization_json' ).
 						sprintf( __( ' Include <a href="%s">Organization Social Profile</a>',
@@ -134,8 +131,9 @@ if ( ! class_exists( 'NgfbSubmenuEssential' ) && class_exists( 'NgfbAdmin' ) ) {
 								$this->form->get_select( 'schema_person_id', $users, null, null, true ).'</p>'.
 					'</td>';
 
-					$table_rows['schema_logo_url'] = $this->form->get_th_html( '<a href="https://developers.google.com/structured-data/customize/logos">'.
-						_x( 'Business / Organization Logo URL', 'option label', 'nextgen-facebook' ).'</a>', null, 'schema_logo_url' ).
+					$table_rows['schema_logo_url'] = $this->form->get_th_html( 
+						'<a href="https://developers.google.com/structured-data/customize/logos" target="_blank">'.
+						_x( 'Organization Logo Image URL', 'option label', 'nextgen-facebook' ).'</a>', null, 'schema_logo_url' ).
 					'<td>'.$this->form->get_input( 'schema_logo_url', 'wide' ).'</td>';
 
 					$table_rows['subsection_pinterest'] = '<td></td><td class="subsection"><h4>'.
@@ -163,12 +161,6 @@ if ( ! class_exists( 'NgfbSubmenuEssential' ) && class_exists( 'NgfbAdmin' ) ) {
 					$table_rows['plugin_preserve'] = $this->form->get_th_html( _x( 'Preserve Settings on Uninstall',
 						'option label', 'nextgen-facebook' ), null, 'plugin_preserve' ).
 					'<td>'.$this->form->get_checkbox( 'plugin_preserve' ).'</td>';
-
-					$table_rows['plugin_debug'] = $this->form->get_th_html( _x( 'Add Hidden Debug Messages', 
-						'option label', 'nextgen-facebook' ), null, 'plugin_debug' ).
-					'<td>'.( SucomUtil::get_const( 'NGFB_HTML_DEBUG' ) ? 
-						$this->form->get_no_checkbox( 'plugin_debug' ).' <em>NGFB_HTML_DEBUG constant is true</em>' :
-						$this->form->get_checkbox( 'plugin_debug' ) ).'</td>';
 
 					break;
 			}

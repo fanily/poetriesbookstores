@@ -5,14 +5,15 @@
  * Text Domain: nextgen-facebook
  * Domain Path: /languages
  * Plugin URI: http://surniaulula.com/extend/plugins/nextgen-facebook/
+ * Assets URI: https://surniaulula.github.io/nextgen-facebook/assets/
  * Author: JS Morisset
  * Author URI: http://surniaulula.com/
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl.txt
- * Description: The most complete meta tags for the best looking shares on Facebook, G+, Twitter, Pinterest, etc. - no matter how your webpage is shared!
+ * Description: Complete meta tags for the best looking shares on Facebook, Google, Pinterest, Twitter, etc - no matter how your webpage is shared!
  * Requires At Least: 3.1
- * Tested Up To: 4.5.2
- * Version: 8.32.3-1
+ * Tested Up To: 4.6
+ * Version: 8.34.3-1
  *
  * Version Numbers: {major}.{minor}.{bugfix}-{stage}{level}
  *
@@ -36,12 +37,12 @@ if ( ! class_exists( 'Ngfb' ) ) {
 		public $p;			// Ngfb
 		public $admin;			// NgfbAdmin (admin menus and page loader)
 		public $cache;			// SucomCache (object and file caching)
-		public $debug;			// SucomDebug or NgfbNoDebug
+		public $debug;			// SucomDebug or SucomNoDebug
 		public $head;			// NgfbHead
 		public $loader;			// NgfbLoader
 		public $media;			// NgfbMedia (images, videos, etc.)
 		public $msgs;			// NgfbMessages (admin tooltip messages)
-		public $notice;			// SucomNotice or NgfbNoNotice
+		public $notice;			// SucomNotice or SucomNoNotice
 		public $og;			// NgfbOpengraph
 		public $tc;			// NgfbTwittercard
 		public $opt;			// NgfbOptions
@@ -81,17 +82,47 @@ if ( ! class_exists( 'Ngfb' ) ) {
 			NgfbConfig::require_libs( __FILE__ );			// includes the register.php class library
 			$this->reg = new NgfbRegister( $this );			// activate, deactivate, uninstall hooks
 
-			add_action( 'init', array( &$this, 'set_config' ), -1 );
+			add_action( 'init', array( &$this, 'set_config' ), -10 );
 			add_action( 'init', array( &$this, 'init_plugin' ), NGFB_INIT_PRIORITY );
 			add_action( 'widgets_init', array( &$this, 'init_widgets' ), 10 );
 		}
 
-		// runs at init priority -1
+		// runs at init priority -10
 		public function set_config() {
 			$this->cf = NgfbConfig::get_config( false, true );	// apply filters - define the $cf['*'] array
 		}
 
-		// runs at init priority 1
+		// runs at init priority 13 (by default)
+		public function init_plugin() {
+
+			$this->set_objects();				// define the class object variables
+
+			if ( $this->debug->enabled )
+				$this->debug->mark( 'plugin initialization' );
+
+			if ( $this->debug->enabled ) {
+				foreach ( array( 'wp_head', 'wp_footer', 'admin_head', 'admin_footer' ) as $action ) {
+					foreach ( array( -9999, 9999 ) as $prio ) {
+						add_action( $action, create_function( '', 'echo "<!-- ngfb '.
+							$action.' action hook priority '.$prio.' mark -->\n";' ), $prio );
+						add_action( $action, array( &$this, 'show_debug_html' ), $prio );
+					}
+				}
+			}
+
+			if ( $this->debug->enabled )
+				$this->debug->log( 'running init_plugin action' );
+			do_action( 'ngfb_init_plugin' );
+
+			if ( $this->debug->enabled )
+				$this->debug->mark( 'plugin initialization' );
+		}
+
+		public function show_debug_html() { 
+			if ( $this->debug->enabled )
+				$this->debug->show_html();
+		}
+
 		public function init_widgets() {
 			$opts = get_option( NGFB_OPTIONS_NAME );
 			if ( ! empty( $opts['plugin_widgets'] ) ) {
@@ -105,30 +136,6 @@ if ( ! class_exists( 'Ngfb' ) ) {
 					}
 				}
 			}
-		}
-
-		// runs at init priority 13 (by default)
-		public function init_plugin() {
-			if ( ! empty( $_SERVER['NGFB_DISABLE'] ) ) 
-				return;
-
-			$this->set_objects();				// define the class object variables
-
-			if ( $this->debug->enabled ) {
-				foreach ( array( 'wp_head', 'wp_footer', 'admin_head', 'admin_footer' ) as $action ) {
-					foreach ( array( -9999, 9999 ) as $prio ) {
-						add_action( $action, create_function( '', 'echo "<!-- ngfb '.
-							$action.' action hook priority '.$prio.' mark -->\n";' ), $prio );
-						add_action( $action, array( &$this, 'show_debug_html' ), $prio );
-					}
-				}
-			}
-			do_action( 'ngfb_init_plugin' );
-		}
-
-		public function show_debug_html() { 
-			if ( $this->debug->enabled )
-				$this->debug->show_html();
 		}
 
 		// called by activate_plugin() as well
@@ -149,17 +156,15 @@ if ( ! class_exists( 'Ngfb' ) ) {
 			if ( ( $html_debug || $wp_debug ) && 
 				( $classname = NgfbConfig::load_lib( false, 'com/debug', 'SucomDebug' ) ) )
 					$this->debug = new $classname( $this, array( 'html' => $html_debug, 'wp' => $wp_debug ) );
-			else $this->debug = new NgfbNoDebug();
+			else $this->debug = new SucomNoDebug();
 
-			if ( $activate === true &&
-				$this->debug->enabled )
-					$this->debug->log( 'method called for plugin activation' );
+			if ( $activate === true && $this->debug->enabled )
+				$this->debug->log( 'method called for plugin activation' );
 
 			// only load the notification class in the admin interface
-			if ( is_admin() &&
-				( $classname = NgfbConfig::load_lib( false, 'com/notice', 'SucomNotice' ) ) )
-					$this->notice = new $classname( $this );
-			else $this->notice = new NgfbNoNotice();
+			if ( is_admin() && ( $classname = NgfbConfig::load_lib( false, 'com/notice', 'SucomNotice' ) ) )
+				$this->notice = new $classname( $this );
+			else $this->notice = new SucomNoNotice();
 
 			$this->util = new NgfbUtil( $this );
 			$this->opt = new NgfbOptions( $this );
@@ -183,14 +188,19 @@ if ( ! class_exists( 'Ngfb' ) ) {
 
 			$this->loader = new NgfbLoader( $this, $activate );	// module loader
 
+			if ( $this->debug->enabled )
+				$this->debug->log( 'running init_objects action' );
 			do_action( 'ngfb_init_objects', $activate );
 
 			/*
 			 * check and create the default options array
 			 * execute after all objects have been defines, so hooks into 'ngfb_get_defaults' are available
 			 */
-			if ( is_multisite() && ( ! is_array( $this->site_options ) || empty( $this->site_options ) ) )
+			if ( is_multisite() && ( ! is_array( $this->site_options ) || empty( $this->site_options ) ) ) {
+				if ( $this->debug->enabled )
+					$this->debug->log( 'setting site_options to site_defaults' );
 				$this->site_options = $this->opt->get_site_defaults();
+			}
 
 			/*
 			 * end here when called for plugin activation (the init_plugin() hook handles the rest)
@@ -206,11 +216,15 @@ if ( ! class_exists( 'Ngfb' ) ) {
 			/*
 			 * check and upgrade options if necessary
 			 */
+			if ( $this->debug->enabled )
+				$this->debug->log( 'checking options' );
 			$this->options = $this->opt->check_options( NGFB_OPTIONS_NAME, $this->options );
 
-			if ( is_multisite() )
-				$this->site_options = $this->opt->check_options( NGFB_SITE_OPTIONS_NAME, 
-					$this->site_options, true );
+			if ( is_multisite() ) {
+				if ( $this->debug->enabled )
+					$this->debug->log( 'checking site_options' );
+				$this->site_options = $this->opt->check_options( NGFB_SITE_OPTIONS_NAME, $this->site_options, true );
+			}
 
 			/*
 			 * configure class properties based on plugin settings
@@ -236,7 +250,7 @@ if ( ! class_exists( 'Ngfb' ) ) {
 
 				if ( is_admin() )
 					// text_domain is already loaded by the NgfbAdmin class construct
-					$this->notice->inf( ( $this->is_avail['cache']['transient'] ?
+					$this->notice->warn( ( $this->is_avail['cache']['transient'] ?
 						__( 'HTML debug mode is active (transient cache could NOT be disabled).', 'nextgen-facebook' ) :
 						__( 'HTML debug mode is active (transient cache use is disabled).', 'nextgen-facebook' ) ).' '.
 						__( 'Informational debug messages are being added as hidden HTML comments.', 'nextgen-facebook' ) );
@@ -319,28 +333,6 @@ if ( ! class_exists( 'Ngfb' ) ) {
 
 	global $ngfb;
 	$ngfb =& Ngfb::get_instance();
-}
-
-if ( ! class_exists( 'NgfbNoDebug' ) ) {
-	class NgfbNoDebug {
-		public $enabled = false;
-		public function mark() { return; }
-		public function args() { return; }
-		public function log() { return; }
-		public function show_html() { return; }
-		public function get_html() { return; }
-		public function is_enabled() { return false; }
-	}
-}
-
-if ( ! class_exists( 'NgfbNoNotice' ) ) {
-	class NgfbNoNotice {
-		public function nag() { return; }
-		public function inf() { return; }
-		public function err() { return; }
-		public function log() { return; }
-		public function trunc() { return; }
-	}
 }
 
 ?>

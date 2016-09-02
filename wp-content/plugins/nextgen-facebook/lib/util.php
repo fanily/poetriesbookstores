@@ -115,8 +115,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				return $image;
 
 			// get post/user/term id, module name, and module object reference
-			$mod = $this->get_page_mod( $post_id, 
-				array( 'id' => $post_id, 'name' => 'post' ) );
+			$mod = $this->get_page_mod( $post_id, array( 'id' => $post_id, 'name' => 'post' ) );
 
 			$this->add_plugin_image_sizes( false, array(), $mod, true );
 
@@ -187,8 +186,11 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					elseif ( isset( $this->p->options[$opt_prefix.'_'.$key] ) )	// current plugin settings
 						$size_info[$key] = $this->p->options[$opt_prefix.'_'.$key];
 					else {
-						if ( ! isset( $def_opts ) )				// only read once if necessary
+						if ( ! isset( $def_opts ) ) {				// only read once if necessary
+							if ( $this->p->debug->enabled )
+								$this->p->debug->log( 'getting default option values' );
 							$def_opts = $this->p->opt->get_defaults();
+						}
 						$size_info[$key] = $def_opts[$opt_prefix.'_'.$key];	// fallback to default value
 					}
 					if ( $key === 'crop' )						// make sure crop is true or false
@@ -225,8 +227,10 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 								$size_info['crop_x'].'/'.$size_info['crop_y'] ).' added' );
 				}
 			}
-			if ( $this->p->debug->enabled )
+			if ( $this->p->debug->enabled ) {
 				$this->p->debug->mark( 'define image sizes' );	// end timer
+				$this->p->debug->log_arr( 'get_all_image_sizes', SucomUtil::get_image_sizes() );
+			}
 		}
 
 		public function add_ptns_to_opts( &$opts = array(), $prefixes, $default = 1 ) {
@@ -247,13 +251,11 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				get_post_types( array( 'public' => true ), $output ), $output );
 		}
 
-		public function clear_all_cache( $clear_ext_cache = true, $run_only_once = false ) {
+		public function clear_all_cache( $clear_external = true, $msg_id = false, $dismiss = false ) {
 
-			if ( $this->cleared_all_cache )
-				return;
-
-			if ( $run_only_once )
-				$this->cleared_all_cache = true;
+			if ( $this->cleared_all_cache )	// already run once
+				return 0;
+			else $this->cleared_all_cache = true;
 
 			wp_cache_flush();					// clear non-database transients as well
 
@@ -265,7 +267,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			$clear_all_msg = sprintf( __( '%s cached files, transient cache, and the WordPress object cache have been cleared.',
 				'nextgen-facebook' ), $short );
 
-			if ( $clear_ext_cache ) {
+			if ( $clear_external ) {
 				if ( function_exists( 'w3tc_pgcache_flush' ) ) {	// w3 total cache
 					w3tc_pgcache_flush();
 					w3tc_objectcache_flush();
@@ -286,67 +288,9 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				}
 			}
 
-			$this->p->notice->inf( $clear_all_msg, true );
+			$this->p->notice->inf( $clear_all_msg, true, true, $msg_id, $dismiss );
 
 			return $del_files + $del_transients;
-		}
-
-		public function clear_post_cache( $post_id ) {
-			switch ( get_post_status( $post_id ) ) {
-				case 'draft':
-				case 'pending':
-				case 'future':
-				case 'private':
-				case 'publish':
-					$lca = $this->p->cf['lca'];
-					$locale = self::get_locale( $post_id );
-					$permalink = get_permalink( $post_id );
-					$permalink_no_meta = add_query_arg( array( 'NGFB_META_TAGS_DISABLE' => 1 ), $permalink );
-					$sharing_url = $this->get_sharing_url( $post_id );
-					$locale_salt = 'locale:'.$locale.'_post:'.$post_id;
-
-					// transients persist from one page load to another
-					$transients = array(
-						'SucomCache::get' => array(
-							'url:'.$permalink,
-							'url:'.$permalink_no_meta,
-						),
-						'NgfbHead::get_header_array' => array( 
-							$locale_salt.'_url:'.$sharing_url,
-							$locale_salt.'_url:'.$sharing_url.'_crawler:pinterest',
-						),
-						'NgfbMeta::get_mod_column_content' => array( 
-							$locale_salt.'_column:'.$lca.'_og_img',
-							$locale_salt.'_column:'.$lca.'_og_desc',
-						),
-					);
-					$transients = apply_filters( $lca.'_post_cache_transients', $transients, $post_id, $locale, $sharing_url );
-
-					// wp objects are only available for the duration of a single page load
-					$wp_objects = array(
-						'SucomWebpage::get_content' => array(
-							$locale_salt.'_filtered',
-							$locale_salt.'_unfiltered',
-						),
-						'SucomWebpage::get_hashtags' => array(
-							$locale_salt,
-						),
-					);
-					$wp_objects = apply_filters( $lca.'_post_cache_objects', $wp_objects, $post_id, $locale, $sharing_url );
-
-					$deleted = $this->clear_cache_objects( $transients, $wp_objects );
-
-					if ( ! empty( $this->p->options['plugin_cache_info'] ) && $deleted > 0 )
-						$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.', true );
-
-					if ( function_exists( 'w3tc_pgcache_flush_post' ) )	// w3 total cache
-						w3tc_pgcache_flush_post( $post_id );
-
-					if ( function_exists( 'wp_cache_post_change' ) )	// wp super cache
-						wp_cache_post_change( $post_id );
-
-					break;
-			}
 		}
 
 		public function clear_cache_objects( &$transients = array(), &$wp_objects = array() ) {
@@ -385,17 +329,21 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				$cache_salt = __METHOD__.'('.NGFB_TOPICS_LIST.')';
 				$cache_id = $this->p->cf['lca'].'_'.md5( $cache_salt );
 				$cache_type = 'object cache';
-				$this->p->debug->log( $cache_type.': transient salt '.$cache_salt );
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( $cache_type.': transient salt '.$cache_salt );
 				$topics = get_transient( $cache_id );
 				if ( is_array( $topics ) ) {
-					$this->p->debug->log( $cache_type.': topics array retrieved from transient '.$cache_id );
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( $cache_type.': topics array retrieved from transient '.$cache_id );
 					return $topics;
 				}
 			}
-			if ( ( $topics = file( NGFB_TOPICS_LIST, 
-				FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ) ) === false ) {
-				$this->p->notice->err( sprintf( __( 'Error reading the %s topic list file.', 
-					'nextgen-facebook' ), NGFB_TOPICS_LIST ) );
+			if ( ( $topics = file( NGFB_TOPICS_LIST, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ) ) === false ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'error reading %s topic list file' );
+				if ( is_admin() )
+					$this->p->notice->err( sprintf( __( 'Error reading %s topic list file.', 
+						'nextgen-facebook' ), NGFB_TOPICS_LIST ) );
 				return $topics;
 			}
 			$topics = apply_filters( $this->p->cf['lca'].'_topics', $topics );
@@ -404,21 +352,22 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 
 			if ( ! empty( $cache_id ) ) {
 				set_transient( $cache_id, $topics, $this->p->options['plugin_object_cache_exp'] );
-				$this->p->debug->log( $cache_type.': topics array saved to transient '.
-					$cache_id.' ('.$this->p->options['plugin_object_cache_exp'].' seconds)');
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( $cache_type.': topics array saved to transient '.
+						$cache_id.' ('.$this->p->options['plugin_object_cache_exp'].' seconds)');
 			}
 			return $topics;
 		}
 
 		public function sanitize_option_value( $key, $val, $def_val, $network = false, &$mod = false ) {
 
-			// remove localization for more generic match
-			if ( preg_match( '/(#.*|:[0-9]+)$/', $key ) > 0 )
-				$key = preg_replace( '/(#.*|:[0-9]+)$/', '', $key );
+			// remove multiples, localization, and status for more generic match
+			$option_key = preg_replace( '/(_[0-9]+)?(#.*|:[0-9]+)?$/', '', $key );
 
 			// hooked by the sharing class
-			$option_type = apply_filters( $this->p->cf['lca'].'_option_type', false, $key, $network, $mod );
+			$option_type = apply_filters( $this->p->cf['lca'].'_option_type', false, $option_key, $network, $mod );
 
+			// translate error messages only once
 			if ( $this->sanitize_error_msgs === null ) {
 				$this->sanitize_error_msgs = array(
 					'url' => __( 'The value of option \'%s\' must be a URL - resetting the option to its default value.',
@@ -446,7 +395,10 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 
 			// pre-filter most values to remove html
 			switch ( $option_type ) {
-				case 'html':	// leave html and css / javascript code blocks as-is
+				case 'ignore':
+					return $val;	// stop here
+					break;
+				case 'html':		// leave html and css / javascript code blocks as-is
 				case 'code':
 					$val = stripslashes( $val );
 					break;
@@ -498,9 +450,9 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				case 'img_height':	// image height, subject to minimum value (typically, at least 200px)
 
 					if ( $option_type == 'img_width' )
-						$min_int = $this->p->cf['head']['min']['og_img_width'];
+						$min_int = $this->p->cf['head']['limit_min']['og_img_width'];
 					elseif ( $option_type == 'img_height' )
-						$min_int = $this->p->cf['head']['min']['og_img_height'];
+						$min_int = $this->p->cf['head']['limit_min']['og_img_height'];
 					else $min_int = 1;
 
 					// custom meta options are allowed to be empty
@@ -509,8 +461,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					elseif ( ! is_numeric( $val ) || $val < $min_int ) {
 						$this->p->notice->err( sprintf( $this->sanitize_error_msgs['pos_num'], $key, $min_int ), true );
 						$val = $def_val;
-					} else $val = (int) $val;		// cast as integer
-
+					}
 					break;
 
 				// must be blank or numeric
@@ -519,7 +470,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 						if ( ! is_numeric( $val ) ) {
 							$this->p->notice->err( sprintf( $this->sanitize_error_msgs[$option_type], $key ), true );
 							$val = $def_val;
-						} else $val = (int) $val;	// cast as integer
+						}
 					}
 					break;
 
@@ -528,16 +479,16 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					if ( ! is_numeric( $val ) ) {
 						$this->p->notice->err( sprintf( $this->sanitize_error_msgs[$option_type], $key ), true );
 						$val = $def_val;
-					} else $val = (int) $val;		// cast as integer
+					}
 					break;
 
 				// empty of alpha-numeric uppercase (hyphens are allowed as well)
 				case 'auth_id':
-					$val = trim( $val );
+					$val = preg_replace( array( '/&(shy|ndash|mdash);/', '/(--+)/' ), '-', trim( $val ) );
 					if ( $val !== '' && preg_match( '/[^A-Z0-9\-]/', $val ) ) {
 						$this->p->notice->err( sprintf( $this->sanitize_error_msgs[$option_type], $val, $key ), true );
 						$val = $def_val;
-					} else $val = (string) $val;		// cast as string
+					}
 					break;
 
 				// empty or alpha-numeric (upper or lower case), plus underscores
@@ -546,7 +497,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					if ( $val !== '' && preg_match( '/[^a-zA-Z0-9_]/', $val ) ) {
 						$this->p->notice->err( sprintf( $this->sanitize_error_msgs[$option_type], $key ), true );
 						$val = $def_val;
-					} else $val = (string) $val;		// cast as string
+					}
 					break;
 
 				case 'date':
@@ -556,7 +507,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					if ( $val !== '' && ! preg_match( $fmt, $val ) ) {
 						$this->p->notice->err( sprintf( $this->sanitize_error_msgs[$option_type], $key ), true );
 						$val = $def_val;
-					} else $val = (string) $val;		// cast as string
+					}
 					break;
 
 				// text strings that can be blank
@@ -611,28 +562,54 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			if ( empty( $query ) )
 				return false;
 
-			if ( strpos( $request, '<' ) === 0 )	// check for HTML content
+			if ( strpos( $request, '<' ) === 0 ) {	// check for HTML content
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'using html submitted in the request argument' );
 				$html = $request;
-			elseif ( strpos( $request, '://' ) === false )
+			} elseif ( strpos( $request, '://' ) === false ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: request argument is not html or valid url' );
 				return false;
-			elseif ( ( $html = $this->p->cache->get( $request, 'raw', 'transient' ) ) === false )
+			} elseif ( ( $html = $this->p->cache->get( $request, 'raw', 'transient' ) ) === false ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: error caching '.$request );
+				$this->p->notice->err( sprintf( __( 'Error retrieving webpage from <a href="%1$s">%1$s</a>.',
+					'nextgen-facebook' ), $request ) );
 				return false;
+			} elseif ( empty( $html ) ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: html for '.$request.' is empty' );
+				$this->p->notice->err( sprintf( __( 'Webpage retrieved from <a href="%1$s">%1$s</a> is empty.',
+					'nextgen-facebook' ), $request ) );
+				return false;
+			}
 
+			$ret = array();
 			$cmt = $this->p->cf['lca'].' meta tags ';
-			if ( $remove_self === true && strpos( $html, $cmt.'begin' ) !== false ) {
+			$html = mb_convert_encoding( $html, 'HTML-ENTITIES', 'UTF-8' );	// convert to UTF8
+
+			if ( $remove_self && strpos( $html, $cmt.'begin' ) !== false ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'removing self meta tags' );
 				$pre = '<(!--[\s\n\r]+|meta[\s\n\r]+name="'.$this->p->cf['lca'].':mark"[\s\n\r]+content=")';
 				$post = '([\s\n\r]+--|"[\s\n\r]*\/?)>';	// make space and slash optional for html optimizers
 				$html = preg_replace( '/'.$pre.$cmt.'begin'.$post.'.*'.$pre.$cmt.'end'.$post.'/ms',
 					'<!-- '.$this->p->cf['lca'].' meta tags removed -->', $html );
 			}
 
-			$ret = array();
-
 			if ( class_exists( 'DOMDocument' ) ) {
-				$doc = new DOMDocument();		// since PHP v4.1.0
-				@$doc->loadHTML( $html );		// suppress parsing errors
+				$doc = new DOMDocument();		// since PHP v4.1
+
+				if ( function_exists( 'libxml_use_internal_errors' ) ) {	// since PHP v5.1
+					$libxml_saved_state = libxml_use_internal_errors( true );
+					$doc->loadHTML( $html );
+					libxml_clear_errors();		// clear any HTML parsing errors
+					libxml_use_internal_errors( $libxml_saved_state );
+				} else @$doc->loadHTML( $html );
+
 				$xpath = new DOMXPath( $doc );
 				$metas = $xpath->query( $query );
+
 				foreach ( $metas as $m ) {
 					$m_atts = array();		// put all attributes in a single array
 					foreach ( $m->attributes as $a )
@@ -641,14 +618,56 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 						$m_atts['textContent'] = $m->textContent;
 					$ret[$m->tagName][] = $m_atts;
 				}
-			} else {
-				if ( $this->p->debug->enabled )
-					$this->p->debug->log( 'DOMDocument PHP class is missing' );
-				if ( is_admin() )
-					$this->p->notice->err( __( 'The DOMDocument PHP class is missing - unable to read head meta from HTML. Please contact your hosting provider to install the missing DOMDocument PHP class.', 'nextgen-facebook' ), true );
-			}
+			} else $this->missing_php_class_error( 'DOMDocument' );
 
 			return empty( $ret ) ? false : $ret;
+		}
+
+		public function missing_php_class_error( $classname ) {
+			if ( $this->p->debug->enabled )
+				$this->p->debug->log( $classname.' PHP class is missing' );
+			if ( is_admin() )
+				$this->p->notice->err( sprintf( __( 'The %1$s PHP class is missing - please contact your hosting provider to install the missing %1$s PHP class.', 'nextgen-facebook' ), $classname ), true );
+		}
+
+		public function get_body_html( $request, $remove_script = true ) {
+			$html = '';
+
+			if ( strpos( $request, '//' ) === 0 )
+				$request = SucomUtil::get_prot().':'.$request;
+
+			if ( strpos( $request, '<' ) === 0 ) {	// check for HTML content
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'using html submitted in the request argument' );
+				$html = $request;
+			} elseif ( empty( $request ) ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: request argument is empty' );
+				return false;
+			} elseif ( strpos( $request, 'data:' ) === 0 ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: request argument is inline data' );
+				return false;
+			} elseif ( strpos( $request, '://' ) === false ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'exiting early: request argument is not html or valid url' );
+				return false;
+			} else {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( 'fetching body html for '.$request );
+				if ( ( $html = $this->p->cache->get( $request, 'raw', 'transient' ) ) === false ) {
+					if ( $this->p->debug->enabled )
+						$this->p->debug->log( 'exiting early: error caching '.$request );
+					return false;
+				}
+			}
+
+			$html = preg_replace( '/^.*<body[^>]*>(.*)<\/body>.*$/Ums', '$1', $html );
+
+			if ( $remove_script )
+				$html = preg_replace( '/<script[^>]*>.*<\/script>/Ums', '', $html );
+
+			return $html;
 		}
 
 		public function log_is_functions() {
@@ -691,19 +710,19 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 		}
 
 		public function get_default_author_id( $opt_pre = 'og' ) {
-			$lca = $this->p->cf['lca'];
-			$user_id = isset( $this->p->options[$opt_pre.'_def_author_id'] ) ? 
-				$this->p->options[$opt_pre.'_def_author_id'] : null;
-			return apply_filters( $lca.'_'.$opt_pre.'_default_author_id', $user_id );
+			if ( SucomUtil::get_const( 'NGFB_DEFAULT_AUTHOR_OPTIONS' ) ) {
+				$user_id = isset( $this->p->options[$opt_pre.'_def_author_id'] ) ? 
+					$this->p->options[$opt_pre.'_def_author_id'] : null;
+				return apply_filters( $this->p->cf['lca'].'_'.$opt_pre.'_default_author_id', $user_id );
+			} else return null;
 		}
 
 		// returns an author id if the default author is forced
 		public function force_default_author( array &$mod, $opt_pre = 'og' ) {
-			$author_id = $this->get_default_author_id( $opt_pre );
-
-			return $author_id && 
-				$this->force_default( 'author', $mod, $opt_pre ) ?
-					$author_id : false;
+			if ( SucomUtil::get_const( 'NGFB_DEFAULT_AUTHOR_OPTIONS' ) ) {
+				$author_id = $this->get_default_author_id( $opt_pre );
+				return $author_id && $this->force_default( 'author', $mod, $opt_pre ) ? $author_id : false;
+			} else return false;
 		}
 
 		// returns true if the default image is forced
@@ -728,27 +747,19 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					( isset( $this->p->options[$opt_pre.'_def_'.$type.'_'.$key] ) ? 
 						$this->p->options[$opt_pre.'_def_'.$type.'_'.$key] : null ) );
 
-			// save some time - if no default media, then return false
-			if ( empty( $def['id'] ) && 
+			if ( empty( $def['id'] ) &&	// save some time - if no default media, then return false
 				empty( $def['url'] ) )
 					$ret = false;
-
-			// check for singular pages first
-			elseif ( $mod['is_post'] )
+			elseif ( $mod['is_post'] )	// check for singular pages first
 				$ret = false;
-
-			// check for user pages first
-			elseif ( $mod['is_user'] )
+			elseif ( $mod['is_user'] )	// check for user pages first
 				$ret = false;
-
 			elseif ( ! empty( $def['on_index'] ) &&
-				( is_home() || is_archive() || $mod['is_term'] ) )
+				( $mod['is_home_index'] || $mod['is_term'] || is_archive() ) )
 					$ret = true;
-
 			elseif ( ! empty( $def['on_search'] ) &&
 				is_search() )
 					$ret = true;
-
 			else $ret = false;
 
 			// 'ngfb_force_default_img' is hooked by the woocommerce module (false for product category and tag pages)
@@ -819,16 +830,14 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 
 		public function get_inline_vals( $mod = false, &$atts = array() ) {
 
-			// allow compatibility with $use_post as first argument
-			// $mod = true | false | post_id | $mod array
 			if ( ! is_array( $mod ) )
 				$mod = $this->get_page_mod( $mod );
 
 			if ( isset( $atts['url'] ) )
 				$sharing_url = $atts['url'];
 			else $sharing_url = $this->get_sharing_url( $mod, 
-				( isset( $atts['add_page'] ) ? 
-					$atts['add_page'] : true ) );
+				( isset( $atts['add_page'] ) ? $atts['add_page'] : true ),
+				( isset( $atts['src_id'] ) ? $atts['src_id'] : '' ) );
 
 			if ( is_admin() )
 				$request_url = $sharing_url;
@@ -836,8 +845,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 
 			$short_url = empty( $atts['short_url'] ) ?
 				apply_filters( $this->p->cf['lca'].'_shorten_url', 
-					$sharing_url, $this->p->options['plugin_shortener'] ) :
-				$atts['short_url'];
+					$sharing_url, $this->p->options['plugin_shortener'] ) : $atts['short_url'];
 
 			return array(
 				$request_url,		// %%request_url%%
@@ -878,24 +886,30 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 		}
 
 		public function add_image_url_sizes( $keys, array &$opts ) {
-			if ( self::get_const( 'NGFB_GETIMGSIZE_DISABLE' ) )
+			if ( self::get_const( 'NGFB_PHP_GETIMGSIZE_DISABLE' ) )
 				return $opts;
 
 			if ( ! is_array( $keys ) )
 				$keys = array( $keys );
 
 			foreach ( $keys as $prefix ) {
-				$media_url = self::get_mt_media_url( $prefix, $opts );
+				$media_url = self::get_mt_media_url( $opts, $prefix );
+
 				if ( ! empty( $media_url ) && strpos( $media_url, '://' ) !== false ) {
-					list( $opts[$prefix.':width'], $opts[$prefix.':height'],
-						$image_type, $image_attr ) = @getimagesize( $media_url );
+					list( 
+						$opts[$prefix.':width'],
+						$opts[$prefix.':height'],
+						$image_type,
+						$image_attr 
+					) = @getimagesize( $media_url );
+
 					if ( $this->p->debug->enabled )
 						$this->p->debug->log( 'getimagesize() for '.$media_url.' returned '.
 							$opts[$prefix.':width'].'x'.$opts[$prefix.':height'] );
 				} else {
-					foreach ( array( 'width', 'height' ) as $wh )
-						if ( isset( $opts[$prefix.':'.$wh] ) )
-							$opts[$prefix.':'.$wh] = -1;
+					foreach ( array( 'width', 'height' ) as $attr )
+						if ( isset( $opts[$prefix.':'.$attr] ) )
+							$opts[$prefix.':'.$attr] = -1;
 				}
 			}
 			return $opts;
@@ -945,7 +959,9 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'exiting early: module object is defined' );
 				return $mod;
-			} elseif ( $this->p->debug->enabled )
+			}
+
+			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
 
 			// check for a recognized object
@@ -999,19 +1015,20 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			$mod['is_home'] = $mod['is_home_page'] || $mod['is_home_index'] ? true : false;	// home page (any)
 
 			if ( $this->p->debug->enabled )
-				$this->p->debug->log( '$mod '.trim( print_r( SucomDebug::pretty_array( $mod ), true ) ) );
+				$this->p->debug->log_arr( '$mod ', $mod );
 
 			return $mod;
 		}
 
 		// $mod is false when used for open graph meta tags and buttons in widget
 		// $mod is true when buttons are added to individual posts on an index webpage
-		public function get_sharing_url( $mod = false, $add_page = true ) {
+		public function get_sharing_url( $mod = false, $add_page = true, $src_id = '' ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'mod' => $mod,
 					'add_page' => $add_page,
+					'src_id' => $src_id,
 				) );
 			}
 
@@ -1031,13 +1048,9 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					if ( ! empty( $url ) ) {
 						if ( $this->p->debug->enabled )
 							$this->p->debug->log( 'custom post sharing_url = '.$url );
-					} else {
-						$url = get_permalink( $mod['id'] );
-						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'post permalink url = '.$url );
-					}
+					} else $url = $this->check_sharing_url( get_permalink( $mod['id'] ), 'post permalink' );
 
-					if ( $add_page && get_query_var( 'page' ) > 1 ) {
+					if ( ! empty( $url ) && $add_page && get_query_var( 'page' ) > 1 ) {
 						global $wp_rewrite;
 						$post_obj = self::get_post_object( $mod['id'] );
 						$numpages = substr_count( $post_obj->post_content, '<!--nextpage-->' ) + 1;
@@ -1051,16 +1064,14 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 							$this->p->debug->log( 'add page query url = '.$url );
 					}
 				}
-				$url = apply_filters( $lca.'_post_url', $url, $mod, $add_page );
+				$url = apply_filters( $lca.'_post_url', $url, $mod, $add_page, $src_id );
 
 			} else {
-				if ( is_home() ) {
+				if ( $mod['is_home'] ) {
 					if ( 'page' === get_option( 'show_on_front' ) ) {	// show_on_front = posts | page
-						$url = get_permalink( get_option( 'page_for_posts' ) );
-						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'page for posts url = '.$url );
+						$url = $this->check_sharing_url( get_permalink( get_option( 'page_for_posts' ) ), 'page for posts' );
 					} else {
-						$url = apply_filters( $lca.'_home_url', home_url( '/' ) );
+						$url = apply_filters( $lca.'_home_url', home_url( '/' ), $mod, $add_page, $src_id );
 						if ( $this->p->debug->enabled )
 							$this->p->debug->log( 'home url = '.$url );
 					}
@@ -1072,13 +1083,9 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 						if ( ! empty( $url ) ) {
 							if ( $this->p->debug->enabled )
 								$this->p->debug->log( 'custom term sharing_url = '.$url );
-						} else {
-							$url = get_term_link( $mod['id'], $mod['tax_slug'] );
-							if ( $this->p->debug->enabled )
-								$this->p->debug->log( 'term link url = '.$url );
-						}
+						} else $url = $this->check_sharing_url( get_term_link( $mod['id'], $mod['tax_slug'] ), 'term link' );
 					} 
-					$url = apply_filters( $lca.'_term_url', $url, $mod, $add_page );
+					$url = apply_filters( $lca.'_term_url', $url, $mod, $add_page, $src_id );
 
 				} elseif ( $mod['is_user'] ) {
 					if ( ! empty( $mod['id'] ) ) {
@@ -1088,33 +1095,29 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 						if ( ! empty( $url ) ) {
 							if ( $this->p->debug->enabled )
 								$this->p->debug->log( 'custom user sharing_url = '.$url );
-						} else {
-							$url = get_author_posts_url( $mod['id'] );
-							if ( $this->p->debug->enabled )
-								$this->p->debug->log( 'author posts url = '.$url );
-						}
+						} else $url = $this->check_sharing_url( get_author_posts_url( $mod['id'] ), 'author posts' );
 					}
-					$url = apply_filters( $lca.'_author_url', $url, $mod, $add_page );
+					$url = apply_filters( $lca.'_author_url', $url, $mod, $add_page, $src_id );
 
 				} elseif ( is_search() ) {
-					$url = get_search_link();
+					$url = $this->check_sharing_url( get_search_link(), 'search link' );
+					$url = apply_filters( $lca.'_search_url', $url, $mod, $add_page, $src_id );
 
 				} elseif ( function_exists( 'get_post_type_archive_link' ) && is_post_type_archive() ) {
-					$url = get_post_type_archive_link( get_query_var( 'post_type' ) );
-					if ( $this->p->debug->enabled )
-						$this->p->debug->log( 'post type archive url = '.$url );
+					$url = $this->check_sharing_url( get_post_type_archive_link( get_query_var( 'post_type' ) ), 'post type archive' );
 
 				} elseif ( is_archive() ) {
 					if ( is_date() ) {
 						if ( is_day() )
-							$url = get_day_link( get_query_var( 'year' ), get_query_var( 'monthnum' ), get_query_var( 'day' ) );
+							$url = $this->check_sharing_url( get_day_link( get_query_var( 'year' ), 
+								get_query_var( 'monthnum' ), get_query_var( 'day' ) ), 'day link' );
 						elseif ( is_month() )
-							$url = get_month_link( get_query_var( 'year' ), get_query_var( 'monthnum' ) );
+							$url = $this->check_sharing_url( get_month_link( get_query_var( 'year' ), 
+								get_query_var( 'monthnum' ) ), 'month link' );
 						elseif ( is_year() )
-							$url = get_year_link( get_query_var( 'year' ) );
-						if ( $this->p->debug->enabled )
-							$this->p->debug->log( 'date archive url = '.$url );
+							$url = $this->check_sharing_url( get_year_link( get_query_var( 'year' ) ), 'year link' );
 					}
+					$url = apply_filters( $lca.'_archive_url', $url, $mod, $add_page, $src_id );
 				}
 
 				if ( ! empty( $url ) && $add_page && get_query_var( 'paged' ) > 1 ) {
@@ -1146,12 +1149,26 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 					$this->p->debug->log( 'server request url = '.$url );
 			}
 
-			return apply_filters( $lca.'_sharing_url', $url, $mod, $add_page );
+			return apply_filters( $lca.'_sharing_url', $url, $mod, $add_page, $src_id );
 		}
 
-		public function fix_relative_url( $url = '' ) {
-			if ( ! empty( $url ) && 
-				strpos( $url, '://' ) === false ) {
+		public function check_sharing_url( $url, $source = 'sharing' ) {
+			if ( is_string( $url ) ) {
+				if ( $this->p->debug->enabled )
+					$this->p->debug->log( $source.' url = '.$url );
+				return $url;
+			} else {
+				if ( $this->p->debug->enabled ) {
+					$this->p->debug->log( $source.' url is '.gettype( $url ) );
+					if ( is_wp_error( $url ) )
+						$this->p->debug->log( $source.' url error: '.$url->get_error_message() );
+				}
+				return false;
+			}
+		}
+
+		public function fix_relative_url( $url ) {
+			if ( ! empty( $url ) && strpos( $url, '://' ) === false ) {
 
 				if ( $this->p->debug->enabled )
 					$this->p->debug->log( 'relative url found = '.$url );
@@ -1349,7 +1366,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 		public function parse_readme( $ext, $expire_secs = 86400, $use_cache = true ) {
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->args( array( 
+				$this->p->debug->log_args( array( 
 					'ext' => $ext,
 					'expire_secs' => $expire_secs,
 					'use_cache' => $use_cache,
@@ -1422,6 +1439,7 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 		}
 
 		public function get_admin_url( $menu_id = '', $link_text = '', $menu_lib = '' ) {
+
 			$hash = '';
 			$query = '';
 			$admin_url = '';
@@ -1476,11 +1494,50 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			else return '<a href="'.$admin_url.'">'.$link_text.'</a>';
 		}
 
+		public function do_metabox_tabs( $metabox = '', $tabs = array(), $table_rows = array(), $args = array() ) {
+
+			$tab_keys = array_keys( $tabs );
+			$default_tab = '_'.reset( $tab_keys );		// must start with an underscore
+			$class_metabox_tabs = 'sucom-metabox-tabs';
+			$class_link = 'sucom-tablink';
+			$class_tabset = 'sucom-tabset';
+
+			if ( ! empty( $metabox ) ) {
+				$metabox = '_'.$metabox;		// must start with an underscore
+				$class_metabox_tabs .= ' '.$class_metabox_tabs.$metabox;
+				$class_link .= ' '.$class_link.$metabox;
+			}
+
+			// allow a css ID to be passed as a query argument
+			extract( array_merge( array(
+				'scroll_to' => isset( $_GET['scroll_to'] ) ? 
+					'#'.self::sanitize_key( $_GET['scroll_to'] ) : '',
+			), $args ) );
+
+			echo "\n".'<script type="text/javascript">jQuery(document).ready(function(){ '.
+				'sucomTabs(\''.$metabox.'\', \''.$default_tab.'\', \''.$scroll_to.'\'); });</script>'."\n";
+			echo '<div class="'.$class_metabox_tabs.'">'."\n";
+			echo '<ul class="'.$class_metabox_tabs.'">'."\n";
+			foreach ( $tabs as $tab => $title ) {
+				$class_href_key = $class_tabset.$metabox.'-tab_'.$tab;
+				echo '<div class="tab_left">&nbsp;</div><li class="'.
+					$class_href_key.'"><a class="'.$class_link.'" href="#'.
+					$class_href_key.'">'.$title.'</a></li>'."\n";
+			}
+			echo '</ul><!-- .'.$class_metabox_tabs.' -->'."\n";
+
+			foreach ( $tabs as $tab => $title ) {
+				$class_href_key = $class_tabset.$metabox.'-tab_'.$tab;
+				$this->do_table_rows( $table_rows[$tab], $class_href_key, ( empty( $metabox ) ?
+					'' : $class_tabset.$metabox ), $class_tabset );
+			}
+			echo '</div><!-- .'.$class_metabox_tabs.' -->'."\n\n";
+		}
+
 		public function do_table_rows( $table_rows, $class_href_key = '', $class_tabset_mb = '', $class_tabset = '' ) {
-			// just in case
-			if ( empty( $table_rows ) || 
-				! is_array( $table_rows ) )
-					return;
+
+			if ( ! is_array( $table_rows ) )	// just in case
+				return;
 
 			$lca = empty( $this->p->cf['lca'] ) ? 
 				'sucom' : $this->p->cf['lca'];
@@ -1490,9 +1547,13 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			$hidden_rows = 0;
 
 			// use call_user_func() instead of $classname::show_opts() for PHP 5.2
-			$show_opts = class_exists( $lca.'user' ) ? call_user_func( array( $lca.'user', 'show_opts' ) ) : 'basic';
+			$show_opts = class_exists( $lca.'user' ) ? 
+				call_user_func( array( $lca.'user', 'show_opts' ) ) : 'basic';
 
 			foreach ( $table_rows as $key => $row ) {
+				if ( empty( $row ) )	// just in case
+					continue;
+
 				// default row class and id attribute values
 				$tr = array(
 					'class' => 'sucom_alt'.( $count_rows % 2 ).
@@ -1538,6 +1599,12 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 				$count_rows++;
 			}
 
+			if ( $count_rows === 0 ) {
+				$table_rows[] = '<tr><td align="center"><p><em>'.__( 'No options available.',
+					'nextgen-facebook' ).'</em></p></td></tr>';
+				$count_rows++;
+			}
+
 			echo '<div class="'.
 				( empty( $show_opts ) ? '' : 'sucom-show_'.$show_opts ).
 				( empty( $class_tabset ) ? '' : ' '.$class_tabset ).
@@ -1547,8 +1614,8 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 
 			echo '<table class="sucom-setting '.$lca.
 				( empty( $class_href_key ) ? '' : ' '.$class_href_key ).
-				( $hidden_rows === $count_rows ? ' hide_in_'.$show_opts : '' ).	// if all rows hidden, then hide the whole table
-			'">'."\n";
+				( $hidden_rows > 0 && $hidden_rows === $count_rows ?	// if all rows hidden, then hide the whole table
+					' hide_in_'.$show_opts : '' ).'">'."\n";
 
 			foreach ( $table_rows as $row )
 				echo $row;
@@ -1557,73 +1624,21 @@ if ( ! class_exists( 'NgfbUtil' ) && class_exists( 'SucomUtil' ) ) {
 			echo '</div>'."\n";
 
 			$show_opts_label = $this->p->cf['form']['show_options'][$show_opts];
-
 			if ( $hidden_opts > 0 ) {
 				echo '<div class="hidden_opts_msg '.$class_tabset.'-msg '.$class_tabset_mb.'-msg '.$class_href_key.'-msg">'.
 					sprintf( _x( '%1$d additional options not shown in %2$s view', 'option comment', 'nextgen-facebook' ), 
 						$hidden_opts, _x( $show_opts_label, 'option value', 'nextgen-facebook' ) ).
-					' (<a href="javascript:void(0);" onClick="sucomViewUnhideRows( \''.$class_href_key.'\', \''.$show_opts.'\' );">'.
+					' (<a href="javascript:void(0);"'.
+					' onClick="sucomViewUnhideRows( \''.$class_href_key.'\', \''.$show_opts.'\' );">'.
 					_x( 'unhide these options', 'option comment', 'nextgen-facebook' ).'</a>)</div>'."\n";
 			} elseif ( $hidden_rows > 0 ) {
 				echo '<div class="hidden_opts_msg '.$class_tabset.'-msg '.$class_tabset_mb.'-msg '.$class_href_key.'-msg">'.
 					sprintf( _x( '%1$d additional rows not shown in %2$s view', 'option comment', 'nextgen-facebook' ), 
 						$hidden_rows, _x( $show_opts_label, 'option value', 'nextgen-facebook' ) ).
-					' (<a href="javascript:void(0);" onClick="sucomViewUnhideRows( \''.$class_href_key.'\', \''.$show_opts.'\', \'hide_row_in\' );">'.
+					' (<a href="javascript:void(0);"'.
+					' onClick="sucomViewUnhideRows( \''.$class_href_key.'\', \''.$show_opts.'\', \'hide_row_in\' );">'.
 					_x( 'unhide these rows', 'option comment', 'nextgen-facebook' ).'</a>)</div>'."\n";
 			}
-		}
-
-		// tab titles in the array should already be translated:
-		//
-		// $tabs = array(
-		//		'header' => _x( 'Edit Text', 'metabox tab', 'nextgen-facebook' ),
-		//		'media' => _x( 'Select Media', 'metabox tab', 'nextgen-facebook' ),
-		//		'preview' => _x( 'Preview', 'metabox tab', 'nextgen-facebook' ),
-		//		'tags' => _x( 'Head Tags', 'metabox tab', 'nextgen-facebook' ),
-		//		'validate' => _x( 'Validate', 'metabox tab', 'nextgen-facebook' ),
-		// );
-		//
-		public function do_metabox_tabs( $metabox = '', $tabs = array(), $table_rows = array(), $args = array() ) {
-			$tab_keys = array_keys( $tabs );
-			$default_tab = '_'.reset( $tab_keys );		// must start with an underscore
-			$class_metabox_tabs = 'sucom-metabox-tabs';
-			$class_link = 'sucom-tablink';
-			$class_tabset = 'sucom-tabset';
-
-			if ( ! empty( $metabox ) ) {
-				$metabox = '_'.$metabox;		// must start with an underscore
-				$class_metabox_tabs .= ' '.$class_metabox_tabs.$metabox;
-				$class_link .= ' '.$class_link.$metabox;
-			}
-
-			// allow a css ID to be passed as a query argument
-			extract( array_merge( array(
-				'scroll_to' => isset( $_GET['scroll_to'] ) ? 
-					'#'.self::sanitize_key( $_GET['scroll_to'] ) : '',
-			), $args ) );
-
-			echo "\n".'<script type="text/javascript">jQuery(document).ready(function(){ '.
-				'sucomTabs(\''.$metabox.'\', \''.$default_tab.'\', \''.$scroll_to.'\'); });</script>'."\n";
-			echo '<div class="'.$class_metabox_tabs.'">'."\n";
-			echo '<ul class="'.$class_metabox_tabs.'">'."\n";
-			foreach ( $tabs as $tab => $title ) {
-				$class_href_key = $class_tabset.$metabox.'-tab_'.$tab;
-				echo '<div class="tab_left">&nbsp;</div><li class="'.
-					$class_href_key.'"><a class="'.$class_link.'" href="#'.
-					$class_href_key.'">'.$title.'</a></li>'."\n";
-			}
-			echo '</ul><!-- .'.$class_metabox_tabs.' -->'."\n";
-
-			foreach ( $tabs as $tab => $title ) {
-				$class_href_key = $class_tabset.$metabox.'-tab_'.$tab;
-				$this->do_table_rows( 
-					$table_rows[$tab], 
-					$class_href_key,
-					( empty( $metabox ) ? '' : $class_tabset.$metabox ),
-					$class_tabset
-				);
-			}
-			echo '</div><!-- .'.$class_metabox_tabs.' -->'."\n\n";
 		}
 	}
 }
