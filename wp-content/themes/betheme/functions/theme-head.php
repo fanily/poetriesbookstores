@@ -275,6 +275,60 @@ if( ! function_exists( 'mfn_styles_background' ) )
 		}
 		
 		
+		// Header wrapper -----------------------
+		
+		$headerB = false;
+		
+		if( mfn_opts_get( 'img-subheader-bg' ) ){
+			$headerB = mfn_opts_get( 'img-subheader-bg' );
+		}
+
+		if( mfn_ID() && ! is_search() ){
+		
+			if( ( ( mfn_ID() == get_option( 'page_for_posts' ) ) || ( get_post_type( mfn_ID() ) == 'page' ) ) && has_post_thumbnail( mfn_ID() ) ){
+		
+				// Pages & Blog Page ---
+				$headerB = wp_get_attachment_image_src( get_post_thumbnail_id( mfn_ID() ), 'full' );
+				$headerB = $headerB[0];
+		
+			} elseif( get_post_meta( mfn_ID(), 'mfn-post-header-bg', true ) ){
+		
+				// Single Post ---
+				$headerB = get_post_meta( mfn_ID(), 'mfn-post-header-bg', true );
+		
+			}
+		}	
+		
+		$headerP = mfn_opts_get('img-subheader-attachment');
+		
+		if( $headerB ){
+		
+			$aBg 	= array();
+			$aBg[] 	= 'background-image:url('. $headerB .')';
+		
+			if( $headerP == "fixed" ){
+				
+				$aBg[] = 'background-attachment:fixed';
+				
+			} elseif( $headerP == "parallax" ) {	
+				
+				// do nothing
+				
+			} elseif( $headerP ) {
+				$background_attr = explode( ';', $headerP );
+				if( $background_attr[0] ) $aBg[] = 'background-repeat:'. $background_attr[0];
+				if( $background_attr[1] ) $aBg[] = 'background-position:'. $background_attr[1];
+				if( $background_attr[2] ) $aBg[] = 'background-attachment:'. $background_attr[2];
+				if( $background_attr[3] ) $aBg[] = '-webkit-background-size:'. $background_attr[3];
+				if( $background_attr[3] ) $aBg[] = 'background-size:'. $background_attr[3];
+			}
+		
+			$background = implode( ';', $aBg );
+		
+			$output .= 'body:not(.template-slider) #Header_wrapper{'. $background. '}'."\n";
+		}
+		
+		
 		// Subheader -----------------------
 		
 		if( get_post_meta( mfn_ID(), 'mfn-post-subheader-image', true ) ){
@@ -282,6 +336,7 @@ if( ! function_exists( 'mfn_styles_background' ) )
 		} else {
 			$subheaderB = mfn_opts_get( 'subheader-image' );
 		}
+		
 		$subheaderP = mfn_opts_get( 'subheader-position' );
 
 		if( $subheaderB ){
@@ -302,6 +357,7 @@ if( ! function_exists( 'mfn_styles_background' ) )
 
 			$output .= '#Subheader{'. $background. '}'."\n";
 		}
+		
 		
 		// Footer --------------------------
 		
@@ -377,8 +433,9 @@ if( ! function_exists( 'mfn_styles_dynamic' ) )
 				// Dynamic | style.php & ( style-responsive.php || style-colors.php || style-one.php || css/skins/.. )
 
 				// Responsive
-				
-				include_once THEME_DIR . '/style-responsive.php';
+				if( mfn_opts_get('responsive') ){
+					include_once THEME_DIR . '/style-responsive.php';
+				}
 					
 				// Colors
 				
@@ -649,49 +706,65 @@ if( ! function_exists( 'mfn_scripts_config' ) )
 			echo '//<![CDATA['."\n";
 			
 				// ajax
-				echo 'window.mfn_ajax = "'. admin_url('admin-ajax.php') .'";'."\n";
+				if( mfn_opts_get( 'love' ) ){
+					echo 'window.mfn_ajax = "'. admin_url( 'admin-ajax.php' ) .'";'."\n";
+				}
 				
-				// mobile menu initial width
-				echo 'window.mfn_mobile_init = '. mfn_opts_get( 'mobile-menu-initial', 1240 ) .';'."\n";
+				// options
+				echo 'window.mfn = {';
 				
-				// nice scroll
-				echo 'window.mfn_nicescroll = '. mfn_opts_get('nice-scroll-speed',40) .';'."\n";
+					// mobile menu initial width
+					echo 'mobile_init:'. mfn_opts_get( 'mobile-menu-initial', 1240 ) .',';
 				
-				// parallax
-				echo 'window.mfn_parallax = "'. mfn_parallax_plugin() .'";'."\n";
+					// nice scroll
+					echo 'nicescroll:'. mfn_opts_get( 'nice-scroll-speed', 40 ) .',';
+				
+					// parallax
+					echo 'parallax:"'. mfn_parallax_plugin() .'",';
+					
+					// responsive
+					echo 'responsive:'. intval( mfn_opts_get( 'responsive', 0 ) ) .',';
+				
+					// retina disable
+					echo 'retina_disable:'. intval( mfn_opts_get( 'retina-js-disable', 0 ) ) .'';
+					
+				echo '};'."\n";
 				
 				// prettyphoto
 				$aPrettyOptions = mfn_opts_get('prettyphoto-options');
 				
 				echo 'window.mfn_prettyphoto = {';
 					if( is_array( $aPrettyOptions ) && isset( $aPrettyOptions['disable'] ) ){
-						echo 'disable:true, ';
+						echo 'disable:true,';
+					} else {
+						echo 'disable:false,';
 					}
 					if( is_array( $aPrettyOptions ) && isset( $aPrettyOptions['disable-mobile'] ) ){
-						echo 'disableMobile:true, ';
+						echo 'disableMobile:true,';
+					} else {
+						echo 'disableMobile:false,';
 					}
 					if( is_array( $aPrettyOptions ) && isset( $aPrettyOptions['title'] ) ){
-						echo 'title:true, ';
+						echo 'title:true,';
+					} else {
+						echo 'title:false,';
 					}
-					echo 'style:"'. mfn_opts_get('prettyphoto','pp_default').'", ';
-					echo 'width:'. intval( mfn_opts_get('prettyphoto-width',0) ).', ';
+					echo 'style:"'. mfn_opts_get('prettyphoto','pp_default').'",';
+					echo 'width:'. intval( mfn_opts_get('prettyphoto-width',0) ).',';
 					echo 'height:'. intval( mfn_opts_get('prettyphoto-height',0) );
 				echo '};'."\n";
 				
 				// sliders
 				echo 'window.mfn_sliders = {';
-					echo 'blog:'. intval( mfn_opts_get('slider-blog-timeout',0) ) .', ';
-					echo 'clients:'. intval( mfn_opts_get('slider-clients-timeout',0) ) .', ';
-					echo 'offer:'. intval( mfn_opts_get('slider-offer-timeout',0) ) .', ';
-					echo 'portfolio:'. intval( mfn_opts_get('slider-portfolio-timeout',0) ) .', ';
-					echo 'shop:'. intval( mfn_opts_get('slider-shop-timeout',0) ) .', ';
-					echo 'slider:'. intval( mfn_opts_get('slider-slider-timeout',0) ) .', ';
+					echo 'blog:'. intval( mfn_opts_get('slider-blog-timeout',0) ) .',';
+					echo 'clients:'. intval( mfn_opts_get('slider-clients-timeout',0) ) .',';
+					echo 'offer:'. intval( mfn_opts_get('slider-offer-timeout',0) ) .',';
+					echo 'portfolio:'. intval( mfn_opts_get('slider-portfolio-timeout',0) ) .',';
+					echo 'shop:'. intval( mfn_opts_get('slider-shop-timeout',0) ) .',';
+					echo 'slider:'. intval( mfn_opts_get('slider-slider-timeout',0) ) .',';
 					echo 'testimonials:'. intval( mfn_opts_get('slider-testimonials-timeout',0) );
 				echo '};'."\n";
-				
-				// retina.js
-				echo 'window.mfn_retina_disable = '. intval( mfn_opts_get('retina-js-disable',0) ) .';'."\n";
-				
+
 			echo '//]]>'."\n";
 		echo '</script>'."\n";
 	}
@@ -1114,6 +1187,12 @@ if( ! function_exists( 'mfn_body_classes' ) )
 		}
 		if( is_array( $menu_options ) && isset( $menu_options['align-right'] ) ){
 			$classes[] = 'menuo-right';
+		}
+		
+		
+		// Mega Menu | Style -----------------------------
+		if( mfn_opts_get( 'menu-mega-style' ) ) {
+			$classes[] = 'mm-'. mfn_opts_get( 'menu-mega-style' );
 		}
 		
 		

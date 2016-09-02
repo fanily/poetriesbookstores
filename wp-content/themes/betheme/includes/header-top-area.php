@@ -50,6 +50,9 @@
 							if( mfn_opts_get('social-viadeo') ) echo '<li class="viadeo"><a '.$target.' href="'. mfn_opts_get('social-viadeo') .'" title="Viadeo"><i class="icon-viadeo"></i></a></li>';
 							if( mfn_opts_get('social-xing') ) echo '<li class="xing"><a '.$target.' href="'. mfn_opts_get('social-xing') .'" title="Xing"><i class="icon-xing"></i></a></li>';
 							if( mfn_opts_get('social-rss') ) echo '<li class="rss"><a '.$target.' href="'. get_bloginfo('rss2_url') .'" title="RSS"><i class="icon-rss"></i></a></li>';
+							if( mfn_opts_get( 'social-custom-icon' ) &&  mfn_opts_get( 'social-custom-link' ) ){
+								echo '<li class="custom"><a '.$target.' href="'. esc_url( mfn_opts_get( 'social-custom-link' ) ) .'"><i class="'. esc_attr( mfn_opts_get( 'social-custom-icon' ) ) .'"></i></a></li>';
+							}
 						echo '</ul>';
 				
 					}

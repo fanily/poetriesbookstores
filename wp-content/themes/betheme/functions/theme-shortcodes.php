@@ -365,10 +365,11 @@ if( ! function_exists( 'sc_flat_box' ) )
 	function sc_flat_box( $attr, $content = null )
 	{
 		extract(shortcode_atts(array(
-			'icon' 			=> 'icon-lamp',
-			'background' 	=> '',
 			'image' 		=> '',
 			'title' 		=> '',
+			'icon' 			=> 'icon-lamp',
+			'icon_image' 	=> '',
+			'background' 	=> '',
 			'link' 			=> '',
 			'target' 		=> '',
 			'animate' 		=> '',
@@ -376,6 +377,7 @@ if( ! function_exists( 'sc_flat_box' ) )
 		
 		// image | visual composer fix
 		$image = mfn_vc_image( $image );
+		$icon_image = mfn_vc_image( $icon_image );
 		
 		// background
 		if( $background ) $background = 'style="background-color:'. $background .'"';
@@ -396,9 +398,13 @@ if( ! function_exists( 'sc_flat_box' ) )
 				
 					$output .= '<div class="photo_wrapper">';
 						$output .= '<div class="icon themebg" '. $background .'>';
-							$output .= '<i class="'. $icon .'"></i>';
+							if( $icon_image ){
+								$output .= '<img class="scale-with-grid" src="'. $icon_image .'" alt="'. mfn_get_attachment_data( $icon_image, 'alt' ) .'" width="'. mfn_get_attachment_data( $icon_image, 'width' ) .'" height="'. mfn_get_attachment_data( $icon_image, 'height' ) .'"/>';
+							} else {
+								$output .= '<i class="'. $icon .'"></i>';
+							}	
 						$output .= '</div>';
-						$output .= '<img class="scale-with-grid" src="'. $image .'" alt="'. mfn_get_attachment_data( $image, 'alt' ) .'" width="'. mfn_get_attachment_data( $image, 'width' ) .'" height="'. mfn_get_attachment_data( $image, 'height' ) .'"/>';
+						$output .= '<img class="photo scale-with-grid" src="'. $image .'" alt="'. mfn_get_attachment_data( $image, 'alt' ) .'" width="'. mfn_get_attachment_data( $image, 'width' ) .'" height="'. mfn_get_attachment_data( $image, 'height' ) .'"/>';
 					$output .= '</div>';
 					
 					$output .= '<div class="desc_wrapper">';
@@ -891,16 +897,17 @@ if( ! function_exists( 'sc_blog' ) )
 	{
 		extract(shortcode_atts(array(
 			'count'				=> 2,
+			'style'				=> 'classic',
+			'columns'			=> 3,	
 			'category'			=> '',
 			'category_multi'	=> '',
 			'exclude_id'		=> '',
-			'style'				=> 'classic',
-			'columns'			=> 3,
-			'greyscale'			=> '',
 			'more'				=> '',
 			'filters'			=> '',
 			'pagination'		=> '',
 			'load_more'			=> '',
+			'greyscale'			=> '',
+			'margin'			=> '',	// for <b>Style: Masonry Tiles</b> only			
 		), $attr));
 		
 		$translate['filter'] 		= mfn_opts_get('translate') ? mfn_opts_get('translate-filter','Filter by') : __('Filter by','betheme');
@@ -917,6 +924,11 @@ if( ! function_exists( 'sc_blog' ) )
 			'post_status'			=> 'publish',
 			'ignore_sticky_posts'	=> 0,
 		);
+		
+		// private
+		if( is_user_logged_in() ){
+			$args['post_status'] = array('publish','private');
+		}
 
 		// categories
 		if( $category_multi ){
@@ -936,8 +948,10 @@ if( ! function_exists( 'sc_blog' ) )
 		
 		// classes
 		$classes = $style;
-		if( $greyscale ) 			$classes .= ' greyscale';
-		if( ! $more ) 				$classes .= ' hide-more'; 
+		
+		if( $greyscale ) 	$classes .= ' greyscale';
+		if( $margin ) 		$classes .= ' margin'; 
+		if( ! $more ) 		$classes .= ' hide-more'; 
 		if( in_array( $style, array('masonry','masonry tiles') ) ){
 			$classes .= ' isotope';
 		}
@@ -1040,14 +1054,16 @@ if( ! function_exists( 'sc_blog_slider' ) )
 			'category_multi'	=> '',
 			'more'				=> '',
 			'style'				=> '',
+			'navigation'		=> '',
 		), $attr));
 
 		$translate['readmore'] 		= mfn_opts_get('translate') ? mfn_opts_get('translate-readmore','Read more') : __('Read more','betheme');
 		
 		// classes
 		$classes = '';
-		if( ! $more )	$classes .= ' hide-more';
-		if( $style )	$classes .= ' '. $style;
+		if( ! $more )		$classes .= ' hide-more';
+		if( $style )		$classes .= ' '. $style;
+		if( $navigation )	$classes .= ' '. $navigation;
 		
 		$args = array(
 			'posts_per_page'		=> intval($count),
@@ -1055,6 +1071,11 @@ if( ! function_exists( 'sc_blog_slider' ) )
 			'post_status'			=> 'publish',
 			'ignore_sticky_posts'	=> 0,
 		);
+		
+		// private
+		if( is_user_logged_in() ){
+			$args['post_status'] = array('publish','private');
+		}
 		
 		// categories
 		if( $category_multi ){
@@ -1131,8 +1152,10 @@ if( ! function_exists( 'sc_blog_news' ) )
 		extract(shortcode_atts(array(
 			'title'				=> '',
 			'count'				=> 5,
+			'style'				=> '',
 			'category'			=> '',
 			'category_multi'	=> '',
+			'excerpt'			=> '',
 			'link'				=> '',
 			'link_title'		=> '',
 		), $attr));
@@ -1144,41 +1167,73 @@ if( ! function_exists( 'sc_blog_news' ) )
 			'ignore_sticky_posts'	=> 0,
 		);
 		
+		// private
+		if( is_user_logged_in() ){
+			$args['post_status'] = array('publish','private');
+		}
+		
 		// categories
 		if( $category_multi ){
 			$args['category_name'] = trim( $category_multi );
 		} elseif( $category ){
 			$args['category_name'] = $category;
 		}
+		
+		// featured first
+		if( $style == 'featured' ){
+			$first = true;
+		} else {
+			$first = false;
+		}
 
 		$query_blog = new WP_Query( $args );
 		
-		$output = '<div class="Latest_news">';
+		$output = '<div class="Latest_news '. esc_attr( $style ) .'">';
 			if( $title ) $output .= '<h3 class="title">'. $title .'</h3>';
 			
-			$output .= '<ul>';
-				while ( $query_blog->have_posts() ){
+			$output .= '<ul class="ul-first">';
+				
+				while( $query_blog->have_posts() ){
 					$query_blog->the_post();
 			
 					$output .= '<li class="'. implode( ' ', get_post_class() ).'">';
 					
 						$output .= '<div class="photo">';
-							$output .= get_the_post_thumbnail( get_the_ID(), 'blog-portfolio', array('class'=>'scale-with-grid' ) );
+							$output .= '<a href="'. get_permalink() .'">';
+								$output .= get_the_post_thumbnail( get_the_ID(), 'blog-portfolio', array('class'=>'scale-with-grid' ) );
+							$output .= '</a>';
 						$output .= '</div>';
 						
 						$output .= '<div class="desc">';
-							$output .= '<h5><a href="'. get_permalink() .'">'. get_the_title() .'</a></h5>';
-							
+						
+							if( $first ){
+								$output .= '<h4><a href="'. get_permalink() .'">'. get_the_title() .'</a></h4>';
+							} else {
+								$output .= '<h5><a href="'. get_permalink() .'">'. get_the_title() .'</a></h5>';
+							}
+	
 							$output .= '<div class="desc_footer">';
 								$output .= '<span class="date"><i class="icon-clock"></i> '. get_the_date() .'</span>';
 								if( comments_open() ) $output .= '<i class="icon-comment-empty-fa"></i> <a href="'. get_comments_link() .'" class="post-comments">'. get_comments_number() .'</a>';
 								$output .= '<div class="button-love">'. mfn_love() .'</div>';
 							$output .= '</div>';
+							
+							if( $excerpt == '1' || ( $first && $excerpt == 'featured' ) ) $output .= '<div class="post-excerpt">'. get_the_excerpt() .'</div>';
+							
 						$output .= '</div>';
 						
 					$output .= '</li>';
+					
+					if( $first ){
+						
+						$output .= '</ul>';			
+						$output .= '<ul class="ul-second">';
+					
+						$first = false;
+					}
 			
 				}
+				
 				wp_reset_postdata();
 			$output .= '</ul>';
 			
@@ -1388,9 +1443,18 @@ if( ! function_exists( 'sc_contact_box' ) )
 							$output .= '</li>';
 						}
 						if( $www ){
+							
+							if( strpos( $www, 'http' ) === 0 ){
+								$url = $www;
+								$www = str_replace( 'http://', '', $www );
+								$www = str_replace( 'https://', '', $www );
+							} else {
+								$url = 'http'. mfn_ssl() .'://'. $www;
+							}
+							
 							$output .= '<li class="www">';
 								$output .= '<span class="icon"><i class="icon-link"></i></span>';
-								$output .= '<p><a target="_blank" href="http'. mfn_ssl() .'://'. $www .'">'. $www .'</a></p>';
+								$output .= '<p><a target="_blank" href="'. $url .'">'. $www .'</a></p>';
 							$output .= '</li>';
 						}
 					$output .= '</ul>';
@@ -1639,12 +1703,13 @@ if( ! function_exists( 'sc_google_font' ) )
 	function sc_google_font( $attr, $content = null )
 	{
 		extract(shortcode_atts(array(
-			'font' 		=> '',
-			'size' 		=> '25',
-			'weight'	=> '400',
-			'italic'	=> '',
-			'color'		=> '',
-			'subset' 	=> '',
+			'font' 				=> '',
+			'size' 				=> '25',
+			'weight'			=> '400',
+			'italic'			=> '',
+			'letter_spacing' 	=> '',
+			'color'				=> '',
+			'subset' 			=> '',
 		), $attr));
 		
 		// style
@@ -1653,6 +1718,7 @@ if( ! function_exists( 'sc_google_font' ) )
 		$style[] 	= "font-size:". $size ."px;";
 		$style[] 	= "line-height:". $size ."px;";
 		$style[] 	= "font-weight:". $weight .";";
+		$style[] 	= "letter-spacing:". $letter_spacing ."px;";
 		if( $color ) $style[] = "color:". $color .";";
 
 		// italic
@@ -1661,20 +1727,22 @@ if( ! function_exists( 'sc_google_font' ) )
 			$weight = $weight .'italic';
 		}
 		
-		$style 		= implode( ' ', $style );
-		
-		// slug
-		$font_slug	= str_replace(' ', '+', $font);
-		
+		$style 		= implode( '', $style );
+
 		// subset
 		if( $subset ){
-			$subset	= '&amp;subset='. str_replace(' ', '', $subset);
+			$subset	= '&amp;subset='. str_replace( ' ', '', $subset );
 		} else {
 			$subset = false;	
 		}	
-	
-		$output = '<link type="text/css" rel="stylesheet" href="http'. mfn_ssl() .'://fonts.googleapis.com/css?family='. $font_slug .':'. $weight . $subset .'">'."\n";
-		$output .= '<div class="google_font" style="'. $style .'">'. do_shortcode($content) .'</div>'."\n";
+		
+		// slug
+		$font_slug	= str_replace( ' ', '+', $font );
+		wp_enqueue_style( $font_slug, 'http'. mfn_ssl() .'://fonts.googleapis.com/css?family='. $font_slug .':'. $weight . $subset );
+
+// 		$output = '<link type="text/css" rel="stylesheet" href="http'. mfn_ssl() .'://fonts.googleapis.com/css?family='. $font_slug .':'. $weight . $subset .'">'."\n";
+
+		$output = '<div class="google_font" style="'. $style .'">'. do_shortcode( $content ) .'</div>'."\n";
 		
 	    return $output;
 	}
@@ -2358,16 +2426,17 @@ if( ! function_exists( 'sc_quick_fact' ) )
 	{
 		extract(shortcode_atts(array(
 			'heading' 	=> '',
+			'title' 	=> '',
 			'number' 	=> '',
 			'prefix' 	=> '',
 			'label' 	=> '',
-			'title' 	=> '',
-			'animate' 	=> '',
+			'align' 	=> '',		
+			'animate' 	=> 'center',
 		), $attr));
 		
 		$animate_math = mfn_opts_get('math-animations-disable') ? false : 'animate-math';
 
-		$output = '<div class="quick_fact '. $animate_math .'">';
+		$output = '<div class="quick_fact align_'. $align .' '. $animate_math .'">';
 			if( $animate ) $output .= '<div class="animate" data-anim-type="'. $animate .'">';
 			
 				if( $heading ) $output .= '<h4 class="title">'. $heading .'</h4>';
@@ -2608,23 +2677,50 @@ if( ! function_exists( 'sc_dropcap' ) )
 	function sc_dropcap( $attr, $content = null )
 	{
 		extract(shortcode_atts(array(
+			'font' 			=> '',
+			'size' 			=> 1, // 1-3, or custom size in px
 			'background' 	=> '',
-			'color' 		=> '',
+			'color' 		=> '',			
 			'circle' 		=> '',
-			'size' 			=> 1, // 1-3
+			'transparent' 	=> '',
 		), $attr));
 
 		$class = '';
+		$style = '';
 		
+		// font family
+		if( $font ){
+			$style .= "font-family:'". $font ."',Arial,Tahoma,sans-serif;";
+			$font_slug = str_replace( ' ', '+', $font );
+			wp_enqueue_style( $font_slug, 'http'. mfn_ssl() .'://fonts.googleapis.com/css?family='. $font_slug );
+		}
+ 		
 		// circle
 		if( $circle ) $class = ' dropcap_circle';
 		
-		// size
-		$class .= ' size-'. $size;
+		// transparent
+		if( $transparent ) $class = ' transparent';
 
-		$style = '';
+		// background
 		if( $background ) $style .= 'background-color:'. $background .';';
+		
+		// color
 		if( $color ) $style .= ' color:'. $color .';';
+		
+		// size
+		$size = intval( $size );	
+		$sizeH = $size + 15;
+		
+		if( $size > 3 ){
+			if( $transparent ){
+				$style .= ' font-size:'. $size .'px;height:'. $size .'px;line-height:'. $size .'px;width:'. $size .'px;';
+			} else {
+				$style .= ' font-size:'. $size .'px;height:'. $sizeH .'px;line-height:'. $sizeH .'px;width:'. $sizeH .'px;';
+			}		
+		} else {
+			$class .= ' size-'. $size;
+		}
+		
 		if( $style ) $style = 'style="'. $style .'"';
 			
 		$output  = '<span class="dropcap'. $class .'" '. $style .'>';
@@ -3298,11 +3394,16 @@ if( ! function_exists( 'sc_portfolio' ) )
 		);
 		
 		// categories
-		if( $category_multi ){			
-			$args['portfolio-types'] = trim( $category_multi );			
-		} elseif( $category ){			
+		if( $category_multi = trim( $category_multi ) ){	
+			
+			$category_multi = mfn_wpml_term_slug( $category_multi, 'portfolio-types', 1 );
+			$args['portfolio-types'] = $category_multi;	
+					
+		} elseif( $category ){
+						
 			$category = mfn_wpml_term_slug( $category, 'portfolio-types' );	
-			$args['portfolio-types'] = $category;			
+			$args['portfolio-types'] = $category;	
+					
 		}
 	
 		// exclude posts
@@ -3390,11 +3491,16 @@ if( ! function_exists( 'sc_portfolio_grid' ) )
 		);
 		
 		// categories
-		if( $category_multi ){
-			$args['portfolio-types'] = trim( $category_multi );
+		if( $category_multi = trim( $category_multi ) ){
+				
+			$category_multi = mfn_wpml_term_slug( $category_multi, 'portfolio-types', 1 );
+			$args['portfolio-types'] = $category_multi;
+				
 		} elseif( $category ){
-			$category = mfn_wpml_term_slug( $category, 'portfolio-types' );	
+		
+			$category = mfn_wpml_term_slug( $category, 'portfolio-types' );
 			$args['portfolio-types'] = $category;
+				
 		}
 
 		$query = new WP_Query();
@@ -3460,11 +3566,16 @@ if( ! function_exists( 'sc_portfolio_photo' ) )
 		);
 		
 		// categories
-		if( $category_multi ){
-			$args['portfolio-types'] = trim( $category_multi );
+		if( $category_multi = trim( $category_multi ) ){	
+			
+			$category_multi = mfn_wpml_term_slug( $category_multi, 'portfolio-types', 1 );
+			$args['portfolio-types'] = $category_multi;	
+					
 		} elseif( $category ){
+						
 			$category = mfn_wpml_term_slug( $category, 'portfolio-types' );	
-			$args['portfolio-types'] = $category;
+			$args['portfolio-types'] = $category;	
+					
 		}
 		
 		// target
@@ -3564,11 +3675,16 @@ if( ! function_exists( 'sc_portfolio_slider' ) )
 		);
 		
 		// categories
-		if( $category_multi ){
-			$args['portfolio-types'] = trim( $category_multi );
+		if( $category_multi = trim( $category_multi ) ){	
+			
+			$category_multi = mfn_wpml_term_slug( $category_multi, 'portfolio-types', 1 );
+			$args['portfolio-types'] = $category_multi;	
+					
 		} elseif( $category ){
+						
 			$category = mfn_wpml_term_slug( $category, 'portfolio-types' );	
-			$args['portfolio-types'] = $category;
+			$args['portfolio-types'] = $category;	
+					
 		}
 
 		$query = new WP_Query();
@@ -3734,6 +3850,7 @@ if( ! function_exists( 'sc_offer' ) )
 	{
 		extract(shortcode_atts(array(
 			'category' 	=> '',
+			'align' 	=> 'left',
 		), $attr));
 		
 		$args = array(
@@ -3758,8 +3875,15 @@ if( ! function_exists( 'sc_offer' ) )
 					{
 						$offer_query->the_post();
 						$output .= '<li class="offer_li">';
-						
-							$link = get_post_meta( get_the_ID(), 'mfn-post-link', true);
+
+							// link
+							if( $link = get_post_meta( get_the_ID(), 'mfn-post-link', true) ){
+								$class = 'has-link';
+							} else {
+								$class = 'no-link';
+							}
+								
+							// target
 							if( get_post_meta( get_the_ID(), 'mfn-post-target', true) ){
 								$target = 'target="_blank"';
 							} else {
@@ -3770,7 +3894,7 @@ if( ! function_exists( 'sc_offer' ) )
 								$output .= get_the_post_thumbnail( get_the_ID(), 'full', array('class'=>'scale-with-grid' ) );
 							$output .= '</div>';
 							
-							$output .= '<div class="desc_wrapper">';
+							$output .= '<div class="desc_wrapper align_'. $align .' '. $class .'">';
 							
 								$output .= '<div class="title">';
 									$output .= '<h3>'. get_the_title() .'</h3>';
@@ -3812,6 +3936,7 @@ if( ! function_exists( 'sc_offer_thumb' ) )
 		extract(shortcode_atts(array(
 			'category' 	=> '',
 			'style' 	=> '',
+			'align' 	=> 'left',
 		), $attr));
 		
 		$args = array(
@@ -3825,7 +3950,7 @@ if( ! function_exists( 'sc_offer_thumb' ) )
 
 		$offer_query = new WP_Query();
 		$offer_query->query( $args );
-		
+
 		$output = '';
 		if ($offer_query->have_posts())
 		{
@@ -3838,7 +3963,14 @@ if( ! function_exists( 'sc_offer_thumb' ) )
 						$offer_query->the_post();
 						$output .= '<li class="offer_thumb_li id_'. $i .'">';
 						
-							$link = get_post_meta( get_the_ID(), 'mfn-post-link', true);
+							// link
+							if( $link = get_post_meta( get_the_ID(), 'mfn-post-link', true) ){
+								$class = 'has-link';
+							} else {
+								$class = 'no-link';
+							}
+							
+							// target
 							if( get_post_meta( get_the_ID(), 'mfn-post-target', true) ){
 								$target = 'target="_blank"';
 							} else {
@@ -3849,7 +3981,7 @@ if( ! function_exists( 'sc_offer_thumb' ) )
 								$output .= get_the_post_thumbnail( get_the_ID(), 'full', array('class'=>'scale-with-grid' ) );
 							$output .= '</div>';
 							
-							$output .= '<div class="desc_wrapper">';
+							$output .= '<div class="desc_wrapper align_'. $align .' '. $class .'">';
 							
 								if( trim(get_the_title()) || $link ){
 									$output .= '<div class="title">';
@@ -4701,7 +4833,7 @@ if( ! function_exists( 'sc_video' ) )
 						if( $ogv ) $output .= '<source type="video/ogg" src="'. $ogv .'" />';
 								
 						$output .= '<object width="1900" height="1060" type="application/x-shockwave-flash" data="'. THEME_URI .'/assets/jplayer/flashmediaelement.swf">';
-							$output .= '<param name="movie" value="'. THEME_URI .'/js/flashmediaelement.swf" />';
+							$output .= '<param name="movie" value="'. THEME_URI .'/assets/jplayer/flashmediaelement.swf" />';
 							$output .= '<param name="flashvars" value="controls=true&file='. $mp4 .'" />';
 							$output .= '<img src="'. $poster .'" title="No video playback capabilities" class="scale-with-grid" alt="'. mfn_get_attachment_data( $poster, 'alt' ) .'"/>';
 						$output .= '</object>';

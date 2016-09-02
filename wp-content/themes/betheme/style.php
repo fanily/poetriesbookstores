@@ -6,13 +6,10 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
 ?>
 
 /* ==============================================================================================================================
-/*
 /*	Background																										Background
-/*
 /* ============================================================================================================================ */
 	
 html { 
@@ -23,401 +20,490 @@ html {
 	background-color: <?php mfn_opts_show( 'background-body', '#FCFCFC' ) ?>;
 }
 
-<?php if( mfn_opts_get( 'img-subheader-bg' ) ): ?>
-	body:not(.template-slider) #Header_wrapper { background-image: url("<?php mfn_opts_show( 'img-subheader-bg' ) ?>"); }
-<?php endif; ?>
-
-
 
 /* ==============================================================================================================================
-/*
 /*	Font | Family																									Font | Family
-/*
 /* ============================================================================================================================ */
 
 body, button, span.date_label, .timeline_items li h3 span, input[type="submit"], input[type="reset"], input[type="button"],
 input[type="text"], input[type="password"], input[type="tel"], input[type="email"], textarea, select, .offer_li .title h3 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-content', 'Roboto' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 400;
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-content', 'Roboto' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
 #menu > ul > li > a, .action_button, #overlay-menu ul li a {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-menu', 'Roboto' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 400;
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-menu', 'Roboto' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
 #Subheader .title {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-title', 'Roboto' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 400;
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-title', 'Roboto' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
-h1, .text-logo #logo {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 300;
+h1, h2, h3, h4, .text-logo #logo {
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-headings', 'Patua One' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
-h2 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 300;
-}
-
-h3 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 300;
-}
-
-h4 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 300;
-}
-
-h5 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings-small', 'Roboto' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 700;
-}
-
-h6 {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-headings-small', 'Roboto' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
-	font-weight: 400;
+h5, h6 {
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-headings-small', 'Roboto' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
 blockquote {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-blockquote', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-blockquote', 'Patua One' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
 .chart_box .chart .num, .counter .desc_wrapper .number-wrapper, .how_it_works .image .number,
 .pricing-box .plan-header .price, .quick_fact .number-wrapper, .woocommerce .product div.entry-summary .price {
-	<?php $font = str_replace( '#', '', mfn_opts_get( 'font-decorative', 'Patua One' ) ); ?>
-	font-family: "<?php echo $font; ?>", Arial, Tahoma, sans-serif;
+	font-family: "<?php echo str_replace( '#', '', mfn_opts_get( 'font-decorative', 'Patua One' ) ); ?>", Arial, Tahoma, sans-serif;
 }
 
 
-
 /* ==============================================================================================================================
-/*
-/*	Font | Size																										Font | Size
-/*
+/*	Font | Size & Style																						Font | Size & Style
 /* ============================================================================================================================ */
 
-<?php 
-	$aFontSize = $aFontSizeDefault = array(
-		'content'	=> mfn_opts_get( 'font-size-content', '13' ),
-		'menu'		=> mfn_opts_get( 'font-size-menu', '14' ),
-		'title'		=> mfn_opts_get( 'font-size-title', '25' ),
-		'h1'		=> mfn_opts_get( 'font-size-h1', '25' ),
-		'h2'		=> mfn_opts_get( 'font-size-h2', '30' ),
-		'h3'		=> mfn_opts_get( 'font-size-h3', '25' ),
-		'h4'		=> mfn_opts_get( 'font-size-h4', '21' ),
-		'h5'		=> mfn_opts_get( 'font-size-h5', '15' ),
-		'h6'		=> mfn_opts_get( 'font-size-h6', '13' ),
-		'intro'		=> mfn_opts_get( 'font-size-single-intro', '70' ),
+<?php
+	$defaults = array(
+		'content' => array(
+			'size' 				=> 13,
+			'line_height' 		=> 21,
+			'weight_style' 		=> '400',
+			'letter_spacing' 	=> 0,
+		),
+		'menu' => array(
+			'size' 				=> 14,
+			'line_height' 		=> 0,
+			'weight_style' 		=> '400',
+			'letter_spacing' 	=> 0,
+		),	
+		'title' => array(
+			'size' 				=> 25,
+			'line_height' 		=> 25,
+			'weight_style' 		=> '400',
+			'letter_spacing' 	=> 0,
+		),	
+		'h1' => array(
+			'size' 				=> 25,
+			'line_height' 		=> 25,
+			'weight_style' 		=> '300',
+			'letter_spacing' 	=> 0,
+		),	
+		'h2' => array(
+			'size' 				=> 30,
+			'line_height' 		=> 30,
+			'weight_style' 		=> '300',
+			'letter_spacing' 	=> 0,
+		),	
+		'h3' => array(
+			'size' 				=> 25,
+			'line_height' 		=> 27,
+			'weight_style' 		=> '300',
+			'letter_spacing' 	=> 0,
+		),	
+		'h4' => array(
+			'size' 				=> 21,
+			'line_height' 		=> 25,
+			'weight_style' 		=> '300',
+			'letter_spacing' 	=> 0,
+		),	
+		'h5' => array(
+			'size' 				=> 15,
+			'line_height' 		=> 19,
+			'weight_style' 		=> '700',
+			'letter_spacing' 	=> 0,
+		),	
+		'h6' => array(
+			'size' 				=> 13,
+			'line_height' 		=> 19,
+			'weight_style' 		=> '400',
+			'letter_spacing' 	=> 0,
+		),	
+		'intro' => array(
+			'size' 				=> 70,
+			'line_height' 		=> 70,
+			'weight_style' 		=> '400',
+			'letter_spacing' 	=> 0,
+		),	
 	);
+	
+
+	if( is_array( mfn_opts_get( 'font-size-content' ) ) ){
+		
+		$aFont = array(
+			'content'	=> mfn_opts_get( 'font-size-content' ),
+			'menu'		=> mfn_opts_get( 'font-size-menu' ),
+			'title'		=> mfn_opts_get( 'font-size-title' ),
+			'h1'		=> mfn_opts_get( 'font-size-h1' ),
+			'h2'		=> mfn_opts_get( 'font-size-h2' ),
+			'h3'		=> mfn_opts_get( 'font-size-h3' ),
+			'h4'		=> mfn_opts_get( 'font-size-h4' ),
+			'h5'		=> mfn_opts_get( 'font-size-h5' ),
+			'h6'		=> mfn_opts_get( 'font-size-h6' ),
+			'intro'		=> mfn_opts_get( 'font-size-single-intro' ),
+		);
+		
+		$aFont = array_replace_recursive( $defaults, $aFont);
+		
+	} else {
+		
+		// compatibility with Betheme < 13.5
+	
+		$defaults['content']['size'] = mfn_opts_get( 'font-size-content', 13 );
+		$defaults['menu']['size'] = mfn_opts_get( 'font-size-menu', 14 );
+		$defaults['title']['size'] = mfn_opts_get( 'font-size-title', 25 );
+		$defaults['h1']['size'] = mfn_opts_get( 'font-size-h1', 25 );
+		$defaults['h2']['size'] = mfn_opts_get( 'font-size-h2', 25 );
+		$defaults['h3']['size'] = mfn_opts_get( 'font-size-h3', 25 );
+		$defaults['h4']['size'] = mfn_opts_get( 'font-size-h4', 25 );
+		$defaults['h5']['size'] = mfn_opts_get( 'font-size-h5', 25 );
+		$defaults['h6']['size'] = mfn_opts_get( 'font-size-h6', 25 );
+		$defaults['intro']['size'] = mfn_opts_get( 'font-size-single-intro', 70 );
+		
+		$aFont = $defaults;
+		
+	}
+	
+	$aFontInit = $aFont;
 ?>
 
 	
 /* Body */
 
 	body {
-		font-size: <?php echo $aFontSize['content']; ?>px;
-		line-height: <?php echo $aFontSize['content'] + 8; ?>px;
-	}	
+		font-size: <?php echo $aFont['content']['size']; ?>px;
+		line-height: <?php echo $aFont['content']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['content']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['content']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['content']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
+	}
+	
 	#menu > ul > li > a, .action_button {
-		font-size: <?php echo $aFontSize['menu']; ?>px;
+		font-size: <?php echo $aFont['menu']['size']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['menu']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['menu']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['menu']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}
 	#Subheader .title {
-		font-size: <?php echo $aFontSize['title']; ?>px;
-		line-height: <?php echo $aFontSize['title'] + 0; ?>px;
+		font-size: <?php echo $aFont['title']['size']; ?>px;
+		line-height: <?php echo $aFont['title']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['title']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['title']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['title']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}
 	
 /* Headings */
 
 	h1, .text-logo #logo { 
-		font-size: <?php echo $aFontSize['h1']; ?>px;
-		line-height: <?php echo $aFontSize['h1'] + 0; ?>px;
+		font-size: <?php echo $aFont['h1']['size']; ?>px;
+		line-height: <?php echo $aFont['h1']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h1']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h1']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h1']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}	
 	h2 { 
-		font-size: <?php echo $aFontSize['h2']; ?>px;
-		line-height: <?php echo $aFontSize['h2'] + 0; ?>px;
+		font-size: <?php echo $aFont['h2']['size']; ?>px;
+		line-height: <?php echo $aFont['h2']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h2']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h2']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h2']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}	
 	h3 {
-		font-size: <?php echo $aFontSize['h3']; ?>px;
-		line-height: <?php echo $aFontSize['h3'] + 2; ?>px;
+		font-size: <?php echo $aFont['h3']['size']; ?>px;
+		line-height: <?php echo $aFont['h3']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h3']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h3']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h3']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}	
 	h4 {
-		font-size: <?php echo $aFontSize['h4']; ?>px;
-		line-height: <?php echo $aFontSize['h4'] + 4; ?>px;
+		font-size: <?php echo $aFont['h4']['size']; ?>px;
+		line-height: <?php echo $aFont['h4']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h4']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h4']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h4']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}	
 	h5 {
-		font-size: <?php echo $aFontSize['h5']; ?>px;
-		line-height: <?php echo $aFontSize['h5'] + 5; ?>px;
+		font-size: <?php echo $aFont['h5']['size']; ?>px;
+		line-height: <?php echo $aFont['h5']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h5']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h5']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h5']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}	
 	h6 {
-		font-size: <?php echo $aFontSize['h6']; ?>px;
-		line-height: <?php echo $aFontSize['h6'] + 7; ?>px;
+		font-size: <?php echo $aFont['h6']['size']; ?>px;
+		line-height: <?php echo $aFont['h6']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['h6']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['h6']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['h6']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
 	}
 	
 /* Advanced */
 
 	#Intro .intro-title { 
-		font-size: <?php echo $aFontSize['intro']; ?>px;
-		line-height: <?php echo $aFontSize['intro'] + 0; ?>px;
-	}	
-
+		font-size: <?php echo $aFont['intro']['size']; ?>px;
+		line-height: <?php echo $aFont['intro']['line_height']; ?>px;
+		font-weight: <?php echo str_replace( 'italic', '', $aFont['intro']['weight_style'] ) ?>;	
+		letter-spacing: <?php echo $aFont['intro']['letter_spacing']; ?>px;
+		<?php if( strpos( $aFont['intro']['weight_style'], 'italic' ) ) echo 'font-style: italic;' ?>
+	}
 	
-/* Responsive */
-	<?php if( mfn_opts_get('responsive') && mfn_opts_get('font-size-responsive') ): ?>
 	
-		<?php
-			// Tablet (Landscape) ------------------------- 768 - 959
-			$min = 13;
-			$multiplier = 0.85;
-			
-			foreach( $aFontSize as $k => $v ){
-				$aFontSize[$k] = round( $v * $multiplier );
-				if( $aFontSize[$k] < $min ) $aFontSize[$k] = $min;
-			}
-		?>
 		
-		@media only screen and (min-width: 768px) and (max-width: 959px){
-			body {
-				font-size: <?php echo $aFontSize['content']; ?>px;
-				line-height: <?php echo $aFontSize['content'] + 7; ?>px;
-			}
-			#menu > ul > li > a {
-				font-size: <?php echo $aFontSize['menu']; ?>px;
-			}
-			#Subheader .title {
-				font-size: <?php echo $aFontSize['title']; ?>px;
-				line-height: <?php echo $aFontSize['title'] + 0; ?>px;
-			}
-				
-			h1, .text-logo #logo {
-				font-size: <?php echo $aFontSize['h1']; ?>px;
-				line-height: <?php echo $aFontSize['h1'] + 0; ?>px;
-			}
-			h2 {
-				font-size: <?php echo $aFontSize['h2']; ?>px;
-				line-height: <?php echo $aFontSize['h2'] + 0; ?>px;
-			}
-			h3 {
-				font-size: <?php echo $aFontSize['h3']; ?>px;
-				line-height: <?php echo $aFontSize['h3'] + 2; ?>px;
-			}
-			h4 {
-				font-size: <?php echo $aFontSize['h4']; ?>px;
-				line-height: <?php echo $aFontSize['h4'] + 4; ?>px;
-			}
-			h5 {
-				font-size: <?php echo $aFontSize['h5']; ?>px;
-				line-height: <?php echo $aFontSize['h5'] + 4; ?>px;
-			}
-			h6 {
-				font-size: <?php echo $aFontSize['h6']; ?>px;
-				line-height: <?php echo $aFontSize['h6'] + 6; ?>px;
-			}
-			#Intro .intro-title { 
-				font-size: <?php echo $aFontSize['intro']; ?>px;
-				line-height: <?php echo $aFontSize['intro'] + 0; ?>px;
-			}
-			
-			blockquote { font-size: 15px;}
-			
-			.chart_box .chart .num { font-size: 45px; line-height: 45px; }
-			
-			.counter .desc_wrapper .number-wrapper { font-size: 45px; line-height: 45px;}
-			.counter .desc_wrapper .title { font-size: 14px; line-height: 18px;}
-			
-			.faq .question .title { font-size: 14px; }
-			
-			.fancy_heading .title { font-size: 38px; line-height: 38px; }
-			
-			.offer .offer_li .desc_wrapper .title h3 { font-size: 32px; line-height: 32px; }
-			.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 32px; line-height: 32px; }
-			
-			.pricing-box .plan-header h2 { font-size: 27px; line-height: 27px; }
-			.pricing-box .plan-header .price > span { font-size: 40px; line-height: 40px; }
-			.pricing-box .plan-header .price sup.currency { font-size: 18px; line-height: 18px; }
-			.pricing-box .plan-header .price sup.period { font-size: 14px; line-height: 14px;}
-			
-			.quick_fact .number { font-size: 80px; line-height: 80px;}
+/* ==============================================================================================================================
+/*	Font | Size	Responsive																					Font | Size Responsive
+/* ============================================================================================================================ */
+	
+<?php if( mfn_opts_get('responsive') && mfn_opts_get('font-size-responsive') ): ?>
 
-			.trailer_box .desc h2 { font-size: 27px; line-height: 27px; }
+	<?php
+		$min_size = 13;
+		$min_line = 19;
+	
+		// Tablet (Landscape) ------------------------- 768 - 959
+		$multiplier = 0.85;
+		
+		foreach( $aFont as $key => $font ){
+			
+			$aFont[$key]['size'] = round( $font['size'] * $multiplier );
+			if( $aFont[$key]['size'] < $min_size ) $aFont[$key]['size'] = $min_size;
+			
+			$aFont[$key]['line_height'] = round( $font['line_height'] * $multiplier );
+			if( $aFont[$key]['line_height'] < $min_line ) $aFont[$key]['line_height'] = $min_line;
+			
+		}
+	?>
+	
+	@media only screen and (min-width: 768px) and (max-width: 959px){
+		body {
+			font-size: <?php echo $aFont['content']['size']; ?>px;
+			line-height: <?php echo $aFont['content']['line_height']; ?>px;
+		}
+		#menu > ul > li > a, .action_button {
+			font-size: <?php echo $aFont['menu']['size']; ?>px;
+		}
+		#Subheader .title {
+			font-size: <?php echo $aFont['title']['size']; ?>px;
+			line-height: <?php echo $aFont['title']['line_height']; ?>px;
+		}
+		h1, .text-logo #logo { 
+			font-size: <?php echo $aFont['h1']['size']; ?>px;
+			line-height: <?php echo $aFont['h1']['line_height']; ?>px;
+		}	
+		h2 { 
+			font-size: <?php echo $aFont['h2']['size']; ?>px;
+			line-height: <?php echo $aFont['h2']['line_height']; ?>px;
+		}	
+		h3 {
+			font-size: <?php echo $aFont['h3']['size']; ?>px;
+			line-height: <?php echo $aFont['h3']['line_height']; ?>px;
+		}	
+		h4 {
+			font-size: <?php echo $aFont['h4']['size']; ?>px;
+			line-height: <?php echo $aFont['h4']['line_height']; ?>px;
+		}	
+		h5 {
+			font-size: <?php echo $aFont['h5']['size']; ?>px;
+			line-height: <?php echo $aFont['h5']['line_height']; ?>px;
+		}	
+		h6 {
+			font-size: <?php echo $aFont['h6']['size']; ?>px;
+			line-height: <?php echo $aFont['h6']['line_height']; ?>px;
+		}
+		#Intro .intro-title { 
+			font-size: <?php echo $aFont['intro']['size']; ?>px;
+			line-height: <?php echo $aFont['intro']['line_height']; ?>px;
 		}
 		
-		<?php
-			// Tablet (Portrait) & Mobile (Landscape) ----- 480 - 767
-			$min = 13;
-			$multiplier = 0.75;
-			
-			$aFontSize = $aFontSizeDefault;
-			foreach( $aFontSize as $k => $v ){
-				$aFontSize[$k] = round( $v * $multiplier );
-				if( $aFontSize[$k] < $min ) $aFontSize[$k] = $min;
-			}
-		?>
+		blockquote { font-size: 15px;}
 		
-		@media only screen and (min-width: 480px) and (max-width: 767px){
-			body {
-				font-size: <?php echo $aFontSize['content']; ?>px;
-				line-height: <?php echo $aFontSize['content'] + 7; ?>px;
-			}
-			#menu > ul > li > a {
-				font-size: <?php echo $aFontSize['menu']; ?>px;
-			}
-			#Subheader .title {
-				font-size: <?php echo $aFontSize['title']; ?>px;
-				line-height: <?php echo $aFontSize['title'] + 0; ?>px;
-			}
-			
-			h1, .text-logo #logo {
-				font-size: <?php echo $aFontSize['h1']; ?>px;
-				line-height: <?php echo $aFontSize['h1'] + 0; ?>px;
-			}
-			h2 {
-				font-size: <?php echo $aFontSize['h2']; ?>px;
-				line-height: <?php echo $aFontSize['h2'] + 0; ?>px;
-			}
-			h3 {
-				font-size: <?php echo $aFontSize['h3']; ?>px;
-				line-height: <?php echo $aFontSize['h3'] + 2; ?>px;
-			}
-			h4 {
-				font-size: <?php echo $aFontSize['h4']; ?>px;
-				line-height: <?php echo $aFontSize['h4'] + 4; ?>px;
-			}
-			h5 {
-				font-size: <?php echo $aFontSize['h5']; ?>px;
-				line-height: <?php echo $aFontSize['h5'] + 4; ?>px;
-			}
-			h6 {
-				font-size: <?php echo $aFontSize['h6']; ?>px;
-				line-height: <?php echo $aFontSize['h6'] + 5; ?>px;
-			}
-			#Intro .intro-title { 
-				font-size: <?php echo $aFontSize['intro']; ?>px;
-				line-height: <?php echo $aFontSize['intro'] + 0; ?>px;
-			}
-			
-			blockquote { font-size: 14px;}
-			
-			.chart_box .chart .num { font-size: 40px; line-height: 40px; }
-			
-			.counter .desc_wrapper .number-wrapper { font-size: 40px; line-height: 40px;}
-			.counter .desc_wrapper .title { font-size: 13px; line-height: 16px;}
+		.chart_box .chart .num { font-size: 45px; line-height: 45px; }
+		
+		.counter .desc_wrapper .number-wrapper { font-size: 45px; line-height: 45px;}
+		.counter .desc_wrapper .title { font-size: 14px; line-height: 18px;}
+		
+		.faq .question .title { font-size: 14px; }
+		
+		.fancy_heading .title { font-size: 38px; line-height: 38px; }
+		
+		.offer .offer_li .desc_wrapper .title h3 { font-size: 32px; line-height: 32px; }
+		.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 32px; line-height: 32px; }
+		
+		.pricing-box .plan-header h2 { font-size: 27px; line-height: 27px; }
+		.pricing-box .plan-header .price > span { font-size: 40px; line-height: 40px; }
+		.pricing-box .plan-header .price sup.currency { font-size: 18px; line-height: 18px; }
+		.pricing-box .plan-header .price sup.period { font-size: 14px; line-height: 14px;}
+		
+		.quick_fact .number { font-size: 80px; line-height: 80px;}
 
-			.faq .question .title { font-size: 13px; }
-
-			.fancy_heading .title { font-size: 34px; line-height: 34px; }
+		.trailer_box .desc h2 { font-size: 27px; line-height: 27px; }
+	}
+	
+	<?php
+		// Tablet (Portrait) & Mobile (Landscape) ----- 480 - 767
+		$multiplier = 0.75;
+		
+		$aFont = $aFontInit;
+		
+		foreach( $aFont as $key => $font ){
 			
-			.offer .offer_li .desc_wrapper .title h3 { font-size: 28px; line-height: 28px; }
-			.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 28px; line-height: 28px; }
+			$aFont[$key]['size'] = round( $font['size'] * $multiplier );
+			if( $aFont[$key]['size'] < $min_size ) $aFont[$key]['size'] = $min_size;
 			
-			.pricing-box .plan-header h2 { font-size: 24px; line-height: 24px; }
-			.pricing-box .plan-header .price > span { font-size: 34px; line-height: 34px; }
-			.pricing-box .plan-header .price sup.currency { font-size: 16px; line-height: 16px; }
-			.pricing-box .plan-header .price sup.period { font-size: 13px; line-height: 13px;}
+			$aFont[$key]['line_height'] = round( $font['line_height'] * $multiplier );
+			if( $aFont[$key]['line_height'] < $min_line ) $aFont[$key]['line_height'] = $min_line;
 			
-			.quick_fact .number { font-size: 70px; line-height: 70px;}
-
-			.trailer_box .desc h2 { font-size: 24px; line-height: 24px; }
+		}
+	?>
+	
+	@media only screen and (min-width: 480px) and (max-width: 767px){
+		body {
+			font-size: <?php echo $aFont['content']['size']; ?>px;
+			line-height: <?php echo $aFont['content']['line_height']; ?>px;
+		}
+		#menu > ul > li > a, .action_button {
+			font-size: <?php echo $aFont['menu']['size']; ?>px;
+		}
+		#Subheader .title {
+			font-size: <?php echo $aFont['title']['size']; ?>px;
+			line-height: <?php echo $aFont['title']['line_height']; ?>px;
+		}
+		h1, .text-logo #logo { 
+			font-size: <?php echo $aFont['h1']['size']; ?>px;
+			line-height: <?php echo $aFont['h1']['line_height']; ?>px;
+		}	
+		h2 { 
+			font-size: <?php echo $aFont['h2']['size']; ?>px;
+			line-height: <?php echo $aFont['h2']['line_height']; ?>px;
+		}	
+		h3 {
+			font-size: <?php echo $aFont['h3']['size']; ?>px;
+			line-height: <?php echo $aFont['h3']['line_height']; ?>px;
+		}	
+		h4 {
+			font-size: <?php echo $aFont['h4']['size']; ?>px;
+			line-height: <?php echo $aFont['h4']['line_height']; ?>px;
+		}	
+		h5 {
+			font-size: <?php echo $aFont['h5']['size']; ?>px;
+			line-height: <?php echo $aFont['h5']['line_height']; ?>px;
+		}	
+		h6 {
+			font-size: <?php echo $aFont['h6']['size']; ?>px;
+			line-height: <?php echo $aFont['h6']['line_height']; ?>px;
+		}
+		#Intro .intro-title { 
+			font-size: <?php echo $aFont['intro']['size']; ?>px;
+			line-height: <?php echo $aFont['intro']['line_height']; ?>px;
 		}
 		
-		<?php
-			// Mobile (Portrait) ------------------------------ < 479
-			$min = 13;
-			$multiplier = 0.6;
-			
-			$aFontSize = $aFontSizeDefault;
-			foreach( $aFontSize as $k => $v ){
-				$aFontSize[$k] = round( $v * $multiplier );
-				if( $aFontSize[$k] < $min ) $aFontSize[$k] = $min;
-			}
-		?>
+		blockquote { font-size: 14px;}
 		
-		@media only screen and (max-width: 479px){
-			body {
-				font-size: <?php echo $aFontSize['content']; ?>px;
-				line-height: <?php echo $aFontSize['content'] + 7; ?>px;
-			}
-			#menu > ul > li > a {
-				font-size: <?php echo $aFontSize['menu']; ?>px;
-			}
-			#Subheader .title {
-				font-size: <?php echo $aFontSize['title']; ?>px;
-				line-height: <?php echo $aFontSize['title'] + 0; ?>px;
-			}
-			
-			h1, .text-logo #logo {
-				font-size: <?php echo $aFontSize['h1']; ?>px;
-				line-height: <?php echo $aFontSize['h1'] + 0; ?>px;
-			}
-			h2 { 
-				font-size: <?php echo $aFontSize['h2']; ?>px;
-				line-height: <?php echo $aFontSize['h2'] + 0; ?>px;
-			}
-			h3 {
-				font-size: <?php echo $aFontSize['h3']; ?>px;
-				line-height: <?php echo $aFontSize['h3'] + 2; ?>px;
-			}
-			h4 {
-				font-size: <?php echo $aFontSize['h4']; ?>px;
-				line-height: <?php echo $aFontSize['h4'] + 3; ?>px;
-			}
-			h5 {
-				font-size: <?php echo $aFontSize['h5']; ?>px;
-				line-height: <?php echo $aFontSize['h5'] + 3; ?>px;
-			}
-			h6 {
-				font-size: <?php echo $aFontSize['h6']; ?>px;
-				line-height: <?php echo $aFontSize['h6'] + 4; ?>px;
-			}
-			#Intro .intro-title { 
-				font-size: <?php echo $aFontSize['intro']; ?>px;
-				line-height: <?php echo $aFontSize['intro'] + 0; ?>px;
-			}
-			
-			blockquote { font-size: 13px;}
-			
-			.chart_box .chart .num { font-size: 35px; line-height: 35px; }
-			
-			.counter .desc_wrapper .number-wrapper { font-size: 35px; line-height: 35px;}
-			.counter .desc_wrapper .title { font-size: 13px; line-height: 26px;}
+		.chart_box .chart .num { font-size: 40px; line-height: 40px; }
+		
+		.counter .desc_wrapper .number-wrapper { font-size: 40px; line-height: 40px;}
+		.counter .desc_wrapper .title { font-size: 13px; line-height: 16px;}
 
-			.faq .question .title { font-size: 13px; }
-			
-			.fancy_heading .title { font-size: 30px; line-height: 30px; }
-			
-			.offer .offer_li .desc_wrapper .title h3 { font-size: 26px; line-height: 26px; }
-			.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 26px; line-height: 26px; }
-			
-			.pricing-box .plan-header h2 { font-size: 21px; line-height: 21px; }
-			.pricing-box .plan-header .price > span { font-size: 32px; line-height: 32px; }
-			.pricing-box .plan-header .price sup.currency { font-size: 14px; line-height: 14px; }
-			.pricing-box .plan-header .price sup.period { font-size: 13px; line-height: 13px;}
-			
-			.quick_fact .number { font-size: 60px; line-height: 60px;}
+		.faq .question .title { font-size: 13px; }
 
-			.trailer_box .desc h2 { font-size: 21px; line-height: 21px; }
+		.fancy_heading .title { font-size: 34px; line-height: 34px; }
+		
+		.offer .offer_li .desc_wrapper .title h3 { font-size: 28px; line-height: 28px; }
+		.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 28px; line-height: 28px; }
+		
+		.pricing-box .plan-header h2 { font-size: 24px; line-height: 24px; }
+		.pricing-box .plan-header .price > span { font-size: 34px; line-height: 34px; }
+		.pricing-box .plan-header .price sup.currency { font-size: 16px; line-height: 16px; }
+		.pricing-box .plan-header .price sup.period { font-size: 13px; line-height: 13px;}
+		
+		.quick_fact .number { font-size: 70px; line-height: 70px;}
+
+		.trailer_box .desc h2 { font-size: 24px; line-height: 24px; }
+	}
+	
+	<?php
+		// Mobile (Portrait) ------------------------------ < 479
+		$multiplier = 0.6;
+		
+		$aFont = $aFontInit;
+		
+		foreach( $aFont as $key => $font ){
+			
+			$aFont[$key]['size'] = round( $font['size'] * $multiplier );
+			if( $aFont[$key]['size'] < $min_size ) $aFont[$key]['size'] = $min_size;
+			
+			$aFont[$key]['line_height'] = round( $font['line_height'] * $multiplier );
+			if( $aFont[$key]['line_height'] < $min_line ) $aFont[$key]['line_height'] = $min_line;
+			
+		}
+	?>
+	
+	@media only screen and (max-width: 479px){
+		body {
+			font-size: <?php echo $aFont['content']['size']; ?>px;
+			line-height: <?php echo $aFont['content']['line_height']; ?>px;
+		}
+		#menu > ul > li > a, .action_button {
+			font-size: <?php echo $aFont['menu']['size']; ?>px;
+		}
+		#Subheader .title {
+			font-size: <?php echo $aFont['title']['size']; ?>px;
+			line-height: <?php echo $aFont['title']['line_height']; ?>px;
+		}
+		h1, .text-logo #logo { 
+			font-size: <?php echo $aFont['h1']['size']; ?>px;
+			line-height: <?php echo $aFont['h1']['line_height']; ?>px;
+		}	
+		h2 { 
+			font-size: <?php echo $aFont['h2']['size']; ?>px;
+			line-height: <?php echo $aFont['h2']['line_height']; ?>px;
+		}	
+		h3 {
+			font-size: <?php echo $aFont['h3']['size']; ?>px;
+			line-height: <?php echo $aFont['h3']['line_height']; ?>px;
+		}	
+		h4 {
+			font-size: <?php echo $aFont['h4']['size']; ?>px;
+			line-height: <?php echo $aFont['h4']['line_height']; ?>px;
+		}	
+		h5 {
+			font-size: <?php echo $aFont['h5']['size']; ?>px;
+			line-height: <?php echo $aFont['h5']['line_height']; ?>px;
+		}	
+		h6 {
+			font-size: <?php echo $aFont['h6']['size']; ?>px;
+			line-height: <?php echo $aFont['h6']['line_height']; ?>px;
+		}
+		#Intro .intro-title { 
+			font-size: <?php echo $aFont['intro']['size']; ?>px;
+			line-height: <?php echo $aFont['intro']['line_height']; ?>px;
 		}
 		
-	<?php endif; ?>
+		blockquote { font-size: 13px;}
+		
+		.chart_box .chart .num { font-size: 35px; line-height: 35px; }
+		
+		.counter .desc_wrapper .number-wrapper { font-size: 35px; line-height: 35px;}
+		.counter .desc_wrapper .title { font-size: 13px; line-height: 26px;}
 
+		.faq .question .title { font-size: 13px; }
+		
+		.fancy_heading .title { font-size: 30px; line-height: 30px; }
+		
+		.offer .offer_li .desc_wrapper .title h3 { font-size: 26px; line-height: 26px; }
+		.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3 {  font-size: 26px; line-height: 26px; }
+		
+		.pricing-box .plan-header h2 { font-size: 21px; line-height: 21px; }
+		.pricing-box .plan-header .price > span { font-size: 32px; line-height: 32px; }
+		.pricing-box .plan-header .price sup.currency { font-size: 14px; line-height: 14px; }
+		.pricing-box .plan-header .price sup.period { font-size: 13px; line-height: 13px;}
+		
+		.quick_fact .number { font-size: 60px; line-height: 60px;}
+
+		.trailer_box .desc h2 { font-size: 21px; line-height: 21px; }
+	}
+	
+<?php endif; ?>
 
 	
 /* ==============================================================================================================================
-/*
-/*	Sidebar | Width																									Sidebar | Width
-/*
+/*	Sidebar | Width																								Sidebar | Width
 /* ============================================================================================================================ */
 	
 <?php 
@@ -448,11 +534,8 @@ blockquote {
 }
 	
 	
-	
 /* ==============================================================================================================================
-/*
 /*	Grid | Width																									Grid | Width
-/*
 /* ============================================================================================================================ */
 
 <?php if( mfn_opts_get('responsive') ): ?>
@@ -493,11 +576,8 @@ blockquote {
 <?php endif; ?>
 
 
-
 /* ==============================================================================================================================
-/*
 /*	Other																													Other
-/*
 /* ============================================================================================================================ */
 
 /* Logo Height */

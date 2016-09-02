@@ -23,7 +23,7 @@ $output .= '<div class="faq">';
 	$output .= '<div class="mfn-acc faq_wrapper">';
 
 		$output .= '<div class="question">';
-			$output .=  apply_filters('wpb_toggle_heading', '<div class="title '.$css_class.'"><span class="num"></span>'. $title .'</div>', array('title'=>$title, 'open'=>$open));
+			$output .=  apply_filters('wpb_toggle_heading', '<div class="title '.$css_class.'"><i class="icon-plus acc-icon-plus"></i><i class="icon-minus acc-icon-minus"></i>'. $title .'</div>', array('title'=>$title, 'open'=>$open));
 // 			$output .= '<div class="title"><span class="num"></span><i class="icon-plus acc-icon-plus"></i><i class="icon-minus acc-icon-minus"></i>'. $title .'</div>';
 
 				$css_class = apply_filters( VC_SHORTCODE_CUSTOM_CSS_FILTER_TAG, 'wpb_toggle_content answer' . $el_class, $this->settings['base'], $atts );

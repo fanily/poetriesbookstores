@@ -78,21 +78,21 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 	 *
 	 * @see Walker_Nav_Menu::start_lvl()
 	 */
-	function start_lvl( &$output, $depth = 0, $args = array() ) {}
+	public function start_lvl( &$output, $depth = 0, $args = array() ) {}
 
 	/**
 	 * Ends the list of after the elements are added.
 	 *
 	 * @see Walker_Nav_Menu::end_lvl()
 	 */
-	function end_lvl( &$output, $depth = 0, $args = array() ) {}
+	public function end_lvl( &$output, $depth = 0, $args = array() ) {}
 
 	/**
 	 * Start the element output.
 	 *
 	 * @see Walker_Nav_Menu::start_el()
 	 */
-	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+	public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 		global $_wp_nav_menu_max_depth;
 		$_wp_nav_menu_max_depth = $depth > $_wp_nav_menu_max_depth ? $depth : $_wp_nav_menu_max_depth;
 
@@ -115,6 +115,11 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 		} elseif ( 'post_type' == $item->type ) {
 			$original_object = get_post( $item->object_id );
 			$original_title = get_the_title( $original_object->ID );
+		} elseif ( 'post_type_archive' == $item->type ) {
+			$original_object = get_post_type_object( $item->object );
+			if ( $original_object ) {
+				$original_title = $original_object->labels->archives;
+			}
 		}
 
 		$classes = array(
@@ -143,8 +148,8 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 
 		?>
 		<li id="menu-item-<?php echo $item_id; ?>" class="<?php echo implode(' ', $classes ); ?>">
-			<dl class="menu-item-bar">
-				<dt class="menu-item-handle">
+			<div class="menu-item-bar">
+				<div class="menu-item-handle">
 					<span class="item-title"><span class="menu-item-title"><?php echo esc_html( $title ); ?></span> <span class="is-submenu" <?php echo $submenu_text; ?>><?php _e( 'sub item','mfn-opts' ); ?></span></span>
 					<span class="item-controls">
 						<span class="item-type"><?php echo esc_html( $item->type_label ); ?></span>
@@ -160,7 +165,7 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 									),
 									'move-menu_item'
 								);
-							?>" class="item-move-up"><abbr title="<?php esc_attr_e( 'Move up', 'mfn-opts' ); ?>">&#8593;</abbr></a>
+							?>" class="item-move-up" aria-label="<?php esc_attr_e( 'Move up','mfn-opts' ) ?>">&#8593;</a>
 							|
 							<a href="<?php
 								echo wp_nonce_url(
@@ -173,17 +178,17 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 									),
 									'move-menu_item'
 								);
-							?>" class="item-move-down"><abbr title="<?php esc_attr_e( 'Move down', 'mfn-opts' ); ?>">&#8595;</abbr></a>
+							?>" class="item-move-down" aria-label="<?php esc_attr_e( 'Move down','mfn-opts' ) ?>">&#8595;</a>
 						</span>
-						<a class="item-edit" id="edit-<?php echo $item_id; ?>" title="<?php esc_attr_e( 'Edit Menu Item', 'mfn-opts' ); ?>" href="<?php
-							echo ( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item'] ) ? admin_url( 'nav-menus.php' ) : esc_url( add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) ) );
-						?>"><?php _e( 'Edit Menu Item','mfn-opts' ); ?></a>
+						<a class="item-edit" id="edit-<?php echo $item_id; ?>" href="<?php
+							echo ( isset( $_GET['edit-menu-item'] ) && $item_id == $_GET['edit-menu-item'] ) ? admin_url( 'nav-menus.php' ) : add_query_arg( 'edit-menu-item', $item_id, remove_query_arg( $removed_args, admin_url( 'nav-menus.php#menu-item-settings-' . $item_id ) ) );
+						?>" aria-label="<?php esc_attr_e( 'Edit menu item','mfn-opts' ); ?>"><?php _e( 'Edit','mfn-opts' ); ?></a>
 					</span>
-				</dt>
-			</dl>
+				</div>
+			</div>
 
-			<div class="menu-item-settings" id="menu-item-settings-<?php echo $item_id; ?>">
-				<?php if( 'custom' == $item->type ) : ?>
+			<div class="menu-item-settings wp-clearfix" id="menu-item-settings-<?php echo $item_id; ?>">
+				<?php if ( 'custom' == $item->type ) : ?>
 					<p class="field-url description description-wide">
 						<label for="edit-menu-item-url-<?php echo $item_id; ?>">
 							<?php _e( 'URL','mfn-opts' ); ?><br />
@@ -191,13 +196,13 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 						</label>
 					</p>
 				<?php endif; ?>
-				<p class="description description-thin">
+				<p class="description description-wide">
 					<label for="edit-menu-item-title-<?php echo $item_id; ?>">
 						<?php _e( 'Navigation Label','mfn-opts' ); ?><br />
 						<input type="text" id="edit-menu-item-title-<?php echo $item_id; ?>" class="widefat edit-menu-item-title" name="menu-item-title[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->title ); ?>" />
 					</label>
 				</p>
-				<p class="description description-thin">
+				<p class="field-title-attribute field-attr-title description description-wide">
 					<label for="edit-menu-item-attr-title-<?php echo $item_id; ?>">
 						<?php _e( 'Title Attribute','mfn-opts' ); ?><br />
 						<input type="text" id="edit-menu-item-attr-title-<?php echo $item_id; ?>" class="widefat edit-menu-item-attr-title" name="menu-item-attr-title[<?php echo $item_id; ?>]" value="<?php echo esc_attr( $item->post_excerpt ); ?>" />
@@ -256,6 +261,12 @@ class Walker_Nav_Menu_Edit_Mfn extends Walker_Nav_Menu {
 						</label>
 					</p>
 				<?php endif; ?>
+				
+				<?php 
+					// Add this directly after the description paragraph in the start_el() method
+					do_action( 'wp_nav_menu_item_custom_fields', $item_id, $item, $depth, $args );
+					// end added section 
+				?>
 
 				<p class="field-move hide-if-no-js description description-wide">
 					<label>

@@ -99,6 +99,18 @@ add_filter( 'excerpt_length', 'mfn_excerpt_length', 999 );
 
 
 /* ---------------------------------------------------------------------------
+ * Excerpt | Wrap [...] into <span>
+ * --------------------------------------------------------------------------- */
+if( ! function_exists( 'mfn_trim_excerpt' ) )
+{
+	function mfn_trim_excerpt( $text ) {
+		return '<span class="excerpt-hellip"> […]</span>';
+	}
+}
+add_filter( 'excerpt_more', 'mfn_trim_excerpt' );
+
+
+/* ---------------------------------------------------------------------------
  * Slug | Generate
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_slug' ) )
@@ -205,9 +217,15 @@ if( ! function_exists( 'mfn_ID' ) )
 				
 				// index.php
 				if( get_option( 'page_for_posts' ) ){
-					$postID = get_option( 'page_for_posts' );	// Setings / Reading
+					
+					// Setings / Reading
+					$postID = get_option( 'page_for_posts' );	
+					
 				} elseif( mfn_opts_get( 'blog-page' ) ){
-					$postID = mfn_opts_get( 'blog-page' );		// Theme Options / Getting Started / Blog
+					
+					// Theme Options / Getting Started / Blog
+					$postID = mfn_wpml_ID( mfn_opts_get( 'blog-page' ) );
+							
 				}
 				
 			} else {
@@ -229,24 +247,39 @@ if( ! function_exists( 'mfn_ID' ) )
 if( ! function_exists( 'mfn_layout_ID' ) )
 {
 	function mfn_layout_ID(){
-		
-		if( mfn_ID() && is_single() && get_post_type() == 'post' ){
-			
-			// Theme Options | Single Posts
-			$layoutID = mfn_opts_get( 'blog-single-layout' );
-			
-		} elseif( mfn_ID() && is_single() && get_post_type() == 'portfolio' ) {
 
-			// Theme Options | Single Project
-			$layoutID = mfn_opts_get( 'portfolio-single-layout' );
+		$layoutID = false;
+		
+		if( mfn_ID() ){
 			
-		} else {
-			
-			// Page Options | Page, Portfolio
-			$layoutID = get_post_meta( mfn_ID(), 'mfn-post-custom-layout', true );
-			
-		}	
+			if( is_single() && get_post_type() == 'post' ){
+				
+				// Theme Options | Single Post
+				$layoutID = mfn_opts_get( 'blog-single-layout' );
+				
+			} elseif( is_single() && get_post_type() == 'portfolio' ) {
 	
+				if( get_post_meta( mfn_ID(), 'mfn-post-custom-layout', true ) ){
+					
+					// Page Options | Single Portfolio
+					$layoutID = get_post_meta( mfn_ID(), 'mfn-post-custom-layout', true );
+					
+				} else {
+					
+					// Theme Options | Single Portfolio
+					$layoutID = mfn_opts_get( 'portfolio-single-layout' );
+					
+				}
+				
+			} else {
+				
+				// Page Options | Page
+				$layoutID = get_post_meta( mfn_ID(), 'mfn-post-custom-layout', true );
+				
+			}
+			
+		}
+
 		return $layoutID;
 	}
 }
@@ -525,7 +558,7 @@ if( ! function_exists( 'mfn_pagination' ) )
 
 
 /* ---------------------------------------------------------------------------
- * No sidebar message for themes with sidebar 
+ * No sidebar message for templates with sidebar 
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_nosidebar' ) )
 {
@@ -600,7 +633,7 @@ if( ! function_exists( 'curPageURL' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Page Title
+ * Subheader | Page Title
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_page_title' ) )
 {
@@ -646,7 +679,7 @@ if( ! function_exists( 'mfn_page_title' ) )
 			// Blog | Year --------------------------------
 			$title = get_the_time('Y');
 			
-		} elseif( is_single() ){
+		} elseif( is_single() || is_page() ){
 			
 			// Single -------------------------------------
 			$title = get_the_title( mfn_ID() );
@@ -710,6 +743,24 @@ if( ! function_exists( 'mfn_breadcrumbs' ) )
 				$blogID = get_option( 'page_for_posts' );	// Setings / Reading
 			} elseif( mfn_opts_get( 'blog-page' ) ){
 				$blogID = mfn_opts_get( 'blog-page' );		// Theme Options / Getting Started / Blog
+			}
+			
+			// Blog Page has parent
+			$blog_post = get_post( $blogID );
+			
+			if( $blog_post->post_parent ){
+			
+				$parent_id  = $blog_post->post_parent;
+				$parents = array();
+			
+				while( $parent_id ) {
+					$page = get_page( $parent_id );
+					$parents[] = '<a href="' . get_permalink( $page->ID ) . '">' . get_the_title( $page->ID ) . '</a>';
+					$parent_id  = $page->post_parent;
+				}
+				$parents = array_reverse( $parents );
+				$breadcrumbs = array_merge_recursive($breadcrumbs, $parents);
+			
 			}
 	
 			if( $blogID ) $breadcrumbs[] = '<a href="'. get_permalink( $blogID ) .'">'. get_the_title( $blogID ) .'</a>';
@@ -1031,7 +1082,7 @@ if( ! function_exists( 'mfn_post_format' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Attachment | ID by URL
+ * Attachment | GET attachment ID by URL
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_get_attachment_id_url' ) )
 {
@@ -1048,16 +1099,11 @@ if( ! function_exists( 'mfn_get_attachment_id_url' ) )
 }
 
 
+/* ---------------------------------------------------------------------------
+ * Attachment | GET attachment data
+ * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_get_attachment_data' ) )
 {
-	/**
-	 * GET Attachment DATA
-	 * 
-	 * @param int|string $image Image ID or URL
-	 * @param string $data
-	 * @param boolean $with_key
-	 * @return string
-	 */
 	function mfn_get_attachment_data( $image, $data, $with_key = false ){
 		$size = $return = false;
 		
@@ -1067,7 +1113,7 @@ if( ! function_exists( 'mfn_get_attachment_data' ) )
 		}
 
 		$meta = wp_prepare_attachment_for_js( $image );
-		if( is_array( $meta ) ){
+		if( is_array( $meta ) && isset( $meta[ $data ] ) ){
 			$return = $meta[ $data ];
 			
 			// if looking for alt and it isn't specified use image title
@@ -1086,7 +1132,7 @@ if( ! function_exists( 'mfn_get_attachment_data' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Post Thumbnail Type
+ * Post Thumbnail | GET post thumbnail type
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_post_thumbnail_type' ) )
 {
@@ -1111,7 +1157,7 @@ if( ! function_exists( 'mfn_post_thumbnail_type' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Post Thumbnail
+ * Post Thumbnail | GET post thumbnail
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_post_thumbnail' ) )
 {
@@ -1140,6 +1186,11 @@ if( ! function_exists( 'mfn_post_thumbnail' ) )
 				} else {
 					$sizeH = 'portfolio-mf';
 				}
+				
+			} elseif( $style == 'masonry-minimal' ) {
+				
+				// Portfolio | Masonry Minimal ----------------------
+				$sizeH = 'full';
 				
 			} else {
 				
@@ -1333,13 +1384,13 @@ if( ! function_exists( 'mfn_post_thumbnail' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Single | Post Navigation | Sort
+ * Single Post Navigation | SET query order
  * --------------------------------------------------------------------------- */
 
-// next ----------
-if( ! function_exists( 'mfn_filter_next_post_sort' ) )
+// previous ----------
+if( ! function_exists( 'mfn_filter_previous_post_sort' ) )
 {
-	function mfn_filter_next_post_sort( $sort ){
+	function mfn_filter_previous_post_sort( $sort ){
 		if( mfn_get_portfolio_order() == 'ASC' ){
 			$order = 'DESC';
 		} else {
@@ -1350,34 +1401,46 @@ if( ! function_exists( 'mfn_filter_next_post_sort' ) )
 	}
 }
 
-if( ! function_exists( 'mfn_filter_next_post_where' ) )
-{
-	function mfn_filter_next_post_where( $where ){
-		global $post, $wpdb;
-		$orderby = mfn_get_portfolio_orderby();
-		$where = preg_replace( "/(.*)p.post_type/", "AND p.post_type", $where );
-		$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." > %s", $post->$orderby );
-		$where = $where_pre.' '.$where;
-		return $where;
-	}
-}
-
-// previous ----------
-if( ! function_exists( 'mfn_filter_previous_post_sort' ) )
-{
-	function mfn_filter_previous_post_sort( $sort ){
-		$sort = "ORDER BY p.". esc_sql( mfn_get_portfolio_orderby() ) ." ". esc_sql( mfn_get_portfolio_order() ) ." LIMIT 1";
-		return $sort;
-	}
-}
-
 if( ! function_exists( 'mfn_filter_previous_post_where' ) )
 {
 	function mfn_filter_previous_post_where( $where ){
 		global $post, $wpdb;
 		$orderby = mfn_get_portfolio_orderby();
 		$where = preg_replace( "/(.*)p.post_type/", "AND p.post_type", $where );
-		$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." < %s", $post->$orderby );
+		
+		if( mfn_get_portfolio_order() == 'ASC' ){
+			$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." < %s", $post->$orderby );
+		} else {
+			$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." > %s", $post->$orderby );
+		}
+		
+		$where = $where_pre.' '.$where;
+		return $where;
+	}
+}
+
+// next ----------
+if( ! function_exists( 'mfn_filter_next_post_sort' ) )
+{
+	function mfn_filter_next_post_sort( $sort ){
+		$sort = "ORDER BY p.". esc_sql( mfn_get_portfolio_orderby() ) ." ". esc_sql( mfn_get_portfolio_order() ) ." LIMIT 1";
+		return $sort;
+	}
+}
+
+if( ! function_exists( 'mfn_filter_next_post_where' ) )
+{
+	function mfn_filter_next_post_where( $where ){
+		global $post, $wpdb;
+		$orderby = mfn_get_portfolio_orderby();
+		$where = preg_replace( "/(.*)p.post_type/", "AND p.post_type", $where );
+		
+		if( mfn_get_portfolio_order() == 'ASC' ){
+			$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." > %s", $post->$orderby );
+		} else {
+			$where_pre = $wpdb->prepare( "WHERE p.". esc_sql( $orderby ) ." < %s", $post->$orderby );
+		}
+		
 		$where = $where_pre.' '.$where;
 		return $where;
 	}
@@ -1413,20 +1476,59 @@ if( ! function_exists( 'mfn_get_portfolio_orderby' ) )
 if( ! function_exists( 'mfn_post_navigation_sort' ) )
 {
 	function mfn_post_navigation_sort(){
-		add_filter( 'get_next_post_sort', 'mfn_filter_next_post_sort' );
-		add_filter( 'get_next_post_where', 'mfn_filter_next_post_where' );
 		add_filter( 'get_previous_post_sort', 'mfn_filter_previous_post_sort' );
 		add_filter( 'get_previous_post_where', 'mfn_filter_previous_post_where' );
+		add_filter( 'get_next_post_sort', 'mfn_filter_next_post_sort' );
+		add_filter( 'get_next_post_where', 'mfn_filter_next_post_where' );	
 	}
 }
 
 
 /* ---------------------------------------------------------------------------
- * Single | Post Navigation | Sticky
+ * Single Post Navigation | GET header navigation
  * --------------------------------------------------------------------------- */
-if( ! function_exists( 'mfn_post_navigation' ) )
+if( ! function_exists( 'mfn_post_navigation_header' ) )
 {
-	function mfn_post_navigation( $post, $next_prev, $icon ){
+	function mfn_post_navigation_header( $post_prev, $post_next, $post_home, $translate = array() ){
+		
+		$style = mfn_opts_get( 'prev-next-style' );
+		
+		$output = '<div class="column one post-nav '. $style .'">';
+		
+			if( $style == 'minimal' ){
+				
+				// minimal -----
+							
+				if( $post_prev ) $output .= '<a class="prev" href="'. get_permalink( $post_prev ) .'"><i class="icon icon-left-open-big"></i></a></li>';
+				if( $post_next ) $output .= '<a class="next" href="'. get_permalink( $post_next ) .'"><i class="icon icon-right-open-big"></i></a></li>';		
+				if( $post_home ) $output .= '<a class="home" href="'. get_permalink( $post_home ) .'"><svg class="icon" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path d="M7,2v5H2V2H7 M9,0H0v9h9V0L9,0z"/><path d="M20,2v5h-5V2H20 M22,0h-9v9h9V0L22,0z"/><path d="M7,15v5H2v-5H7 M9,13H0v9h9V13L9,13z"/><path d="M20,15v5h-5v-5H20 M22,13h-9v9h9V13L22,13z"/></svg></a>';
+				
+			} else {
+				
+				// default -----
+
+				$output .= '<ul class="next-prev-nav">';
+					if( $post_prev ) $output .= '<li class="prev"><a class="button button_js" href="'. get_permalink( $post_prev ) .'"><span class="button_icon"><i class="icon-left-open"></i></span></a></li>';
+					if( $post_next ) $output .= '<li class="next"><a class="button button_js" href="'. get_permalink( $post_next ) .'"><span class="button_icon"><i class="icon-right-open"></i></span></a></li>';
+				$output .= '</ul>';
+					
+				if( $post_home ) $output .= '<a class="list-nav" href="'. get_permalink( $post_home ) .'"><i class="icon-layout"></i>'. $translate['all'] .'</a>';
+			
+			}
+	
+		$output .= '</div>';
+
+		return $output;
+	}
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Single Post Navigation | GET sticky navigation
+ * --------------------------------------------------------------------------- */
+if( ! function_exists( 'mfn_post_navigation_sticky' ) )
+{
+	function mfn_post_navigation_sticky( $post, $next_prev, $icon ){
 		$output = '';
 	
 		if( is_object( $post ) ){
@@ -1453,50 +1555,53 @@ if( ! function_exists( 'mfn_post_navigation' ) )
 
 
 /* ---------------------------------------------------------------------------
- * Search | Modified Query with Custom Fields search
+ * Search | SET add custom fields to search query
  * --------------------------------------------------------------------------- */
-function mfn_search( $search_query ) {
-	global $wpdb;
-
-	if( is_search() && $search_query->is_main_query() && $search_query->is_search() ){
-
-		$keyword = get_search_query();
-		if( ! $keyword ) return false;
-		
-		// WooCommerce uses default search Query
-		if( function_exists('is_woocommerce') && is_woocommerce() ){
-			return false;
+if( ! function_exists( 'mfn_search' ) )
+{
+	function mfn_search( $search_query ) {
+		global $wpdb;
+	
+		if( is_search() && $search_query->is_main_query() && $search_query->is_search() ){
+	
+			$keyword = get_search_query();
+			if( ! $keyword ) return false;
+			
+			// WooCommerce uses default search Query
+			if( function_exists('is_woocommerce') && is_woocommerce() ){
+				return false;
+			}
+	
+			$keyword = '%' . $wpdb->esc_like( $keyword ) . '%';
+	
+			// Post Title & Post Content
+			$post_ids_title = $wpdb->get_col( $wpdb->prepare( "
+				SELECT DISTINCT ID FROM {$wpdb->posts}
+				WHERE post_title LIKE '%s'
+			", $keyword, $keyword ) );
+			
+			// Post Title & Post Content
+			$post_ids_content = $wpdb->get_col( $wpdb->prepare( "
+				SELECT DISTINCT ID FROM {$wpdb->posts}
+				WHERE post_content LIKE '%s'
+			", $keyword, $keyword ) );
+			
+			// Custom Fields
+			$post_ids_meta = $wpdb->get_col( $wpdb->prepare( "
+				SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+				WHERE meta_key = 'mfn-page-items-seo'
+				AND meta_value LIKE '%s'
+			", $keyword ) );
+	
+			$post_ids = array_merge( $post_ids_title, $post_ids_content, $post_ids_meta );
+	
+			if( ! count( $post_ids ) ) return false;
+	
+			$search_query->set( 's', false );
+			$search_query->set( 'post__in', $post_ids );
+			$search_query->set( 'orderby', 'post__in' );
+	
 		}
-
-		$keyword = '%' . $wpdb->esc_like( $keyword ) . '%';
-
-		// Post Title & Post Content
-		$post_ids_title = $wpdb->get_col( $wpdb->prepare( "
-			SELECT DISTINCT ID FROM {$wpdb->posts}
-			WHERE post_title LIKE '%s'
-		", $keyword, $keyword ) );
-		
-		// Post Title & Post Content
-		$post_ids_content = $wpdb->get_col( $wpdb->prepare( "
-			SELECT DISTINCT ID FROM {$wpdb->posts}
-			WHERE post_content LIKE '%s'
-		", $keyword, $keyword ) );
-		
-		// Custom Fields
-		$post_ids_meta = $wpdb->get_col( $wpdb->prepare( "
-			SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-			WHERE meta_key = 'mfn-page-items-seo'
-			AND meta_value LIKE '%s'
-		", $keyword ) );
-
-		$post_ids = array_merge( $post_ids_title, $post_ids_content, $post_ids_meta );
-
-		if( ! count( $post_ids ) ) return false;
-
-		$search_query->set( 's', false );
-		$search_query->set( 'post__in', $post_ids );
-		$search_query->set( 'orderby', 'post__in' );
-
 	}
 }
 add_action( 'pre_get_posts', 'mfn_search' );
@@ -1670,14 +1775,41 @@ if( ! function_exists( 'mfn_wpml_ID' ) )
  * --------------------------------------------------------------------------- */
 if( ! function_exists( 'mfn_wpml_term_slug' ) )
 {
-	function mfn_wpml_term_slug( $slug, $type ){
+	function mfn_wpml_term_slug( $slug, $type, $multi = false ){
 		
 		if( function_exists( 'icl_object_id' ) ){
 			
-			$term = get_term_by( 'slug', $slug, $type );
-			$term = apply_filters( 'wpml_object_id', $term->term_id, $type, true );
-			$slug = get_term_by( 'term_id', $term, $type )->slug;
-			
+			if( $multi ){
+				
+				// multiple categories
+				
+				$slugs = explode( ',', $slug );
+				
+				if( is_array( $slugs ) ){
+					foreach( $slugs as $slug_k => $slug ){
+						
+						$slug = trim( $slug );
+						
+						$term = get_term_by( 'slug', $slug, $type );
+						$term = apply_filters( 'wpml_object_id', $term->term_id, $type, true );
+						$slug = get_term_by( 'term_id', $term, $type )->slug;
+						
+						$slugs[$slug_k] = $slug;
+					}
+				}
+				
+				$slug = implode( ',', $slugs );
+				
+			} else {
+				
+				// single category
+				
+				$term = get_term_by( 'slug', $slug, $type );
+				$term = apply_filters( 'wpml_object_id', $term->term_id, $type, true );
+				$slug = get_term_by( 'term_id', $term, $type )->slug;
+				
+			}
+
 		}
 						
 		return $slug;
@@ -1741,7 +1873,7 @@ if( ! function_exists( 'mfn_register_required_plugins' ) )
 				'slug'               	=> 'revslider', // The plugin slug (typically the folder name).
 				'source'             	=> THEME_DIR .'/plugins/revslider.zip', // The plugin source.
 				'required'           	=> true, // If false, the plugin is only 'recommended' instead of required.
-// 				'version'            	=> '', // E.g. 1.0.0. If set, the active plugin must be this version or higher. If the plugin version is higher than the plugin version installed, the user will be notified to update the plugin.
+				'version'            	=> '5.2.6', // E.g. 1.0.0. If set, the active plugin must be this version or higher. If the plugin version is higher than the plugin version installed, the user will be notified to update the plugin.
 // 				'force_activation'   	=> false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch.
 // 				'force_deactivation' 	=> false, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins.
 // 				'external_url'       	=> '', // If set, overrides default API URL and points to an external URL.
@@ -1776,6 +1908,7 @@ if( ! function_exists( 'mfn_register_required_plugins' ) )
 				'slug'     				=> 'LayerSlider',
 				'source'   				=> THEME_DIR .'/plugins/layerslider.zip',
 				'required' 				=> false,
+				'version' 				=> '5.6.9',
 			),
 	
 			array(
@@ -1783,6 +1916,7 @@ if( ! function_exists( 'mfn_register_required_plugins' ) )
 				'slug'     				=> 'js_composer',
 				'source'   				=> THEME_DIR .'/plugins/js_composer.zip',
 				'required' 				=> false,
+				'version' 				=> '4.12',
 			),
 	
 		);

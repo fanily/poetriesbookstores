@@ -30,11 +30,14 @@ add_action( 'woocommerce_after_main_content', 'mfn_woocommerce_output_content_wr
 /* ---------------------------------------------------------------------------
  * WooCommerce - Styles
  * --------------------------------------------------------------------------- */
-function mfn_woo_styles()
+if( ! function_exists( 'mfn_woo_styles' ) )
 {
-	wp_enqueue_style( 'mfn-woo', THEME_URI .'/css/woocommerce.css', 'woocommerce-general-css', THEME_VERSION, 'all' );
+	function mfn_woo_styles()
+	{
+		wp_enqueue_style( 'mfn-woo', THEME_URI .'/css/woocommerce.css', 'woocommerce-general-css', THEME_VERSION, 'all' );
+	}
+	add_action( 'wp_enqueue_scripts', 'mfn_woo_styles', 100 );
 }
-add_action( 'wp_enqueue_scripts', 'mfn_woo_styles', 100 );
 
 
 /* ---------------------------------------------------------------------------
@@ -43,86 +46,104 @@ add_action( 'wp_enqueue_scripts', 'mfn_woo_styles', 100 );
 global $pagenow;
 if ( is_admin() && isset( $_GET['activated'] ) && $pagenow == 'themes.php' ) add_action( 'init', 'mfn_woocommerce_image_dimensions', 1 );
 
-function mfn_woocommerce_image_dimensions() {
-	$catalog = array(
-		'width' 	=> '500',	// px
-		'height'	=> '500',	// px
-		'crop'		=> 1 		// true
-	);
-
-	$single = array(
-		'width' 	=> '500',	// px
-		'height'	=> '500',	// px
-		'crop'		=> 1 		// true
-	);
-
-	$thumbnail = array(
-		'width' 	=> '200',	// px
-		'height'	=> '200',	// px
-		'crop'		=> 1 		// true
-	);
-
-	// Image sizes
-	update_option( 'shop_catalog_image_size', $catalog );		// Product category thumbs
-	update_option( 'shop_single_image_size', $single ); 		// Single product image
-	update_option( 'shop_thumbnail_image_size', $thumbnail ); 	// Image gallery thumbs
+if( ! function_exists( 'mfn_woocommerce_image_dimensions' ) )
+{
+	function mfn_woocommerce_image_dimensions() {
+		$catalog = array(
+			'width' 	=> '500',	// px
+			'height'	=> '500',	// px
+			'crop'		=> 1 		// true
+		);
+	
+		$single = array(
+			'width' 	=> '500',	// px
+			'height'	=> '500',	// px
+			'crop'		=> 1 		// true
+		);
+	
+		$thumbnail = array(
+			'width' 	=> '200',	// px
+			'height'	=> '200',	// px
+			'crop'		=> 1 		// true
+		);
+	
+		// Image sizes
+		update_option( 'shop_catalog_image_size', $catalog );		// Product category thumbs
+		update_option( 'shop_single_image_size', $single ); 		// Single product image
+		update_option( 'shop_thumbnail_image_size', $thumbnail ); 	// Image gallery thumbs
+	}
 }
 
 
 /* ---------------------------------------------------------------------------
  * WooCommerce - Before Main Content
  * --------------------------------------------------------------------------- */
-function mfn_woocommerce_output_content_wrapper()
+if( ! function_exists( 'mfn_woocommerce_output_content_wrapper' ) )
 {
-	?>
-	<!-- #Content -->
-	<div id="Content">
-		<div class="content_wrapper clearfix">
-	
-			<!-- .sections_group -->
-			<div class="sections_group">
-				<div class="section">
-					<div class="section_wrapper clearfix">
-						<div class="items_group clearfix">
-							<div class="column one woocommerce-content">
-	<?php 
+	function mfn_woocommerce_output_content_wrapper()
+	{
+		?>
+		<!-- #Content -->
+		<div id="Content">
+			<div class="content_wrapper clearfix">
+		
+				<!-- .sections_group -->
+				<div class="sections_group">
+					<div class="section">
+						<div class="section_wrapper clearfix">
+							<div class="items_group clearfix">
+								<div class="column one woocommerce-content">
+		<?php 
+	}
 }
 
 
 /* ---------------------------------------------------------------------------
  * WooCommerce - After Main Content
  * --------------------------------------------------------------------------- */
-function mfn_woocommerce_output_content_wrapper_end()
+if( ! function_exists( 'mfn_woocommerce_output_content_wrapper_end' ) )
 {
-	?>
+	function mfn_woocommerce_output_content_wrapper_end()
+	{
+		?>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			
-			<!-- .four-columns - sidebar -->
-			<?php 
-				$layout = get_post_meta( mfn_ID(), 'mfn-post-layout', true);
-			
-				if( is_active_sidebar( 'shop' ) && $layout != 'no-sidebar' ){
+				
+				<!-- .four-columns - sidebar -->
+				<?php 
+					$layout = get_post_meta( mfn_ID(), 'mfn-post-layout', true);
 					
-					if( is_product() && mfn_opts_get('shop-sidebar') ){
-						// product page without sidebar
-					} else {
+			 		// Page | Search
+					if( is_search() ){
+						
 						echo '<div class="sidebar four columns">';
 							echo '<div class="widget-area clearfix '. mfn_opts_get('sidebar-lines') .'">';
-								dynamic_sidebar( 'shop' );
+								dynamic_sidebar( 'mfn-search' );
 							echo '</div>';
-						echo '</div>';						
-					}
-					
-				}		
-			?>
-	
+						echo '</div>';	
+						
+					} elseif( is_active_sidebar( 'shop' ) && $layout != 'no-sidebar' ){
+						
+						if( is_product() && mfn_opts_get('shop-sidebar') ){
+							// product page without sidebar
+						} else {
+							echo '<div class="sidebar four columns">';
+								echo '<div class="widget-area clearfix '. mfn_opts_get('sidebar-lines') .'">';
+									dynamic_sidebar( 'shop' );
+								echo '</div>';
+							echo '</div>';						
+						}
+						
+					}		
+				?>
+		
+			</div>
 		</div>
-	</div>
-	<?php
+		<?php
+	}
 }
 
 
@@ -131,8 +152,11 @@ function mfn_woocommerce_output_content_wrapper_end()
  * --------------------------------------------------------------------------- */
 add_filter( 'loop_shop_columns', create_function( false, 'return 3;' ) );
 
-function mfn_woo_per_page( $cols ){
-	return mfn_opts_get( 'shop-products', 12 );
+if( ! function_exists( 'mfn_woo_per_page' ) )
+{
+	function mfn_woo_per_page( $cols ){
+		return mfn_opts_get( 'shop-products', 12 );
+	}
 }
 add_filter( 'loop_shop_per_page', 'mfn_woo_per_page', 20 );
 
@@ -140,9 +164,12 @@ add_filter( 'loop_shop_per_page', 'mfn_woo_per_page', 20 );
 /* ---------------------------------------------------------------------------
  *	WooCommerce - Change number of related products on product page
  * --------------------------------------------------------------------------- */
-function mfn_woo_related_products_args( $args ) {
-	$args['posts_per_page'] = intval( mfn_opts_get( 'shop-related', 3 ) );
-	return $args;
+if( ! function_exists( 'mfn_woo_related_products_args' ) )
+{
+	function mfn_woo_related_products_args( $args ) {
+		$args['posts_per_page'] = intval( mfn_opts_get( 'shop-related', 3 ) );
+		return $args;
+	}
 }
 add_filter( 'woocommerce_output_related_products_args', 'mfn_woo_related_products_args' );
 
@@ -153,21 +180,24 @@ add_filter( 'woocommerce_output_related_products_args', 'mfn_woo_related_product
 global $woocommerce;
 if( version_compare( $woocommerce->version, '2.3', '<' ) ){
 	// WooCommerce 2.2 -
-	add_filter('add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment');
+	add_filter( 'add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
 } else {
 	// WooCommerce 2.3 +
-	add_filter('woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment');
+	add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
 }
 
-function woocommerce_header_add_to_cart_fragment( $fragments ) {
-	global $woocommerce;
+if( ! function_exists( 'woocommerce_header_add_to_cart_fragment' ) )
+{
+	function woocommerce_header_add_to_cart_fragment( $fragments ) {
+		global $woocommerce;
+		
+		$cart_icon = mfn_opts_get('shop-cart');
+		if( $cart_icon == 1 ) $cart_icon = 'icon-basket'; // Be < 4.9 compatibility
 	
-	$cart_icon = mfn_opts_get('shop-cart');
-	if( $cart_icon == 1 ) $cart_icon = 'icon-basket'; // Be < 4.9 compatibility
-
-	ob_start();
-	echo '<a id="header_cart" href="'. $woocommerce->cart->get_cart_url() .'"><i class="'. $cart_icon .'"></i><span>'. $woocommerce->cart->cart_contents_count .'</span></a>';
-	$fragments['a#header_cart'] = ob_get_clean();
-	
-	return $fragments;
+		ob_start();
+		echo '<a id="header_cart" href="'. $woocommerce->cart->get_cart_url() .'"><i class="'. $cart_icon .'"></i><span>'. $woocommerce->cart->cart_contents_count .'</span></a>';
+		$fragments['a#header_cart'] = ob_get_clean();
+		
+		return $fragments;
+	}
 }

@@ -75,10 +75,8 @@
 	<div class="intro-inner" <?php echo $intro_padding; ?>>
 	
 		<?php
-			if( mfn_opts_get( 'blog-title' ) ){ 
-				$h = mfn_opts_get( 'title-heading', 1 );
-				echo '<h'. $h .' class="intro-title">'. get_the_title() .'</h'. $h .'>';
-			}
+			$h = mfn_opts_get( 'title-heading', 1 );
+			echo '<h'. $h .' class="intro-title">'. get_the_title() .'</h'. $h .'>';
 		?>
 		
 		<?php if( mfn_opts_get( 'blog-meta' ) ): ?>
@@ -104,6 +102,23 @@
 							}
 							$string_cat = rtrim( $string_cat, ", " );
 							echo '<span>'. $string_cat .'</span>';
+						?>
+					</div>
+				<?php endif; ?>
+				
+				<?php 
+					$terms = get_the_terms( false, 'portfolio-types' );
+					if( is_array( $terms ) ): 
+				?>
+					<div class="categories">
+						<i class="icon-docs"></i>
+						<?php
+							$string_term = '';
+							foreach( $terms as $term ){
+								$string_term .= '<a href="'. get_term_link( $term, 'post_tag' ) .'">'. $term->name .'</a>, ';
+							}
+							$string_term = rtrim( $string_term, ", " );
+							echo '<span>'. $string_term .'</span>';
 						?>
 					</div>
 				<?php endif; ?>

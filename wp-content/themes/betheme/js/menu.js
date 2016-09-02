@@ -18,7 +18,8 @@
 			arrows      : false,
 			delay       : 100,
 			hoverClass  : 'hover',
-			mobileInit	: 768
+			mobileInit	: 768,
+			responsive	: true
 		};
 		options = $.extend( defaults, options );
 		
@@ -52,10 +53,8 @@
 		
 		
 		var doMenu = function(){
-			
-//			console.log( [$(window).width(), options.mobileInit ]);
 
-			if( $(window).width() >= options.mobileInit ){
+			if( ( $(window).width() >= options.mobileInit ) || ( ! options.responsive ) ){
 				
 				// desktop --------------------------------
 

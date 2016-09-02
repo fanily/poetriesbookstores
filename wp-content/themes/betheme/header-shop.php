@@ -55,21 +55,12 @@
 	<div id="Wrapper">
 	
 		<?php 
-			// Header Featured Image -----------
+			$shop_id = woocommerce_get_page_id( 'shop' );
+			
+			// Featured Image -----------
 			$header_style = '';
-			
-			// Image
-			if( $shop_id = woocommerce_get_page_id( 'shop' ) ){
-				if( has_post_thumbnail( $shop_id ) ){
-					$subheader_image = wp_get_attachment_image_src( get_post_thumbnail_id( $shop_id ), 'full' );
-					$header_style .= 'style="background-image:url('. $subheader_image[0] .');"';
-				}
-			}
-			
-			// Attachment
-			if( mfn_opts_get('img-subheader-attachment') == 'fixed' ){
-				$header_style .= ' class="bg-fixed"';
-			} elseif( mfn_opts_get('img-subheader-attachment') == 'parallax' ){
+
+			if( mfn_opts_get('img-subheader-attachment') == 'parallax' ){
 				
 				if( mfn_opts_get( 'parallax' ) == 'stellar' ){
 					$header_style .= ' class="bg-parallax" data-stellar-background-ratio="0.5"';

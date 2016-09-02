@@ -21,7 +21,7 @@ $tabs 	= apply_filters( 'woocommerce_product_tabs', array() );
 
 if ( ! empty( $tabs ) ) : ?>
 
-	<?php if( in_array( mfn_opts_get( 'shop-product-style' ), array( 'tabs', 'wide tabs') ) ): ?>
+	<?php if( in_array( mfn_opts_get( 'shop-product-style' ), array( 'tabs', 'wide tabs', 'modern' ) ) ): ?>
 
 		<div class="jq-tabs tabs_wrapper">
 			

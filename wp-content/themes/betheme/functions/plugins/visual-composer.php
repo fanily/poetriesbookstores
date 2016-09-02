@@ -70,11 +70,15 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
-				
+
 			)
 		));
 		
@@ -139,9 +143,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 			)
@@ -164,7 +172,38 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'admin_label'	=> true,
 					'value'			=> 2,
 				),
-	
+				
+				array (
+					'param_name' 	=> 'style',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Style', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value'			=> array_flip( array(
+						'classic'		=> 'Classic',
+						'grid'			=> 'Grid',
+						'masonry'		=> 'Masonry Blog Style',
+						'masonry tiles'	=> 'Masonry Tiles',
+						'photo'			=> 'Photo (Horizontal Images)',
+						'timeline'		=> 'Timeline',
+			
+					)),
+				),
+				
+				array (
+					'param_name' 	=> 'columns',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Columns', 'mfn-opts'),
+					'description' 	=> __('Default: 3. Recommended: 2-4. Too large value may crash the layout.<br />This option works in styles: <b>Grid, Masonry</b>', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value'			=> array_flip( array(
+						2	=> 2,
+						3	=> 3,
+						4	=> 4,
+						5	=> 5,
+						6	=> 6,
+					)),
+				),
+				
 				array (
 					'param_name' 	=> 'category',
 					'type' 			=> 'dropdown',
@@ -175,33 +214,54 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 				
 				array (
-					'param_name' 	=> 'style',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Style', 'mfn-opts'),
+					'param_name' 	=> 'category_multi',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Multiple Categories', 'mfn-opts'),
+					'description' 	=> __('Categories <b>slugs</b>. Slugs should be separated with <b>coma</b> ( , )', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> array_flip( array(
-						'classic'		=> 'Classic',
-						'masonry'		=> 'Masonry Blog Style',
-						'masonry tiles'	=> 'Masonry Tiles',
-						'photo'			=> 'Photo (Horizontal Images)',
-						'timeline'		=> 'Timeline',
-						
-					)),
 				),
 				
 				array (
-					'param_name' 	=> 'columns',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Columns', 'mfn-opts'),
-					'description' 	=> __('Default: 3. Recommended: 2-4. Too large value may crash the layout.<br />This option works in style: <b>Masonry</b>', 'mfn-opts'),
+					'param_name' 	=> 'exclude_id',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Exclude Posts', 'mfn-opts'),
+					'description' 	=> __('Posts <b>IDs</b>. IDs should be separated with <b>coma</b> ( , )', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> array_flip( array(
-						2	=> 2,
-						3	=> 3,
-						4	=> 4,
-						5	=> 5,
-						6	=> 6,
-					)),
+				),
+
+				array (
+					'param_name' 	=> 'more',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Show | Read More link', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value' 		=> array(
+						__('No','mfn-opts') 	=> 0,
+						__('Yes','mfn-opts')	=> 1,
+					),
+				),
+				
+				array (
+					'param_name' 	=> 'filters',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Show | Filters', 'mfn-opts'),
+					'description' 	=> __('This option works in <b>Category: All</b> and <b>Style: Masonry</b>', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value' 		=> array(
+						__('No','mfn-opts') 	=> 0,
+						__('Yes','mfn-opts')	=> 1,
+					),
+				),
+				
+				array (
+					'param_name' 	=> 'pagination',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Show | Pagination', 'mfn-opts'),
+					'description' 	=> __('<strong>Notice:</strong> Pagination will <strong>not</strong> work if you put item on Homepage of WordPress Multilangual Site.', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value' 		=> array(
+						__('No','mfn-opts') 	=> 0,
+						__('Yes','mfn-opts')	=> 1,
+					),
 				),
 				
 				array (
@@ -214,40 +274,17 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 						__('Yes','mfn-opts')	=> 1,
 					),
 				),
-
-				array (
-					'param_name' 	=> 'filters',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Show | Filters', 'mfn-opts'),
-					'description' 	=> __('This option works in <b>Category: All</b> and <b>Style: Masonry</b>', 'mfn-opts'),
-					'admin_label'	=> false,
-					'value' 		=> array(
-							__('No','mfn-opts') 	=> 0,
-							__('Yes','mfn-opts')	=> 1,
-					),
-				),
 				
 				array (
-					'param_name' 	=> 'more',
+					'param_name' 	=> 'margin',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Show | Read More link', 'mfn-opts'),
+					'heading' 		=> __('Margin', 'mfn-opts'),
+					'description' 	=> __('for <b>Style: Masonry Tiles</b> only', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( 
+					'value' 		=> array(
 						__('No','mfn-opts') 	=> 0,
 						__('Yes','mfn-opts')	=> 1,
-					 ),
-				),
-
-				array (
-					'param_name' 	=> 'pagination',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Show | Pagination', 'mfn-opts'),
-					'description' 	=> __('<strong>Notice:</strong> Pagination will <strong>not</strong> work if you put item on Homepage of WordPress Multilangual Site.', 'mfn-opts'),
-					'admin_label'	=> false,
-					'value' 		=> array( 
-						__('No','mfn-opts') 	=> 0,
-						__('Yes','mfn-opts')	=> 1,
-					 ),
+					),
 				),
 					 
 			)
@@ -267,7 +304,18 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Title', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
-			
+				
+				array (
+					'param_name' 	=> 'style',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Style', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value'			=> array_flip( array(
+						'' 			=> __('Default', 'mfn-opts'),
+						'featured'	=> __('Featured 1st', 'mfn-opts'),
+					)),
+				),
+
 				array (
 					'param_name' 	=> 'count',
 					'type' 			=> 'textfield',
@@ -292,6 +340,18 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Multiple Categories', 'mfn-opts'),
 					'description' 	=> __('Slugs should be separated with <strong>coma</strong> (,)', 'mfn-opts'),
 					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'excerpt',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Excerpt', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value'			=> array_flip( array(
+						0 			=> __('Hide', 'mfn-opts'),
+						1 			=> __('Show', 'mfn-opts'),
+						'featured' 	=> __('Show for Featured only', 'mfn-opts'),
+					)),
 				),
 				
 				array (
@@ -373,6 +433,19 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 						'flat' 	=> 'Flat',
 					)),
 				),
+				
+				array (
+					'param_name' 	=> 'navigation',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Navigation', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value' 		=> array_flip(array(
+						''				=> __('Default', 'mfn-opts'),
+						'hide-arrows'	=> __('Hide Arrows', 'mfn-opts'),
+						'hide-dots'		=> __('Hide Dots', 'mfn-opts'),
+						'hide-nav'		=> __('Hide Navigation', 'mfn-opts'),
+					)),
+				),
 					 
 			)
 		));
@@ -399,7 +472,6 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Icon', 'mfn-opts'),
 					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> 'icon-lamp',
 				),
 				
 				array (
@@ -408,6 +480,14 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Content', 'mfn-opts'),
 					'admin_label'	=> true,
 					'value' 		=> __('Insert your content here', 'mfn-opts'),
+				),
+				
+				array (
+					'param_name' 	=> 'button_title',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Button Title', 'mfn-opts'),
+					'description'	=> __('Leave this field blank if you want Call to Action with Big Icon', 'mfn-opts'),
+					'admin_label'	=> false,
 				),
 	
 				array (
@@ -418,29 +498,25 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 	
 				array (
-					'param_name' 	=> 'button_title',
-					'type' 			=> 'textfield',
-					'heading' 		=> __('Button Title', 'mfn-opts'),
-					'description'	=> __('Leave this field blank if you want Call to Action with Big Icon', 'mfn-opts'),
+					'param_name' 	=> 'target',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 				array (
 					'param_name' 	=> 'class',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Class', 'mfn-opts'),
-					'description'	=> __('This option is useful when you want to use PrettyPhoto (prettyphoto)', 'mfn-opts'),
+					'description'	=> __('This option is useful when you want to use <b>scroll</b>', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
-					
-				array (
-					'param_name' 	=> 'target',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
-					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
-				),
-		 
+
 			)
 		));
 		
@@ -453,10 +529,17 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 			'params' 		=> array (
 	
 				array (
+					'param_name' 	=> 'title',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Title', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+			
+				array (
 					'param_name' 	=> 'percent',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Percent', 'mfn-opts'),
-					'desc' 			=> __('Number between 0-100', 'mfn-opts'),
+					'description' 	=> __('Number between 0-100', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
 				
@@ -473,7 +556,6 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Icon', 'mfn-opts'),
 					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> 'icon-lamp',
 				),
 				
 				array (
@@ -484,12 +566,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 				
 				array (
-					'param_name' 	=> 'title',
+					'param_name' 	=> 'line_width',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Title', 'mfn-opts'),
+					'heading' 		=> __('Line Width', 'mfn-opts'),
+					'description' 	=> __('px (optional)', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
-		 
+				
 			)
 		));
 		
@@ -518,7 +601,31 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'desc' 			=> __('Client Category slug', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
+
+				array (
+					'param_name' 	=> 'orderby',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Order by', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value'			=> array_flip( array(
+						'date'			=> 'Date',
+						'menu_order' 	=> 'Menu order',
+						'title'			=> 'Title',
+						'rand'			=> 'Random',
+					)),
+				),
 				
+				array (
+					'param_name' 	=> 'order',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Order', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value'			=> array_flip( array(
+						'ASC' 	=> 'Ascending',
+						'DESC' 	=> 'Descending',
+					)),
+				),
+
 				array (
 					'param_name' 	=> 'style',
 					'type' 			=> 'dropdown',
@@ -723,7 +830,6 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Icon', 'mfn-opts'),
 					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> 'icon-lamp',
 				),
 				
 				array (
@@ -746,6 +852,20 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Number', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
+				
+				array (
+					'param_name' 	=> 'prefix',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Prefix', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'label',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Postfix', 'mfn-opts'),
+					'admin_label'	=> true,
+				),				
 				
 				array (
 					'param_name' 	=> 'title',
@@ -861,6 +981,15 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'admin_label'	=> false,
 					'value' 		=> '[item icon="icon-lamp" title="" link="" target="" animate=""]',
 				),
+				
+				array (
+					'param_name' 	=> 'columns',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Columns', 'mfn-opts'),
+					'description' 	=> __('Default: 4. Recommended: 2-4. Too large value may crash the layout.', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value'			=> array( 2, 3, 4, 5, 6 ),
+				),
 	
 			)
 		));
@@ -874,42 +1003,49 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 			'params' 		=> array (
 				
 				array (
-					'param_name' 	=> 'icon',
-					'type' 			=> 'textfield',
-					'heading' 		=> __('Icon', 'mfn-opts'),
-					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
-					'admin_label'	=> true,
-					'value'			=> 'icon-lamp',
-				),
-				
-				array (
-					'param_name' 	=> 'background',
-					'type' 			=> 'colorpicker',
-					'heading' 		=> __('Icon background', 'mfn-opts'),
-					'description' 	=> __('Leave this field blank to use Theme Background.', 'mfn-opts'),
-					'admin_label'	=> true,
-				),
-				
-				array (
 					'param_name' 	=> 'image',
 					'type' 			=> 'attach_image',
 					'heading' 		=> __('Image', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
-					
+			
 				array (
 					'param_name' 	=> 'title',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Title', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
-	
+				
 				array (
 					'param_name' 	=> 'content',
 					'type' 			=> 'textarea',
 					'heading' 		=> __('Content', 'mfn-opts'),
 					'admin_label'	=> true,
 					'value' 		=> __('Insert your content here', 'mfn-opts'),
+				),
+	
+				array (
+					'param_name' 	=> 'icon',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Icon', 'mfn-opts'),
+					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'icon_image',
+					'type' 			=> 'attach_image',
+					'heading' 		=> __('Icon | Image', 'mfn-opts'),
+					'description' 	=> __('You can use image icon instead of font icon', 'mfn-opts'),
+					'admin_label'	=> false,
+				),
+
+				array (
+					'param_name' 	=> 'background',
+					'type' 			=> 'colorpicker',
+					'heading' 		=> __('Icon background', 'mfn-opts'),
+					'description' 	=> __('Leave this field blank to use Theme Background.', 'mfn-opts'),
+					'admin_label'	=> true,
 				),
 				
 				array (
@@ -922,9 +1058,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 	
 			)
@@ -1041,9 +1181,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 	
 			)
@@ -1066,17 +1210,31 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 
 				array (
 					'param_name' 	=> 'background',
-					'type' 			=> 'textfield',
+					'type' 			=> 'colorpicker',
 					'heading' 		=> __('Background color', 'mfn-opts'),
-					'description' 	=> __('Use color name ( blue ) or hex ( #2991D6 )', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
 				array (
 					'param_name' 	=> 'background_hover',
-					'type' 			=> 'textfield',
+					'type' 			=> 'colorpicker',
 					'heading' 		=> __('Background color | Hover', 'mfn-opts'),
-					'description' 	=> __('Use color name ( blue ) or hex ( #2991D6 )', 'mfn-opts'),
+					'admin_label'	=> false,
+				),
+				
+				array (
+					'param_name' 	=> 'border',
+					'type' 			=> 'colorpicker',
+					'heading' 		=> __('Border color', 'mfn-opts'),
+					'description' 	=> __('optional', 'mfn-opts'),
+					'admin_label'	=> false,
+				),
+				
+				array (
+					'param_name' 	=> 'border_hover',
+					'type' 			=> 'colorpicker',
+					'heading' 		=> __('Border color | Hover', 'mfn-opts'),
+					'description' 	=> __('optional', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
@@ -1098,9 +1256,21 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
+				),
+				
+				array (
+					'param_name' 	=> 'class',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Link | Class', 'mfn-opts'),
+					'description' 	=> __('This option is useful when you want to use <b>scroll</b>', 'mfn-opts'),
+					'admin_label'	=> false,
 				),
 	
 			)
@@ -1165,9 +1335,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 	
 			)
@@ -1245,16 +1419,20 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 				array (
 					'param_name' 	=> 'class',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Custom CSS classes for link', 'mfn-opts'),
-					'description' 	=> __('This option is useful when you want to use PrettyPhoto (prettyphoto) or Scroll (scroll).', 'mfn-opts'),
+					'heading' 		=> __('Link | Class', 'mfn-opts'),
+					'description' 	=> __('This option is useful when you want to use <b>scroll</b>', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
 				
@@ -1308,7 +1486,6 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'heading' 		=> __('Icon', 'mfn-opts'),
 					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value'			=> 'icon-lamp',
 				),
 				
 				array (
@@ -1598,6 +1775,18 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 				
 				array (
+					'param_name' 	=> 'style',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Style', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value'			=> array_flip(array(
+						'vertical'		=> 'Vertical',
+						'circle'		=> 'Circle',
+						'horizontal'	=> 'Horizontal 	[1/2 and wider]',
+					)),
+				),
+				
+				array (
 					'param_name' 	=> 'link',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Link', 'mfn-opts'),
@@ -1607,20 +1796,12 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
-				),
-				
-				array (
-					'param_name' 	=> 'style',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Style', 'mfn-opts'),
-					'admin_label'	=> true,
-					'value'			=> array_flip(array(
-						'vertical'		=> 'Vertical',
-						'circle'		=> 'Circle',
-						'horizontal'	=> 'Horizontal 	[1/2 and wider]',
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
 					)),
 				),
 
@@ -1717,9 +1898,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 	
 			)
@@ -1757,7 +1942,7 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'align',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Align', 'mfn-opts'),
+					'heading' 		=> __('Text Align', 'mfn-opts'),
 					'admin_label'	=> false,
 					'value' 		=> array_flip(array(
 						''		=> 'Center',
@@ -1776,9 +1961,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 	
 			)
@@ -1800,7 +1989,33 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'admin_label'	=> true,
 					'value'			=> 2,
 				),
-	
+				
+				array (
+					'param_name' 	=> 'style',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Style', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value' 		=> array_flip(array(
+						'flat'				=> 'Flat',
+						'grid'				=> 'Grid',
+						'masonry'			=> 'Masonry Blog Style',
+						'masonry-hover'		=> 'Masonry Hover Description',
+						'masonry-minimal'	=> 'Masonry Minimal',
+						'masonry-flat'		=> 'Masonry Flat',
+						'list'				=> 'List',
+						'exposure'			=> 'Exposure',
+					)),
+				),
+
+				array (
+					'param_name' 	=> 'columns',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Columns', 'mfn-opts'),
+					'description' 	=> __('Default: 4. Recommended: 2-4. Too large value may crash the layout.', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value'			=> array( 2, 3, 4, 5, 6 ),
+				),
+
 				array (
 					'param_name' 	=> 'category',
 					'type' 			=> 'textfield',
@@ -1810,20 +2025,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 				
 				array (
-					'param_name' 	=> 'style',
-					'type' 			=> 'dropdown',
-					'heading' 		=> __('Style', 'mfn-opts'),
+					'param_name' 	=> 'category_multi',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Multiple Categories', 'mfn-opts'),
+					'description' 	=> __('Slugs should be separated with <b>coma</b> ( , )', 'mfn-opts'),
 					'admin_label'	=> true,
-					'value' 		=> array_flip(array(
-						'list'			=> 'List',
-						'flat'			=> 'Flat',
-						'grid'			=> 'Grid',
-						'masonry'		=> 'Masonry Blog Style',
-						'masonry-flat'	=> 'Masonry Flat',
-						'masonry-hover'	=> 'Masonry Hover Description',
-					)),
 				),
-				
+
 				array (
 					'param_name' 	=> 'orderby',
 					'type' 			=> 'dropdown',
@@ -1850,6 +2058,26 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					)),
 				),
 				
+				array (
+					'param_name' 	=> 'exclude_id',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Exclude Posts', 'mfn-opts'),
+					'description' 	=> __('IDs should be separated with <b>coma</b> ( , )', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'related',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Use as Related Projects', 'mfn-opts'),
+					'description' 	=> __('Exclude current Project. This option will override Exclude Posts option above', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value' 		=> array(
+							__('No','mfn-opts') 	=> 0,
+							__('Yes','mfn-opts')	=> 1,
+					),
+				),
+
 				array (
 					'param_name' 	=> 'filters',
 					'type' 			=> 'dropdown',
@@ -2111,6 +2339,16 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				),
 				
 				array (
+					'param_name' 	=> 'currency_pos',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Currency | Position', 'mfn-opts'),
+					'value' 		=> array_flip(array(
+						'' 			=> 'Left',
+						'right'		=> 'Right'
+					)),
+				),
+				
+				array (
 					'param_name' 	=> 'period',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Period', 'mfn-opts'),
@@ -2136,17 +2374,37 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'link_title',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Link title', 'mfn-opts'),
+					'heading' 		=>  __('Button | Title', 'mfn-opts'),
 					'description'	=> __('Link will appear only if this field will be filled.', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
 				array (
+					'param_name' 	=> 'icon',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Button | Icon', 'mfn-opts'),
+					'description' 	=> __('Font Icon, eg. <strong>icon-lamp</strong>', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+				
+				array (
 					'param_name' 	=> 'link',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Link', 'mfn-opts'),
+					'heading' 		=> __('Button | Link', 'mfn-opts'),
 					'description'	=> __('Link will appear only if this field will be filled.', 'mfn-opts'),
 					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'target',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Button | Target', 'mfn-opts'),
+					'admin_label'	=> false,
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 					
 				array (
@@ -2194,9 +2452,9 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'param_name' 	=> 'content',
 					'type' 			=> 'textarea',
 					'heading' 		=> __('Content', 'mfn-opts'),
-					'description'	=> __('Please use <strong>[bar title="Title" value="50"]</strong> shortcodes here.', 'mfn-opts'),
+					'description'	=> __('Please use <strong>[bar title="Title" value="50" size="20"]</strong> shortcodes here.', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> '[bar title="Bar1" value="50"]'."\n".'[bar title="Bar2" value="60"]',
+					'value' 		=> '[bar title="Bar1" value="50" size="20"]'."\n".'[bar title="Bar2" value="60" size="20"]',
 				),
 	
 			)
@@ -2234,23 +2492,27 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'btn_text',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Button Text', 'mfn-opts'),
+					'heading' 		=> __('Button | Text', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
 				array (
 					'param_name' 	=> 'btn_link',
 					'type' 			=> 'textfield',
-					'heading' 		=> __('Button Link', 'mfn-opts'),
+					'heading' 		=> __('Button | Link', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Button | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 					
 				array (
@@ -2298,6 +2560,20 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 					'param_name' 	=> 'number',
 					'type' 			=> 'textfield',
 					'heading' 		=> __('Number', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+
+				array (
+					'param_name' 	=> 'prefix',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Prefix', 'mfn-opts'),
+					'admin_label'	=> true,
+				),
+				
+				array (
+					'param_name' 	=> 'label',
+					'type' 			=> 'textfield',
+					'heading' 		=> __('Postfix', 'mfn-opts'),
 					'admin_label'	=> true,
 				),
 			
@@ -2409,9 +2685,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 			)
@@ -2467,9 +2747,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 			)
@@ -2580,7 +2864,18 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 						'DESC' 	=> 'Descending',
 					)),
 				),
-			
+				
+				array (
+					'param_name' 	=> 'style',
+					'type' 			=> 'dropdown',
+					'heading' 		=> __('Style', 'mfn-opts'),
+					'admin_label'	=> true,
+					'value' 		=> array_flip(array(
+						'' 			=> __('Default','mfn-opts'),
+						'quote' 	=> __('Quote above the author','mfn-opts'),
+					)),
+				),
+				
 			)
 		));
 
@@ -2623,9 +2918,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 			)
@@ -2648,9 +2947,8 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 			
 				array (
 					'param_name' 	=> 'bg_color',
-					'type' 			=> 'textfield',
+					'type' 			=> 'colorpicker',
 					'heading' 		=> __('Overlay background', 'mfn-opts'),
-					'description' 	=> __('Use color HEX ie. <b>#000000</b>', 'mfn-opts'),
 					'admin_label'	=> false,
 				),
 				
@@ -2678,9 +2976,13 @@ if( ! function_exists( 'mfn_vc_integrateWithVC' ) )
 				array (
 					'param_name' 	=> 'target',
 					'type' 			=> 'dropdown',
-					'heading' 		=> __('Target', 'mfn-opts'),
+					'heading' 		=> __('Link | Target', 'mfn-opts'),
 					'admin_label'	=> false,
-					'value' 		=> array( '', '_blank' ),
+					'value'			=> array_flip( array(
+						'' 			=> 'Default | _self',
+						'_blank' 	=> 'New Tab or Window | _blank' ,
+						'lightbox' 	=> 'Lightbox (image or embed video)',
+					)),
 				),
 				
 			)

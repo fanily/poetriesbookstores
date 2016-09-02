@@ -55,37 +55,15 @@
 	<div id="Wrapper">
 	
 		<?php 
-			// Header Featured Image ----------
+			// Featured Image | Parallax ----------
 			$header_style = '';
-			
-			// Image -----
-			if( mfn_ID() && ! is_search() ){
 				
-				if( ( ( mfn_ID() == get_option( 'page_for_posts' ) ) || ( get_post_type( mfn_ID() ) == 'page' ) ) && has_post_thumbnail( mfn_ID() ) ){
-
-					// Pages & Blog Page ---
-					$subheader_image = wp_get_attachment_image_src( get_post_thumbnail_id( mfn_ID() ), 'full' );
-					$header_style .= ' style="background-image:url('. $subheader_image[0] .');"';
-
-				} elseif( get_post_meta( mfn_ID(), 'mfn-post-header-bg', true ) ){
-
-					// Single Post ---
-					$header_style .= ' style="background-image:url('. get_post_meta( mfn_ID(), 'mfn-post-header-bg', true ) .');"';
-
-				}
-			}
-			
-			// Attachment -----
-			if( mfn_opts_get('img-subheader-attachment') == 'fixed' ){
-				
-				$header_style .= ' class="bg-fixed"';
-				
-			} elseif( mfn_opts_get('img-subheader-attachment') == 'parallax' ){
+			if( mfn_opts_get( 'img-subheader-attachment' ) == 'parallax' ){
 				
 				if( mfn_opts_get( 'parallax' ) == 'stellar' ){
-					$header_style .= ' class="bg-parallax" data-stellar-background-ratio="0.5"';
+					$header_style = ' class="bg-parallax" data-stellar-background-ratio="0.5"';
 				} else {
-					$header_style .= ' class="bg-parallax" data-enllax-ratio="0.3"';
+					$header_style = ' class="bg-parallax" data-enllax-ratio="0.3"';
 				}
 				
 			}
