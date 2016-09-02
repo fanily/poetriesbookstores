@@ -44,7 +44,7 @@ class WJECF_Controller {
 		if ( ! class_exists('WC_Coupon') ) {
 			return;
 		}
-		$this->debug_mode = false; // defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$this->debug_mode = false; //defined( 'WP_DEBUG' ) && WP_DEBUG;
 		$this->log( "INIT " . ( is_ajax() ? "AJAX" : is_admin() ? "ADMIN" : "FRONTEND" ) . "  " . $_SERVER['REQUEST_URI'] );
 		
 		$this->init_options();
@@ -83,8 +83,17 @@ class WJECF_Controller {
 		return $this->plugins;
 	}
 
+	/**
+	 * Retrieves the WJECF Plugin
+	 * @param string $class_name 
+	 * @return object|bool The plugin if found, otherwise returns false
+	 */
 	public function get_plugin( $class_name ) {
-		return $this->plugins[ $class_name ];
+		if ( isset( $this->plugins[ $class_name ] ) ) {
+			return $this->plugins[ $class_name ];
+		} else {
+			return false;
+		}
 	}		
 	
 	public function init_options() {
@@ -308,7 +317,9 @@ class WJECF_Controller {
 		$shipping_method_ids = $this->get_coupon_shipping_method_ids( $coupon->id );
 		if ( sizeof( $shipping_method_ids ) > 0 ) {
 			$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
-			$chosen_shipping = $chosen_shipping_methods[0]; 
+			$chosen_shipping = empty( $chosen_shipping_methods ) ? '' : $chosen_shipping_methods[0]; 
+			$chosen_shipping = explode( ':', $chosen_shipping); //UPS and USPS stores extra data, seperated by colon
+			$chosen_shipping = $chosen_shipping[0];
 			
 			if ( ! in_array( $chosen_shipping, $shipping_method_ids ) ) {
 				throw new Exception( self::E_WC_COUPON_SHIPPING_METHOD_NOT_MET );
@@ -605,6 +616,44 @@ class WJECF_Controller {
 	public function is_pro() {
 		return $this instanceof WJECF_Pro_Controller;
 	}
+
+// ===========================================================================
+// START - OVERWRITE INFO MESSAGES
+// ===========================================================================
+
+	/**
+	 * 2.3.4
+	 * If a 'Coupon applied' message is displayed by WooCommerce, replace it by another message (or no message)
+	 * @param WC_Coupon $coupon The coupon to replace the message for
+	 * @param string $new_message The new message. Set to empty string if no message must be displayed
+	 */
+	public function start_overwrite_success_message( $coupon, $new_message = '' ) {
+		$this->overwrite_coupon_message[ $coupon->code ] = array( $coupon->get_coupon_message( WC_Coupon::WC_COUPON_SUCCESS ) => $new_message );
+		add_filter( 'woocommerce_coupon_message', array( $this, 'filter_woocommerce_coupon_message' ), 10, 3 );
+	}
+
+	/**
+	 * 2.3.4
+	 * Stop overwriting messages
+	 */
+	public function stop_overwrite_success_message() {
+		remove_filter( 'woocommerce_coupon_message', array( $this, 'filter_woocommerce_coupon_message' ), 10 );
+		$this->overwrite_coupon_message = array();
+	}
+
+	private $overwrite_coupon_message = array(); /* [ 'coupon_code' => [ old_message' => 'new_message' ] ] */
+
+	function filter_woocommerce_coupon_message( $msg, $msg_code, $coupon ) {
+		if ( isset( $this->overwrite_coupon_message[ $coupon->code ][ $msg ] ) ) {
+			$msg = $this->overwrite_coupon_message[ $coupon->code ][ $msg ];
+		}
+		return $msg;
+	}
+
+// ===========================================================================
+// END - OVERWRITE INFO MESSAGES
+// ===========================================================================
+
 
 // ===========================================================================
 // START - OVERWRITE COUPON DATA

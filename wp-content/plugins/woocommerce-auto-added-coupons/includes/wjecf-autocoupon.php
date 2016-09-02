@@ -41,9 +41,9 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 		add_filter('option_woocommerce_cart_redirect_after_add', array ( &$this, 'option_woocommerce_cart_redirect_after_add') );
 
 		if ( ! is_ajax() ) {
-			add_action( 'init', array( &$this, 'coupon_by_url' ), 23); //Coupon through url
+			//Get cart should not be called before the wp_loaded action
+			add_action( 'wp_loaded', array( &$this, 'coupon_by_url' ) ); //Coupon through url			
 		}
-
 	}
 
 /* ADMIN HOOKS */
@@ -210,13 +210,14 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 
 		//Apply coupon by url
 		if ( isset( $_GET['apply_coupon'] ) ) {
+			$must_redirect = true;
 			$this->_executed_coupon_by_url = true;
 			$split = explode( ",", wc_clean( $_GET['apply_coupon'] ) );
 			//2.2.2 Make sure a session cookie is set
 			if( ! WC()->session->has_session() )
 			{
 				WC()->session->set_customer_session_cookie( true );
-			}			
+			}
 
 			$cart = WC()->cart;
 			foreach ( $split as $coupon_code ) {
@@ -228,32 +229,6 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 					if ( $valid ) {
 						$cart->add_discount( $coupon_code );
 					}
-
-					//2.3.3 Keep track of apply_coupon coupons and apply when they validate
-					if ( WJECF()->is_pro() ) {
-			   			$by_url_coupon_codes = $this->get_by_url_coupon_codes();
-						if ( ! in_array( $coupon_code, $by_url_coupon_codes ) ) {
-							$by_url_coupon_codes[] = $coupon_code;
-							$this->set_by_url_coupon_codes( $by_url_coupon_codes );
-						}
-						if ( ! $valid ) {
-							wc_add_notice( sprintf( __( 'Coupon \'%s\' will be applied when it\'s conditions are met.', 'woocommerce-jos-autocoupon' ), $coupon_code ) );
-							$must_redirect = true;		
-						}				
-					}
-				}
-			}
-		}
-
-		//2.3.3 Keep track of apply_coupon coupons and apply when they validate
-		if ( WJECF()->is_pro() ) {
-			//Remove auto coupon codes from session
-			if ( isset( $_GET['remove_coupon'] ) ) {
-				$coupon_code = wc_clean( $_GET['remove_coupon'] );
-	   			$by_url_coupon_codes = $this->get_by_url_coupon_codes();
-				if( ( $key = array_search( $coupon_code, $by_url_coupon_codes ) ) !== false ) {
-					unset( $by_url_coupon_codes[$key] );
-					$this->set_by_url_coupon_codes( $by_url_coupon_codes );
 				}
 			}
 		}
@@ -349,8 +324,11 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 		$this->update_matched_autocoupons_executed = true;
 		$this->log( "()" );
 
-		//2.3.3 Keep track of apply_coupon coupons and apply when they validate
-		$this->apply_valid_by_url_coupons();
+		//2.3.3 Keep track of queued coupons and apply when they validate
+		$queuer = WJECF()->get_plugin('WJECF_Pro_Coupon_Queueing');
+		if ( $queuer !== false ) {
+			$queuer->apply_valid_queued_coupons();
+		}
 
 		//Get the coupons that should be in the cart
 		$valid_coupons = $this->get_valid_auto_coupons();
@@ -361,7 +339,7 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 			$valid_coupon_codes[] = $coupon->code;
 		}
 
-		//$this->log( sprintf( "Auto coupons that should be in cart: %s", implode( ', ', $valid_coupon_codes ) ) );
+		$this->log( sprintf( "Auto coupons that should be in cart: %s", implode( ', ', $valid_coupon_codes ) ) );
 
 		$calc_needed = $this->remove_unmatched_autocoupons( $valid_coupon_codes );
 
@@ -369,12 +347,11 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 		foreach( $valid_coupons as $coupon ) {
 			if ( ! WC()->cart->has_discount( $coupon->code )  ) {
 				$this->log( sprintf( "Applying auto coupon %s", $coupon->code ) );
-				WC()->cart->add_discount( $coupon->code ); //Causes calculation and will remove other coupons if it's a individual coupon
-				$calc_needed = false; //Already done by adding the discount
 
 				$apply_silently = get_post_meta( $coupon->id, '_wjecf_apply_silently', true ) == 'yes';
+				
 				if ( $apply_silently ) {
-					$new_succss_msg = false; // no message
+					$new_succss_msg = ''; // no message
 				} else {
 					$coupon_excerpt = $this->coupon_excerpt($coupon);
 					$new_succss_msg = sprintf(
@@ -382,7 +359,13 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 						__( empty( $coupon_excerpt ) ? $coupon->code : $coupon_excerpt, 'woocommerce-jos-autocoupon')
 					);
 				}
-				$this->overwrite_success_message( $coupon, $new_succss_msg );
+
+				WJECF()->start_overwrite_success_message( $coupon, $new_succss_msg );
+				WC()->cart->add_discount( $coupon->code ); //Causes calculation and will remove other coupons if it's a individual coupon
+				WJECF()->stop_overwrite_success_message();
+
+				$calc_needed = false; //Already done by adding the discount
+
 			}
 		}
 
@@ -392,57 +375,6 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 			WC()->cart->calculate_totals();
 		}
 		
-	}
-
-	/**
-	 * Apply the valid by_url coupons
-	 * @return void
-	 */
-	private function apply_valid_by_url_coupons( ) {
-		//2.3.3 Keep track of apply_coupon coupons and apply when they validate
-		if ( WJECF()->is_pro() ) {
-			$this->log( "()" );
-			$by_url_coupon_codes = $this->get_by_url_coupon_codes();
-			$this->log( "By_url coupons: " . implode( ' ', $by_url_coupon_codes ) );
-			foreach( $by_url_coupon_codes as $coupon_code ) {
-				if ( ! WC()->cart->has_discount( $coupon_code )  ) {
-					$coupon = new WC_Coupon( $coupon_code );
-					if ( $coupon->is_valid() ) {
-						$this->log( sprintf( "Applying by_url coupon %s", $coupon->code ) );
-						WC()->cart->add_discount( $coupon->code ); //Causes calculation and will remove other coupons if it's a individual coupon
-						//$calc_needed = false; //Already done by adding the discount
-						$new_succss_msg = sprintf(
-							__("Discount applied: %s", 'woocommerce-jos-autocoupon'), 
-							__($coupon->code, 'woocommerce-jos-autocoupon')
-						);
-						$this->overwrite_success_message( $coupon, $new_succss_msg );
-					} elseif ( ! $coupon->exists ) {
-						//Remove non-existent
-						if( ( $key = array_search($coupon_code, $by_url_coupon_codes ) ) !== false ) {
-							unset( $by_url_coupon_codes[$key] );
-							$this->set_by_url_coupon_codes( $by_url_coupon_codes );
-						}
-						//wc_add_notice( $coupon->get_coupon_error( WC_Coupon::E_WC_COUPON_NOT_EXIST ), 'error' );
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Get the by_url coupon codes from the session
-	 * @return array The coupon codes
-	 */
-	public function get_by_url_coupon_codes() {
-		return WC()->session->get( 'wjecf_by_url_coupons' , array() );		
-	}
-	/**
-	 * Save the by_url coupon codes in the session
-	 * @param array $coupon_codes 
-	 * @return void
-	 */
-	public function set_by_url_coupon_codes( $coupon_codes ) {
-		WC()->session->set( 'wjecf_by_url_coupons' , array_unique( $coupon_codes ) );
 	}
 
 	private function get_valid_auto_coupons( ) {
@@ -509,58 +441,13 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 	}
 	
 	
-/**
- * Overwrite the default "Coupon added" notice with a more descriptive message.
- * @param  WC_Coupon $coupon The coupon data
- * @param  string|bool $new_succss_msg The message to display. If false (or empty string), no message will be shown
- * @return void
- */
-	private function overwrite_success_message( $coupon, $new_succss_msg = false ) {
-		$succss_msg = $coupon->get_coupon_message( WC_Coupon::WC_COUPON_SUCCESS );
-		
-		//If ajax, remove only
-		$remove_message_only = empty( $new_succss_msg ) || ( defined('DOING_AJAX') && DOING_AJAX );
-		
-		//Compatibility woocommerce-2-1-notice-api
-		if ( function_exists('wc_get_notices') ) {
-			$all_notices = wc_get_notices();
-			if ( ! isset( $all_notices['success'] ) ) {
-				$all_notices['success'] = array();
-			}
-			$messages = $all_notices['success'];
-		} else {
-			$messages = $woocommerce->messages;
-		}
-		
-		$sizeof_messages = sizeof($messages);
-		for( $y=0; $y < $sizeof_messages; $y++ ) { 
-			if ( $messages[$y] == $succss_msg ) {
-				if ( isset($all_notices) ) {
-					if ( $remove_message_only ) {
-						unset ( $all_notices['success'][$y] );
-					} else {
-						$all_notices['success'][$y] = $new_succss_msg;
-					}
-					WC()->session->set( 'wc_notices', $all_notices );
-				} else {
-					if ( $remove_message_only ) {
-						unset ( $messages[$y] );
-					} else {
-						$messages[$y] = $new_succss_msg;
-					}
-				}
-				
-				break;
-			}
-		}
-	}
-	
+
 /**
  * Check wether the coupon is an "Auto coupon".
  * @param  WC_Coupon $coupon The coupon data
  * @return bool true if it is an "Auto coupon"
  */	
-	private function is_auto_coupon($coupon) {
+	public function is_auto_coupon($coupon) {
 		return get_post_meta( $coupon->id, '_wjecf_is_auto_coupon', true ) == 'yes';
 	}
 

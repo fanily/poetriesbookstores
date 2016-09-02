@@ -8,6 +8,10 @@ class WJECF_Admin_Auto_Upgrade extends Abstract_WJECF_Plugin {
 
 	//Upgrade options on version change
 	public function auto_upgrade() {
+		if ( ! class_exists('WC_Coupon') ) {
+			return;
+		}
+		
 		//WJECF()->options['db_version'] = 1;update_option( 'wjecf_options' , WJECF()->options, false ); // Will force all upgrades
 		global $wpdb;
 		$prev_version = WJECF()->options['db_version'];

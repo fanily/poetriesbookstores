@@ -10,13 +10,14 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 	
 	public function __construct() {    
         add_action( 'admin_init', array( $this, 'admin_init' ) );
+        //FUTURE: ADMIN MENU add_action('admin_menu', array( &$this, 'action_admin_menu' ) );
 	}
 
 /* ADMIN HOOKS */
 	public function admin_init() {
 		if ( ! WJECF()->check_woocommerce_version('2.3.0') ) {
 			$this->enqueue_notice( '<p>' . 
-				__( '<strong>WooCommerce Extended Coupon Features:</strong> You are using a WooCommerce version prior to 2.3.0. Updating of WooCommerce is recommended as using an outdated version might cause unexpected behaviour in combination with modern plugins.' ) 
+				__( '<strong>WooCommerce Extended Coupon Features:</strong> You are using an old version of WooCommerce. Updating of WooCommerce is recommended as using an outdated version might cause unexpected behaviour in combination with modern plugins.' ) 
 				. '</p>', 'notice-warning' );
 		}
 		//Admin hooks
@@ -60,7 +61,34 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 // END - ADMIN NOTICES
 // ===========================================================================
 
-	
+/*	FUTURE: ADMIN MENU
+    public function action_admin_menu() {
+        add_options_page( __( 'WooCommerce Extended Coupon Features', 'soft79-wc-pricing-rules' ), __( 'WooCommerce Extended Coupon Features', 'soft79-wc-pricing-rules' ), 'manage_options', 'wjecf_settings', array( &$this, 'action_admin_config_page' ) ); 
+    }
+
+    public function action_admin_config_page() {
+?>
+        <h2><?php _e( 'WooCommerce Extended Coupon Features', 'soft79-wc-pricing-rules' ); ?></h2>
+        <form method="post" action="options.php"> 
+        <?php 
+        settings_fields( 'wjecf_settings' );
+        do_settings_sections( 'wjecf_settings' );
+        ?>
+        <?php submit_button(); ?>
+        </form>
+        <h3><?php _e( 'Plugins', 'soft79-wc-pricing-rules' ); ?></h3>
+        <ul>
+<?php
+        foreach ( WJECF()->get_plugins() as $name => $plugin ) {
+        	echo "<li>" . $name . "</li>\n";
+        }
+?>
+		</ul>
+<?php
+        
+    }   
+*/ 
+
 	//Add tabs to the coupon option page
 	public function admin_coupon_options_tabs( $tabs ) {
 		
@@ -383,15 +411,29 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 		$wjecf_payment_methods = isset( $_POST['wjecf_payment_methods'] ) ? $_POST['wjecf_payment_methods'] : '';
 		update_post_meta( $post_id, '_wjecf_payment_methods', $wjecf_payment_methods );		
 		
-		$wjecf_customer_ids    = implode(",", array_filter( array_map( 'intval', explode(",", $_POST['wjecf_customer_ids']) ) ) );
+		$wjecf_customer_ids = $this->comma_separated_int_array( $_POST['wjecf_customer_ids'] );
 		update_post_meta( $post_id, '_wjecf_customer_ids', $wjecf_customer_ids );	
 
 		$wjecf_customer_roles    = isset( $_POST['wjecf_customer_roles'] ) ? $_POST['wjecf_customer_roles'] : '';
 		update_post_meta( $post_id, '_wjecf_customer_roles', $wjecf_customer_roles );	
 
-		$wjecf_excluded_customer_roles    = isset( $_POST['wjecf_excluded_customer_roles'] ) ? $_POST['wjecf_excluded_customer_roles'] : '';
+		$wjecf_excluded_customer_roles = isset( $_POST['wjecf_excluded_customer_roles'] ) ? $_POST['wjecf_excluded_customer_roles'] : '';
 		update_post_meta( $post_id, '_wjecf_excluded_customer_roles', $wjecf_excluded_customer_roles );	
 		
+	}
+
+	/**
+	 * 2.3.4
+	 * Parse an array or comma separated string; make sure they are valid ints and return as comma separated string
+	 * @param array|string $int_array 
+	 * @return string comma separated int array
+	 */
+	public function comma_separated_int_array( $int_array ) {
+		//Source can be a comma separated string (select2) , or an int array (chosen)
+		if ( ! is_array( $int_array) ) {
+			$int_array = explode( ',', $int_array );
+		}
+        return implode( ',', array_filter( array_map( 'intval', $int_array ) ) );
 	}
 
 	public function render_admin_cat_selector( $dom_id, $field_name, $selected_ids, $placeholder = null ) {
@@ -435,7 +477,7 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 	private function render_admin_chosen_product_selector( $dom_id, $field_name, $selected_keys_and_values, $placeholder ) {
 		// $selected_keys_and_values must be an array of [ id => name ]
 
-		echo '<select id="' . esc_attr( $dom_id ) . '" name="' . esc_attr( $field_name ) . '" class="ajax_chosen_select_products_and_variations" multiple="multiple" data-placeholder="' . esc_attr( $placeholder ) . '">';
+		echo '<select id="' . esc_attr( $dom_id ) . '" name="' . esc_attr( $field_name ) . '[]" class="ajax_chosen_select_products_and_variations" multiple="multiple" data-placeholder="' . esc_attr( $placeholder ) . '">';
 		foreach ( $selected_keys_and_values as $product_id => $product_name ) {
 			echo '<option value="' . $product_id . '" selected="selected">' . $product_name . '</option>';
 		}

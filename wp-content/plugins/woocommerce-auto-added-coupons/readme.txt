@@ -3,8 +3,8 @@ Contributors: josk79
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: woocommerce, coupons, discount
 Requires at least: 4.0.0
-Tested up to: 4.5.2
-Stable tag: 2.3.3
+Tested up to: 4.5.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,7 +15,7 @@ Additional functionality for WooCommerce Coupons: Allow discounts to be automati
 "WooCommerce Extended Coupon Features" adds functionality to the WooCommerce coupons and allows for automatic discount rules. 
 Very easy to use, the functionality is conveniently integrated to the WooCommerce Edit Coupon panel.
 
-Compatible with WooCommerce 2.5.5. Backwards compatible with older WooCommerce versions (2.2.8 confirmed).
+Compatible with WooCommerce 2.6.1. Backwards compatible with older WooCommerce versions (2.3.0 confirmed).
 
 Full documentation is available at [www.soft79.nl](http://www.soft79.nl/documentation/wjecf).
 
@@ -105,6 +105,15 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 4. Additionals restrictions based on shipping or payment method or the customer
 
 == Changelog ==
+
+= 2.3.4 =
+* FIX: WooCommerce 2.6 and UPS / USPS Shipping method compatibility ( those plugins use : as separator )
+* FIX: Coupon by url (hook on wp_loaded instead of init)
+* FIX: Admin pages invalid parsing of Chosen inputboxes WooCommerce < 2.3.0
+* FIX: Free product on WooCommerce < 2.3.0
+* INTERNAL: Rewritten overwrite_success_message methods
+* (PRO) Ajax 'Apply coupon' support for free product selection on cart and checkout page. (OVERRIDEABLE TEMPLATE FILES UPDATED!)
+* (PRO) FEATURE: Remember coupons that are not valid when applying (on the cart page) and apply them automatically when they validate
 
 = 2.3.3 =
 * FIX: limit_usage_to_x_items: Removed call to get_discount_amount from coupon_has_a_value; it is redundant and caused limit_usage_to_x_items to change

@@ -3,13 +3,19 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://www.soft79.nl
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.3.3
+ * Version: 2.3.4
  * Author: Jos Koenis
  * License: GPL2
  */
  
 // Change history: see readme.txt
-
+/*
+* TODO: Apply filter for autocoupon individual_use_filter
+* TODO: (PRO) Eval
+* TODO: Admin page: Option to enable/disable functionality
+* TODO: Admin page: Enable/disable debugging
+*
+*/
  
 defined('ABSPATH') or die();
 
@@ -25,7 +31,9 @@ if ( ! function_exists( 'wjecf_load_plugin_textdomain' ) ) {
 	//PRO
 	@include_once( 'includes/wjecf-pro-controller.php' );
 	@include_once( 'includes/wjecf-pro-free-products.php' );
-	@include_once( 'includes/wjecf-pro-api.php' );		
+	@include_once( 'includes/wjecf-pro-coupon-queueing.php' );
+	@include_once( 'includes/wjecf-pro-api.php' );	
+
 
 	// Only Initiate the plugin if WooCommerce is active
 	if ( WJECF_Controller::get_woocommerce_version() == false ) {
@@ -64,6 +72,7 @@ if ( ! function_exists( 'wjecf_load_plugin_textdomain' ) ) {
 		WJECF()->add_plugin('WJECF_AutoCoupon');
 		WJECF()->add_plugin('WJECF_WPML');
 		WJECF()->add_plugin('WJECF_Pro_Free_Products');
+		WJECF()->add_plugin('WJECF_Pro_Coupon_Queueing');
 	}
 
 }
