@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 function get_video_id_from_url($url){
 	if(strpos($url,'youtube') !== false || strpos($url,'youtu') !== false){	
 		if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) {
@@ -146,7 +147,7 @@ $paramssld["light_box_preloading"] = "true";
 $paramssld["lightbox_open_position"] = "5";
 $paramssld["light_box_style"] = "1";
 $paramssld["light_box_size_fix"] = "false";
-$paramssld["slider_crop_image"] = "crop";
+$paramssld["slider_crop_image"] = "resize";
 $paramssld["slider_title_color"] = "000000";
 $paramssld["slider_title_font_size"] = "13";
 $paramssld["slider_description_color"] = "ffffff";
@@ -1217,6 +1218,20 @@ jQuery(document).ready(function(){
 		jQuery('#huge_it_gallery_pupup_element_'+strid).addClass('active').css({height:height*0.7});
 		jQuery('#huge_it_gallery_popup_list_<?php echo $galleryID; ?>').addClass('active');
 		
+         if(jQuery('.pupup-element.active .description').height() + jQuery('.right-block h3').height() + 200 > jQuery('.pupup-element.active .right-block').height()){
+            if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                jQuery('.pupup-element.active .right-block').css('overflow-y', '');
+                jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+            }else{
+                jQuery('.pupup-element.active .right-block').css('overflow-y', 'auto');
+            }
+            }else {
+                if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                    jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+                }
+            }
+        
+        
 		return false;
 	});
 	    /*      <-- POPUP LEFT CLICK -->        */
@@ -1236,8 +1251,26 @@ jQuery(document).ready(function(){
                 jQuery(this).closest(".pupup-element").removeClass("active");
                 jQuery("#huge_it_gallery_popup_list_<?php echo $galleryID; ?>").find(".pupup-element").last().addClass("active");
             }
+             if(jQuery('.pupup-element.active .description').height() + jQuery('.right-block h3').height() + 200 > jQuery('.pupup-element.active .right-block').height()){
+            if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                jQuery('.pupup-element.active .right-block').css('overflow-y', '');
+                jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+            }else{
+                jQuery('.pupup-element.active .right-block').css('overflow-y', 'auto');
+            }
+            }else {
+                if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                    jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+                }
+            }
             
         });
+        
+        jQuery("body").keydown(function(e) {
+            if(e.keyCode == 37) {
+                jQuery("#huge_it_gallery_popup_list_<?php echo $galleryID; ?> .pupup-element.active .heading-navigation_<?php echo $galleryID; ?> .left-change").trigger("click");
+            }
+        }); 
         
         /*      <-- POPUP RIGHT CLICK -->        */
         jQuery("#huge_it_gallery_popup_list_<?php echo $galleryID; ?> .heading-navigation_<?php echo $galleryID; ?> .right-change").click(function(){
@@ -1259,7 +1292,33 @@ jQuery(document).ready(function(){
                 jQuery(this).closest(".pupup-element").removeClass("active");
                 jQuery("#huge_it_gallery_popup_list_<?php echo $galleryID; ?>").find(".pupup-element:first-child").addClass("active");
             }
+             if(jQuery('.pupup-element.active .description').height() + jQuery('.right-block h3').height() + 200 > jQuery('.pupup-element.active .right-block').height()){
+            if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                jQuery('.pupup-element.active .right-block').css('overflow-y', '');
+                jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+            }else{
+                jQuery('.pupup-element.active .right-block').css('overflow-y', 'auto');
+            }
+            }else {
+                if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                    jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+                }
+            }
         });
+        
+        jQuery("body").keydown(function(e) {
+                if(e.keyCode == 39) {
+                    jQuery("#huge_it_gallery_popup_list_<?php echo $galleryID; ?> .pupup-element.active .heading-navigation_<?php echo $galleryID; ?> .right-change").click();
+                }
+            });
+    
+    
+        jQuery("body").keydown(function(e) {
+            if(e.keyCode == 27) {
+                jQuery('#huge_it_gallery_popup_list_<?php echo $galleryID; ?> .heading-navigation_<?php echo $galleryID; ?> .close').click();
+            }
+        });
+        
 	//////
 	jQuery('#huge_it_gallery_popup_list_<?php echo $galleryID; ?> .heading-navigation_<?php echo $galleryID; ?> .close').on('click',function(){
 		closePopup();
@@ -1543,15 +1602,15 @@ jQuery(document).ready(function(){
 
 #huge_it_gallery_popup_list_<?php echo $galleryID; ?> li.pupup-element .popup-wrapper_<?php echo $galleryID; ?> {
 	position:relative;
-	width:96%;
+	width:98%;
 	height:98%;
-	padding:2% 2% 0% 2%;
+	padding:2% 0% 0% 2%;
 }
 
 #huge_it_gallery_popup_list_<?php echo $galleryID; ?> .popup-wrapper_<?php echo $galleryID; ?> .image-block_<?php echo $galleryID; ?> {
-	width:60%;
+	width:55%;
 	<?php if($paramssld['ht_view2_popup_full_width'] == 'off') { echo "height:100%;"; }
-		else { echo "height:100%; overflow-y: scroll;"; } ?>
+		else { echo "height:100%;"; } ?>
 	position:relative;
 	float:left;
 	margin-right:2%;
@@ -1576,9 +1635,8 @@ jQuery(document).ready(function(){
 }
 
 #huge_it_gallery_popup_list_<?php echo $galleryID; ?> .popup-wrapper_<?php echo $galleryID; ?> .right-block {
-	overflow-y: scroll;
 	height: 100%;
-	width:37%;
+	width:42.8%;
 	position:relative;
 	float:left;
 }
@@ -1586,6 +1644,7 @@ jQuery(document).ready(function(){
 #huge_it_gallery_popup_list_<?php echo $galleryID; ?> li.pupup-element .popup-wrapper_<?php echo $galleryID; ?> .right-block > div {
 	padding-top:10px;
 	margin-bottom:10px;
+    margin-right: 4%;
 	<?php if($paramssld['ht_view2_show_separator_lines']=="on") {?>
 		background:url('<?php echo  plugins_url( '../images/divider.line.png' , __FILE__ ); ?>') center top repeat-x;
 	<?php } ?>
@@ -2436,7 +2495,7 @@ jQuery(document).ready(function(){
 		$descnohtml=strip_tags(str_replace('__5_5_5__','%',$row->description));
 		$result = substr($descnohtml, 0, 50);
 		?>
-		<div class="element_<?php echo $galleryID; ?>" tabindex="0" data-symbol="<?php echo str_replace('__5_5_5__','%',$row->name); ?>" data-category="alkaline-earth">
+		<div class="element_<?php echo $galleryID; ?>" tabindex="0" data-symbol="<?php echo str_replace('__5_5_5__','%',$row->name); ?>" data-category="alkaline-earth" title="<?php echo $row->name?>">
 			<div class="image-block_<?php echo $galleryID; ?>">
 			<?php
 					$imagerowstype=$row->sl_type;
@@ -2789,6 +2848,21 @@ jQuery(document).ready(function(){
 														jQuery('#huge_it_gallery_pupup_element_'+strid).addClass('active').css({height:height*0.7});
 														jQuery('#huge_it_gallery_popup_list_<?php echo $galleryID; ?>').addClass('active');
 														
+                                                        if(jQuery('.pupup-element.active .description').height() + jQuery('.right-block h3').height() + 200 > jQuery('.pupup-element.active .right-block').height()){
+            if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                jQuery('.pupup-element.active .right-block').css('overflow-y', '');
+                jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+            }else{
+                jQuery('.pupup-element.active .right-block').css('overflow-y', 'auto');
+            }
+            }else {
+                if(jQuery('.pupup-element.active img').height() > jQuery('.pupup-element.active .image-block_<?php echo $galleryID; ?>').height()){
+                    jQuery('.pupup-element.active .popup-wrapper_<?php echo $galleryID; ?>').css('overflow-y', 'auto');
+                }
+            }
+        
+                                                        
+                                                        
 														return false;
 													});
 													
@@ -3804,7 +3878,19 @@ switch ($like_dislike) {
      * var api = $.data( jQuery('#main-slider')[0], 'liquidSlider');
      * console.log(api);
      */
-	 jQuery('#main-slider_<?php echo $galleryID; ?>').liquidSlider();
+        var autoslide = <?php if($gallery[0]->autoslide == 'on') echo 'true'; else echo 'false'; ?>;
+        var pauseOnHover = <?php if($gallery[0]->pause_on_hover == 'on') echo 'true' ; else echo 'false';?>;
+	var gallerySliderOptons_<?php echo $galleryID; ?> = {
+		
+		autoSlide : autoslide,
+		slideEaseDuration : (+'<?php echo $gallery[0]->param;?>'),
+		autoSlideInterval : (+'<?php echo $gallery[0]->description;?>'),
+                forceAutoSlide : autoslide,
+                pauseOnHover: pauseOnHover
+
+            }
+    
+    jQuery('#main-slider_<?php echo $galleryID; ?>').liquidSlider(gallerySliderOptons_<?php echo $galleryID; ?>);
   </script>
 <?php  
         break;
@@ -4404,7 +4490,7 @@ switch ($like_dislike) {
 					</div>
 				<?php endif; ?>	
 			<?php if(str_replace('__5_5_5__','%',$row->name)!=""){?>
-			<div class="title-block_<?php echo $galleryID; ?>">
+                    <div class="title-block_<?php echo $galleryID; ?>" title="<?php echo $row->name; ?>">
 				<a href="<?php echo $link; ?>" <?php if ($row->link_target=="on"){echo 'target="_blank"';}?>><?php echo str_replace('__5_5_5__','%',$row->name); ?></a>
 			</div>
 			<?php } ?>

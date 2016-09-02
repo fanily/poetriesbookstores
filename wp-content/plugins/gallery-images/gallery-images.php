@@ -4,11 +4,13 @@
 Plugin Name: Huge IT Image Gallery
 Plugin URI: http://huge-it.com/wordpress-gallery/
 Description: Huge-IT Image Gallery is the best plugin to use if you want to be original with your website.
-Version: 1.9.59
+Version: 1.9.65
 Author: Huge-IT
 Author: http://huge-it.com/
 License: GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function gallery_images_load_plugin_textdomain() {
     load_plugin_textdomain( 'gallery-images', FALSE, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
@@ -210,7 +212,7 @@ str_replace('__5_5_5__','%',$row->description));
                            </div>';
            }
 ///////////////////////////////
-            $output.='<div class="element_'.$idofgallery.' " tabindex="0" data-symbol="'.$video_name.'"  data-category="alkaline-earth">';
+            $output.='<div class="element_'.$idofgallery.' " tabindex="0" data-symbol="'.$video_name.'"  data-category="alkaline-earth" title="'.$video_name.'">';
             $output.='<input type="hidden" class="pagenum" value="'.$page.'" />';
             $output.='<div class="image-block_'.$idofgallery.'">';
             $output.=$video;
@@ -309,7 +311,7 @@ str_replace('__5_5_5__','%',$row->name);
                 }else{
                     $target= '';
                 }
-               $linkimg='<div class="title-block_'.$idofgallery.'"><a href="'.$link.'"'.$target.'>'.$video_name.'</a></div>';
+               $linkimg='<div class="title-block_'.$idofgallery.'"><a href="'.$link.'"'.$target.' title="'.$video_name.'">'.$video_name.'</a></div>';
             }else{
                 $linkimg='';
             } 
@@ -962,6 +964,18 @@ function huge_it_gallery_images_list_shotrcode($atts)
     extract(shortcode_atts(array(
         'id' => 'no huge_it gallery',
     ), $atts));
+    
+    wp_register_script( 'jquery.gicolorbox-js', plugins_url('/js/jquery.colorbox.js', __FILE__), array('jquery'),'1.0.0',true  ); 
+    wp_enqueue_script( 'jquery.gicolorbox-js' );
+    wp_register_script( 'gallery-hugeitmicro-min-js', plugins_url('/js/jquery.hugeitmicro.min.js', __FILE__), array('jquery'),'1.0.0',true  ); 
+    wp_enqueue_script( 'gallery-hugeitmicro-min-js' );
+    wp_register_style( 'style2-os-css', plugins_url('/style/style2-os.css', __FILE__) );   
+    wp_enqueue_style( 'style2-os-css' );
+    wp_register_style( 'lightbox-css', plugins_url('/style/lightbox.css', __FILE__) );   
+    wp_enqueue_style( 'lightbox-css' );
+    wp_register_style( 'hugeiticons-css', plugins_url('/style/css/hugeiticons.css', __FILE__) );
+    wp_enqueue_style( 'hugeiticons-css' );
+    
     return huge_it_gallery_images_list($atts['id']);
 }
 /////////////// Filter gallery
@@ -1044,16 +1058,6 @@ function all_frontend_scripts_and_styles() {
         wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js', __FILE__ ); 
         wp_enqueue_script('jquery');
     }
-    wp_register_script( 'jquery.gicolorbox-js', plugins_url('/js/jquery.colorbox.js', __FILE__), array('jquery'),'1.0.0',true  ); 
-    wp_enqueue_script( 'jquery.gicolorbox-js' );
-    wp_register_script( 'gallery-hugeitmicro-min-js', plugins_url('/js/jquery.hugeitmicro.min.js', __FILE__), array('jquery'),'1.0.0',true  ); 
-    wp_enqueue_script( 'gallery-hugeitmicro-min-js' );
-    wp_register_style( 'style2-os-css', plugins_url('/style/style2-os.css', __FILE__) );   
-    wp_enqueue_style( 'style2-os-css' );
-    wp_register_style( 'lightbox-css', plugins_url('/style/lightbox.css', __FILE__) );   
-    wp_enqueue_style( 'lightbox-css' );
-    wp_register_style( 'fontawesome-css', plugins_url('/style/css/font-awesome.css', __FILE__) );   
-    wp_enqueue_style( 'fontawesome-css' );
 }
 add_action('wp_enqueue_scripts', 'all_frontend_scripts_and_styles');
 add_action('admin_menu', 'huge_it_gallery_options_panel');
@@ -1442,6 +1446,16 @@ INSERT INTO `$table_name` (`id`, `name`, `sl_height`, `sl_width`, `pause_on_hove
             $wpdb->query("ALTER TABLE ".$wpdb->prefix."huge_itgallery_gallerys  ADD `rating` VARCHAR( 15 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT  'off'");
         }
         ////////////////////////////////////////////////////////////////////////
+        $imagesAllFieldsInArray6 = $wpdb->get_results("DESCRIBE " . $wpdb->prefix . "huge_itgallery_gallerys", ARRAY_A);
+        $fornewUpdate5 = 0;
+        foreach ($imagesAllFieldsInArray6 as $portfoliosField6) {
+            if ($portfoliosField5['Field'] == 'autoslide') {
+               $fornewUpdate5=1;
+            }
+        }
+        if($fornewUpdate5 != 1){
+            $wpdb->query("ALTER TABLE ".$wpdb->prefix."huge_itgallery_gallerys  ADD `autoslide` VARCHAR( 15 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT  'on'");
+        }
 }
 register_activation_hook(__FILE__, 'huge_it_gallery_activate');
 require_once( ABSPATH . 'wp-admin/includes/plugin.php' );

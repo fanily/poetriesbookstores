@@ -1,10 +1,10 @@
 /*!
-	Colorbox v1.5.10 - 2014-06-26
+	This is a fork of Colorbox v1.5.10 - 2014-06-26
 	jQuery lightbox and modal window plugin
 	(c) 2014 Jack Moore - http://www.jacklmoore.com/colorbox
 	license: http://www.opensource.org/licenses/mit-license.php
 */
-if(typeof lightbox_html != 'undefined') {
+
 (function ($, document, window) {
 	var
 	// Default settings object.
@@ -59,7 +59,7 @@ if(typeof lightbox_html != 'undefined') {
 		retinaSuffix: lightbox_retinaSuffix,
 
 		// internationalization
-		current: "{current} of {total}",
+		current: "image {current} of {total}",
 		previous: lightbox_previous,
 		next: lightbox_next,
 		close: "close",
@@ -82,7 +82,7 @@ if(typeof lightbox_html != 'undefined') {
 		},
 		href: function() {
 			// using this.href would give the absolute url, when the href may have been inteded as a selector (e.g. '#container')
-			return jQuery(this).attr('href');
+			return $(this).attr('href');
 		},
 		
 		title: function() {
@@ -127,7 +127,7 @@ if(typeof lightbox_html != 'undefined') {
 	$prev,
 	$close,
 	$groupControls,
-	$events = jQuery('<a/>'), // jQuery({}) would be prefered, but there is an issue with jQuery 1.4.2
+	$events = $('<a/>'), // $({}) would be prefered, but there is an issue with jQuery 1.4.2
 	
 	// Variables for cached values or use across multiple functions
 	settings,
@@ -163,13 +163,13 @@ if(typeof lightbox_html != 'undefined') {
 			element.style.cssText = css;
 		}
 
-		return jQuery(element);
+		return $(element);
 	}
 	
 	// Get the window height using innerHeight when available to avoid an issue with iOS
 	// http://bugs.jquery.com/ticket/6724
 	function winheight() {
-		return window.innerHeight ? window.innerHeight : jQuery(window).height();
+		return window.innerHeight ? window.innerHeight : $(window).height();
 	}
 
 	function Settings(element, options) {
@@ -184,7 +184,7 @@ if(typeof lightbox_html != 'undefined') {
 			var dataAttr;
 
 			if (this.cache[key] === undefined) {
-				dataAttr = jQuery(this.el).attr('data-cbox-'+key);
+				dataAttr = $(this.el).attr('data-cbox-'+key);
 
 				if (dataAttr !== undefined) {
 					this.cache[key] = dataAttr;
@@ -246,7 +246,7 @@ if(typeof lightbox_html != 'undefined') {
 		index = 0;
 		
 		if (rel && rel !== false && rel !== 'nofollow') {
-			$related = jQuery('.' + boxElement).filter(function () {
+			$related = $('.' + boxElement).filter(function () {
 				var options = $.data(this, colorbox);
 				var settings = new Settings(this, options);
 				return (settings.get('rel') === rel);
@@ -259,13 +259,13 @@ if(typeof lightbox_html != 'undefined') {
 				index = $related.length - 1;
 			}
 		} else {
-			$related = jQuery(settings.el);
+			$related = $(settings.el);
 		}
 	}
 
 	function trigger(event) {
 		// for external use
-		jQuery(document).trigger(event);
+		$(document).trigger(event);
 		// for internal use
 		$events.triggerHandler(event);
 	}
@@ -356,7 +356,7 @@ if(typeof lightbox_html != 'undefined') {
 
 		if (!closing) {
 
-			options = jQuery(element).data(colorbox);
+			options = $(element).data(colorbox);
 
 			settings = new Settings(element, options);
 			
@@ -414,7 +414,7 @@ if(typeof lightbox_html != 'undefined') {
 				// Return focus on closing
 				if (settings.get('returnFocus')) {
 					$events.one(event_closed, function () {
-						jQuery(settings.el).focus();
+						$(settings.el).focus();
 					});
 				}
 			}
@@ -440,7 +440,7 @@ if(typeof lightbox_html != 'undefined') {
 	function appendHTML() {
 		if (!$box && document.body) {
 			init = false;
-			$window = jQuery(window);
+			$window = $(window);
 			$box = $tag(div).attr({
 				id: colorbox,
 				'class': $.support.opacity === false ? prefix + 'IE' : '', // class for optional IE8 & lower targeted CSS.
@@ -448,18 +448,18 @@ if(typeof lightbox_html != 'undefined') {
 				tabindex: '-1'
 			}).hide();
 			$overlay = $tag(div, "Overlay").hide();
-			$loadingOverlay = jQuery([$tag(div, "LoadingOverlay")[0],$tag(div, "LoadingGraphic")[0]]);
+			$loadingOverlay = $([$tag(div, "LoadingOverlay")[0],$tag(div, "LoadingGraphic")[0]]);
 			$wrap = $tag(div, "Wrapper");
 			$content = $tag(div, "Content").append(
 				$title = $tag(div, "Title"),
 				$current = $tag(div, "Current"),
-				$prev = jQuery('<button type="button"/>').attr({id:prefix+'Previous'}),
-				$next = jQuery('<button type="button"/>').attr({id:prefix+'Next'}),
+				$prev = $('<button type="button"/>').attr({id:prefix+'Previous'}),
+				$next = $('<button type="button"/>').attr({id:prefix+'Next'}),
 				$slideshow = $tag('button', "Slideshow"),
 				$loadingOverlay
 			);
 
-			$close = jQuery('<button type="button"/>').attr({id:prefix+'Close'});
+			$close = $('<button type="button"/>').attr({id:prefix+'Close'});
 			
 			$wrap.append( // The 3x3 Grid that makes up Colorbox
 				$tag(div).append(
@@ -483,7 +483,7 @@ if(typeof lightbox_html != 'undefined') {
 			
 			$groupControls = $next.add($prev).add($current).add($slideshow);
 
-			jQuery(document.body).append($overlay, $box.append($wrap, $loadingBay));
+			$(document.body).append($overlay, $box.append($wrap, $loadingBay));
 		}
 	}
 
@@ -519,7 +519,7 @@ if(typeof lightbox_html != 'undefined') {
 				});
 				
 				// Key Bindings
-				jQuery(document).bind('keydown.' + prefix, function (e) {
+				$(document).bind('keydown.' + prefix, function (e) {
 					var key = e.keyCode;
 					if (open && settings.get('escKey') && key === 27) {
 						e.preventDefault();
@@ -538,12 +538,12 @@ if(typeof lightbox_html != 'undefined') {
 
 				if ($.isFunction($.fn.on)) {
 					// For jQuery 1.7+
-					jQuery(document).on('click.'+prefix, '.'+boxElement, clickHandler);
+					$(document).on('click.'+prefix, '.'+boxElement, clickHandler);
 				} else {
 					// For jQuery 1.3.x -> 1.6.x
 					// This code is never reached in jQuery 1.9, so do not contact me about 'live' being removed.
 					// This is not here for jQuery 1.9, it's here for legacy users.
-					jQuery('.'+boxElement).live('click.'+prefix, clickHandler);
+					$('.'+boxElement).live('click.'+prefix, clickHandler);
 				}
 			}
 			return true;
@@ -557,7 +557,7 @@ if(typeof lightbox_html != 'undefined') {
 	}
 
 	// Append the HTML when the DOM loads
-	jQuery(appendHTML);
+	$(appendHTML);
 
 
 	// ****************
@@ -573,7 +573,7 @@ if(typeof lightbox_html != 'undefined') {
 		options = options || {};
 
 		if ($.isFunction($obj)) { // assume a call to $.colorbox
-			$obj = jQuery('<a/>');
+			$obj = $('<a/>');
 			options.open = true;
 		} else if (!$obj[0]) { // colorbox being applied to empty collection
 			return $obj;
@@ -780,7 +780,7 @@ if(typeof lightbox_html != 'undefined') {
 		
 		// floating the IMG removes the bottom line-height and fixed a problem where IE miscalculates the width of the parent element as 100% of the document width.
 		
-		jQuery(photo).css({'float': 'none'});
+		$(photo).css({'float': 'none'});
 
 		setClass(settings.get('className'));
 
@@ -854,7 +854,7 @@ if(typeof lightbox_html != 'undefined') {
 					iframe.scrolling = "no";
 				}
 				
-				jQuery(iframe)
+				$(iframe)
 					.attr({
 						src: settings.get('href'),
 						name: (new Date()).getTime(), // give the iframe a unique name to prevent caching
@@ -869,7 +869,7 @@ if(typeof lightbox_html != 'undefined') {
 				});
 
 				if (settings.get('fastIframe')) {
-					jQuery(iframe).trigger('load');
+					$(iframe).trigger('load');
 				}
 			} else {
 				complete();
@@ -932,10 +932,10 @@ if(typeof lightbox_html != 'undefined') {
 		}, 100);
 		
 		if (settings.get('inline')) {
-			var $target = jQuery(href);
+			var $target = $(href);
 			// Inserts an empty placeholder where inline content is being pulled from.
 			// An event is bound to put inline content back when Colorbox closes or loads new content.
-			$inline = jQuery('<div>').hide().insertBefore($target);
+			$inline = $('<div>').hide().insertBefore($target);
 
 			$events.one(event_purge, function () {
 				$inline.replaceWith($target);
@@ -954,7 +954,7 @@ if(typeof lightbox_html != 'undefined') {
 
 			photo = new Image();
 
-			jQuery(photo)
+			$(photo)
 			.addClass(prefix + 'Photo')
 			.bind('error',function () {
 				prep($tag(div, 'Error').html(settings.get('imgError')));
@@ -970,15 +970,38 @@ if(typeof lightbox_html != 'undefined') {
 					var percent;
 
 					$.each(['alt', 'longdesc', 'aria-describedby'], function(i,val){
-						var attr = jQuery(settings.el).attr(val) || jQuery(settings.el).attr('data-'+val);
+						var attr = $(settings.el).attr(val) || $(settings.el).attr('data-'+val);
 						if (attr) {
 							photo.setAttribute(val, attr);
 						}
 					});
-
+                    
+                    var isRetina = false;
 					if (settings.get('retinaImage') && window.devicePixelRatio > 1) {
-						photo.height = photo.height / window.devicePixelRatio;
-						photo.width = photo.width / window.devicePixelRatio;
+                        isRetina = true;
+                        if(isRetina){
+                            if(photo.width < jQuery(window).width() && photo.height < jQuery(window).height()){
+                                photo.height = photo.height / window.devicePixelRatio;
+                                photo.width = photo.width / window.devicePixelRatio;
+                            }else{
+                                if(jQuery(window).width() < jQuery(window).height()){
+                                       var k = (photo.height / window.devicePixelRatio) / (photo.width / window.devicePixelRatio);
+                                       photo.height = k*jQuery(window).width() - 70; 
+                                       photo.width = jQuery(window).width() - 70; 
+                                }else{
+                                    if(photo.height > photo.width){
+                                       var k = (photo.width / window.devicePixelRatio) / (photo.height / window.devicePixelRatio);
+                                       photo.height = jQuery(window).height() - 70;
+                                       photo.width = k*jQuery(window).height() - 70; 
+                                    }else{
+                                        var k = (photo.height / window.devicePixelRatio) / (photo.width / window.devicePixelRatio);
+                                        photo.height = k*jQuery(window).width() - 70; 
+                                        photo.width = jQuery(window).width() - 70;
+                                    }
+                                       
+                                }
+                            }
+                        }
 					}
 
 					if (settings.get('scalePhotos')) {
@@ -1006,7 +1029,23 @@ if(typeof lightbox_html != 'undefined') {
 							publicMethod.next();
 						};
 					}
-
+                    if(!isRetina){
+                        if(photo.width < jQuery(window).width() && photo.height < jQuery(window).height()){
+                            photo.height = photo.height / window.devicePixelRatio;
+						    photo.width = photo.width / window.devicePixelRatio;
+                        }else{
+                            if(jQuery(window).width() < jQuery(window).height()){
+                                var k = (photo.height / window.devicePixelRatio) / (photo.width / window.devicePixelRatio);
+                                photo.height = k*jQuery(window).width() - 70;
+                                photo.width = jQuery(window).width() - 70;
+                            }else{
+                                var k = (photo.width / window.devicePixelRatio) / (photo.height / window.devicePixelRatio);
+                                photo.height = jQuery(window).height() - 70;
+                                photo.width = k*jQuery(window).height() - 70;
+                            }
+                        }
+                    }
+                    
 					photo.style.width = photo.width + 'px';
 					photo.style.height = photo.height + 'px';
 					prep(photo);
@@ -1018,7 +1057,7 @@ if(typeof lightbox_html != 'undefined') {
 		} else if (href) {
 			$loadingBay.load(href, settings.get('data'), function (data, status) {
 				if (request === requests) {
-					prep(status === 'error' ? $tag(div, 'Error').html(settings.get('xhrError')) : jQuery(this).contents());
+					prep(status === 'error' ? $tag(div, 'Error').html(settings.get('xhrError')) : $(this).contents());
 				}
 			});
 		}
@@ -1075,20 +1114,22 @@ if(typeof lightbox_html != 'undefined') {
 		$overlay.remove();
 		closing = false;
 		$box = null;
-		jQuery('.' + boxElement)
+		$('.' + boxElement)
 			.removeData(colorbox)
 			.removeClass(boxElement);
 
-		jQuery(document).unbind('click.'+prefix).unbind('keydown.'+prefix);
+		$(document).unbind('click.'+prefix).unbind('keydown.'+prefix);
 	};
 
 	// A method for fetching the current element Colorbox is referencing.
 	// returns a jQuery object.
 	publicMethod.element = function () {
-		return jQuery(settings.el);
+		return $(settings.el);
 	};
 
 	publicMethod.settings = defaults;
 
 }(jQuery, document, window));
-}
+
+
+

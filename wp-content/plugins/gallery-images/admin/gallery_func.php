@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if(function_exists('current_user_can'))
 if(!current_user_can('delete_pages')) {
     die('Access Denied');
@@ -229,6 +230,7 @@ function apply_cat($id)
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  content_per_page = %s  WHERE id = %d ", $pContrentPP, $id));
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  rating = %s  WHERE id = %d ", $pRating, $id));
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  ordering = '1'  WHERE id = %d ", $id));
+                                $wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  autoslide = %s  WHERE id = %d ", sanitize_text_field($_POST["autoslide"]), $id));
 			}
 		}	
 		if(isset($pName)){
@@ -244,6 +246,7 @@ function apply_cat($id)
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  huge_it_sl_effects = %s  WHERE id = %d ", $pSlEffect, $id));
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  rating = %s  WHERE id = %d ", $pRating, $id));
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  ordering = '1'  WHERE id = %d ", $id));
+                                $wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."huge_itgallery_gallerys SET  autoslide = %s  WHERE id = %d ", sanitize_text_field($_POST["autoslide"]), $id));
 			}
 		}
 }
@@ -329,8 +332,8 @@ function apply_cat($id)
                         $orderBy = sanitize_text_field($_POST["order_by_".$rowimages->id]);
                         $linkTaret = sanitize_text_field($_POST["sl_link_target".$rowimages->id]);
                         $slUrl = sanitize_text_field(str_replace('%','__5_5_5__',$_POST["sl_url".$rowimages->id]));
-                        $name = sanitize_text_field(str_replace('%','__5_5_5__',$_POST["titleimage".$rowimages->id]));
-                        $desc = sanitize_text_field(str_replace('%','__5_5_5__',$_POST["im_description".$rowimages->id]));
+                        $name = wp_unslash(str_replace('%','__5_5_5__',$_POST["titleimage".$rowimages->id]));
+                        $desc = wp_unslash(str_replace('%','__5_5_5__',$_POST["im_description".$rowimages->id]));
                         $imageUrl = sanitize_text_field($_POST["imagess".$rowimages->id]);
                         $like = sanitize_text_field($_POST["like_".$rowimages->id]);
                         $dislike = sanitize_text_field($_POST["dislike_".$rowimages->id]);

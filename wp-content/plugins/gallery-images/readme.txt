@@ -1,10 +1,10 @@
 === Gallery - Image Gallery ===
 Contributors: Huge-IT
 Donate link: http://huge-it.com/wordpress-gallery/
-Tags: gallery, image gallery, gallery image, content slider, widget gallery, sortable gallery, lightbox gallery, website gallery, gallery lightbox, galleries, wordpress gallery, photo gallery, gallery, best gallery, content gallery, media gallery, gallery plugin, wordpress photo gallery plugin, plugin gallery, add gallery, add image, add picture, portfolio, add images, add pictures, wp gallery, gallery slider, responsive wordpress photo gallery, Galleria, simple gallery, wordpress gallery plugin, free gallery, video gallery, wp gallery plugin, youtube gallery, photo albums, grid gallery, images gallery, filterable gallery, grid, photogallery, photoset, fullscreen gallery, justified, fullscreen slider, gallery shortcode, free photo gallery, best gallery plugin, photo album, image rotator, banner rotator, album, image album, wp gallery plugins, image gallery plugin, image slider, slideshow, slide, slideshow gallery, responsive gallery, gallery, multiple pictures, fotoalbum, photoalbum, justified gallery, pictures, picture, thumbnail gallery, slide show, responsive slideshow, gallery decription, thumbnails, image slideshow, gallery wordpress,
+Tags: gallery, image gallery, gallery image, lightbox gallery, wordpress gallery, photo gallery, content gallery, media gallery, youtube gallery, images gallery, responsive gallery, thumbnail gallery,
 Requires at least: 3.0.1
-Tested up to: 4.5.2
-Stable tag: 1.9.59
+Tested up to: 4.5.3
+Stable tag: 1.9.65
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,52 +12,54 @@ Gallery image is the best gallery plugin to use if you want to be original with 
 
 == Description ==
 
-### Gallery Image is one of the easiest plugins to use, even if you are new in WordPress. Image Gallery is the best plugin among WordPress gallery plugins. With Gallery plugin, you can create the most beautiful gallery in a few minutes and enjoy the result. Just add images and videos to your gallery, write descriptions and titles for each image, choose among 7 incredible views. Huge-IT Gallery plugin allows you to make your website attractive and good-looking.
+### Gallery Image is one of the easiest plugins to use, even if you are new in WordPress.
 
-### Wordpress Image Gallery
+### Image Gallery is the best plugin among WordPress gallery plugins. You can create the most beautiful gallery in a few minutes and enjoy the result.
+
+### Just add images and videos, write descriptions and titles for each image, choose among 7 incredible views. Plugin allows you to make your website attractive and good-looking.
 
 * [Wordpress Image Gallery](http://huge-it.com/wordpress-gallery/)
-* [Demo image gallery](http://huge-it.com/wordpress-plugins-gallery-demo/)
+* [Demo](http://huge-it.com/wordpress-plugins-gallery-demo/)
 * [FAQ](http://huge-it.com/wordpress-gallery-faq/)
 * [User Manual](http://huge-it.com/wordpress-gallery-user-manual/)
 
 https://www.youtube.com/watch?v=fNz0hW01k3k
 
-Install Gallery plugin and see the result of your creativeness.
+Install plugin and see the result of your creativeness.
 
-= Gallery Free Key Features =
+= Free Key Features =
 
-* **Fully responsive and Mobile features** - Gallery is fully responsive. With responsiveness, everyone will have access to the nicely designed gallery everywhere and every time.
+* **Fully responsive and Mobile features** - Plugin is fully responsive. With responsiveness, everyone will have access to the nicely designed everywhere and every time.
 
-* **Upload bundle of images into gallery** - Upload bunch of images using Images Manager, with one click insert images into the gallery.
+* **Upload bundle of images** - Upload bunch of images using Images Manager, with one click insert images.
 
-* **Gallery Order Change** - There are drag and drop option to change the order of the images in the gallery
+* **Order Change** - There are drag and drop option to change the order of the images.
 
-* **Gallery View** - Choose among 7 beautiful views, which will suit the best for the gallery. Demonstration of the gallery on the front end can be made in different ways, no matter you use image gallery, video gallery or both in one gallery.
+* **Gallery View** - Choose among 7 beautiful views, which will suit the best. Demonstration of the gallery on the front end can be made in different ways, no matter you use image gallery, video gallery or both.
 
-* **Displaying Content** - How to show your gallery, 3 ways you can find on the right side of the gallery admin page: Show All, Pagination, Load More.
+* **Displaying Content** - How to show your gallery, 3 ways you can find on the right side of the admin page: Show All, Pagination, Load More.
 
-* **Show All** - All gallery items on a long tape.
+* **Show All** - All items on a long tape.
 
-* **Pagination** - Divide gallery into pages - pagination for gallery.
+* **Pagination** - Divide into pages - pagination.
 
-* **Load More** - Divide gallery into parts using “Load More” button
+* **Load More** - Divide into parts using “Load More” button
 
-* **Advanced Compatibility** - Gallery plugin is compatible with Huge-IT plugins and with most of other plugins.
+* **Advanced Compatibility** - Plugin is compatible with Huge-IT plugins and with most of other plugins.
 
-* **Ratings Button** - Choose for your visitors how to rate your images with Heart button or Like/Dislike button. If do not need to rate your gallery images then just put OFF.
+* **Ratings Button** - Choose for your visitors how to rate your images with Heart button or Like/Dislike button. If do not need to rate your images then just put OFF.
 
-* **Lightbox/Popup** - In Image Gallery images are opened using Lightbox /Popup. Due to which your images will be opened in a nicely way.
+* **Lightbox/Popup** - In images are opened using Lightbox /Popup. Due to which your images will be opened in a nicely way.
 
-* **Ability to insert a gallery to the WordPress post, page** - You may add a number of images and videos in a single gallery. As you have created a number of image galleries, you can add as many gallery shortcodes on your page as you want.
+* **Ability to insert a gallery to the WordPress post, page** - You may add a number of images and videos in a single gallery. As you have created a number of image galleries, you can add as many shortcodes on your page as you want.
 
 * **Shortcode** - Copy and paste the shortcode of the gallery directly into any WordPress post or page.
 
-* **Template Include** - Copy and paste the code of the gallery into a template file to include the slideshow within your theme.
+* **Template Include** - Copy and paste the code of the into a template file to include the slideshow within your theme.
 
-* **Title and Description** - Add unique Title and Description to your images, to complete your gallery. In Image Gallery, there are views which don't have description demonstration option.
+* **Title and Description** - Add unique Title and Description to your images. There are views which don't have description demonstration option.
 
-* **Youtube videos** - Ability to add videos to your gallery from one of the most popular video sites.
+* **Youtube videos** - Ability to add videos from one of the most popular video sites.
  
 * **Vimeo videos** - The other source of adding videos to your gallery is from Vimeo. Create the most amazing gallery due to the famous video sites.
 
@@ -65,228 +67,196 @@ Install Gallery plugin and see the result of your creativeness.
 
 * **Create Gallery in a few minutes** - Add new gallery or adjust already created the gallery, where you can add both images and videos, give them a title, description and add the link, which can go to any page.
 
-* **Friendly admin panel** - Image Gallery is easy to use, as the admin panel of the gallery is user-friendly.
+* **Friendly admin panel** - Easy to use, as the admin panel is user-friendly.
 
-* **Support** - Our experts are always ready to respond any questions related to our Image Gallery plugin, find out the problem and fix it quickly.
+* **Support** - Our experts are always ready to respond any questions related, find out the problem and fix it quickly.
 
-* **Modification gallery** - Both free and pro users can write our support team for the additional modifications in gallery plugin. With our Image Gallery, you can realize all your original ideas.
+* **Modification** - Both free and pro users can write our support team for the additional modifications. With our Image Gallery, you can realize all your original ideas.
 
-= Gallery Pro Key Features =
+= Pro Key Features =
 
-* **General Options** - Each view of the Image gallery plugin has unique customizable options. The options of the gallery are called general because every gallery with certain type will have the same customization.
+* **General Options** - Each view of the Iplugin has unique customizable options. The options are called general because every gallery with certain type will have the same customization.
 
-* **Gallery General Options Views** - Image Gallery has 7 wonderful views, gallery can be customized according to your taste and needs from General Options section.
+* **General Options Views** - Has 7 wonderful views, can be customized according to your taste and needs from General Options section.
 
-* **Gallery Lightbox Options** - Lightbox is given with image Gallery plugin, and being a part of Image Gallery. Using it within your gallery items you can make them come up individually. And that way to create a desirable style of your website. Show your gallery images and videos with the help of Image Gallery plugin.
+* **Lightbox Options** - Lightbox is given with plugin, and being a part of plugin. Using it within your items you can make them come up individually. And that way to create a desirable style of your website. Show your images and videos with the help.
 
-* **Unlimited Amount Of Galleries And Images** - Add an unlimited number of images and videos in a single gallery. As you have created a number of image galleries, you can add as many gallery shortcodes on your page as you need.
+* **Unlimited Amount Of Galleries And Images** - Add an unlimited number of images and videos in a single gallery. As you have created a number of image galleries, you can add as many shortcodes on your page as you need.
 
-* **Fully Responsive** - Image Gallery plugin is fully responsive for different screen sizes. Your users may see the gallery with any device they want. 
+* **Fully Responsive** - Plugin is fully responsive for different screen sizes. Your users may see the gallery with any device they want. 
 
-* **Load More And Pagination** - With this feature you will demonstrate only a part of your images and videos, hiding the rest of them under «load more» button. You can divide all your gallery projects into several pages. You also choose how many projects to display in your gallery per page.
+* **Load More And Pagination** - With this feature you will demonstrate only a part of your images and videos, hiding the rest of them under «load more» button. You can divide all your projects into several pages. You also choose how many projects to display in your gallery per page.
 
-* **Title And Description** - Important possibility to add title and description to each image in the gallery. The description can be seen not in all view, but some of them have a place for it. Image Gallery accomplished with title and description looks rich and perfect.
+* **Title And Description** - Important possibility to add title and description to each image. The description can be seen not in all view, but some of them have a place for it. Plugin accomplished with title and description looks rich and perfect.
 
-* **Ratings Styles** - In gallery settings, you can change Ratings Background Color, Ratings Font Color, Ratings Rated Font Color according to your taste for the gallery.
+* **Ratings Styles** - In settings, you can change Ratings Background Color, Ratings Font Color, Ratings Rated Font Color according to your taste.
 
-* **Load More Styles** - Customize load more styles, change the Load More position, Load More font size, Load More font color in the gallery.
+* **Load More Styles** - Customize load more styles, change the Load More position, Load More font size, Load More font color.
 
 * **Load More Button** - Your Load More button can be customized according to your gallery images, change Load More Font Hover Color, Load More Button Color, Background Hover Color.
 
-* **Image size** - In general settings of the gallery you can change the main image width, Image Border Width, Color, and Radius.
+* **Image size** - In general settings you can change the main image width, Image Border Width, Color, and Radius.
 
-* **Navigation Arrow** - Image Gallery allows you to set the most appropriate navigation arrows, which will suit the best for your images in your gallery. 
+* **Navigation Arrow** - Image Gallery allows you to set the most appropriate navigation arrows, which will suit the best for your images.
 
-* **Navigation** - In general options, you may disable navigation arrows, show or hide navigation dots for your gallery images. 
+* **Navigation** - In general options, you may disable navigation arrows, show or hide navigation dots.
 
-* **Unlimited amount of galleries and images/videos** - Add an unlimited number of images and videos in a single gallery. Add as many gallery shortcodes on your pages as you need. 
+* **Unlimited amount of galleries and images/videos** - Add an unlimited number of images and videos in a single gallery. Add as many shortcodes on your pages as you need. 
 
-* **Gallery is Fully Responsive** - Image Gallery plugin is fully responsive for different screen sizes. Your gallery will be available for everyone to enjoy using any device.
+* **Fully Responsive** - Plugin is fully responsive for different screen sizes. Your gallery will be available for everyone to enjoy using any device.
 
-* **Hundreds of design options** - Image Gallery General Options are available for commercial version users. Here are 7 views, which customization can be done from General Options. Customize your gallery according to your website, it gives you opportunities to change Ratings Styles, Pagination Styles, Load More Styles for your gallery images.
+* **Hundreds of design options** - General Options are available for commercial version users. Here are 7 views, which customization can be done from General Options. Customize your according to your website, it gives you opportunities to change Ratings Styles, Pagination Styles, Load More Styles.
 
-* **Lightbox Style** - Image Gallery Lightbox options have 5 different lightbox style to open the gallery images
+* **Lightbox Style** - Lightbox options have 5 different lightbox style to open the images.
 
-* **Lightbox Positioning** - In gallery lightbox you have the opportunity to select the position of how to open your gallery images.
+* **Lightbox Positioning** - In lightbox you have the opportunity to select the position of how to open your images.
 
 * **Lightbox auto open** - From lightbox options you can select to open the images in the gallery automatically. 
 
-* **Insert gallery to the Wordpress post, page, widget** - every gallery could be inserted into a post, page or widget with shortcode. 
+* **Insert gallery to the Wordpress post, page, widget** - Every gallery could be inserted into a post, page or widget with shortcode. 
 
-* **Gallery Works in Chrome, Safari, Opera, Firefox** - open your gallery with all the popular browsers
+* **Gallery Works in Chrome, Safari, Opera, Firefox** - Open your gallery with all the popular browsers.
 
-*  **Image Gallery plugin is really wonderful** -  you can create very nice and beautiful gallery for your website. Gallery plugin is easy editable and the functionality is perfect.
-
+*  **Plugin is really wonderful** -  you can create very nice and beautiful gallery for your website. Plugin is easy editable and the functionality is perfect.
 
 **7 Views:**
 
 * Gallery / Content Popup
-* Gallery Content Slider
+* Content Slider
 * Lightbox Gallery
-* Gallery slideshow
+* Slideshow
 * Thumbnails gallery
 * Justified Gallery
 * Blog Style Gallery
 
-* **Unlimited amount of images or videos to be added to the Image Gallery**
+* **Unlimited amount of images or videos to be added**
 * **Possibility of adding various gallery**
 * **Possibility of adding various images or videos for each Image gallery**
-* **Image, title and description to the Image Gallery**
+* **Image, title and description**
 * **Possibility to use different Gallery for different pages**
-* **Shortcode for the easier process of adding the gallery to the posts/pages/templates**
+* **Shortcode for the easier process of adding the gallery to the posts/pages/templates.**
 * **Possibility to add Gallery in widgets right from widgets admin panel**
-* **Drag and Drop functionality. Drag and drop images/projects to rearrange their sequence in the Image Gallery**
-* **Ability to use one of the 7 incredible views for your gallery images**
+* **Drag and Drop functionality. Drag and drop images/projects to rearrange their sequence.**
+* **Ability to use one of the 7 incredible views**
 * **Image Gallery is customizable plugin**
-* **Full Documentation of the Image Gallery**
+* **Full Documentation**
 * **Gallery provides Lifelong License**
 * **Sample Galleries are Included**
 
-###Image Gallery options for 7 views:
+###Options for 7 views:
 
-* **Gallery / Content Popup** - In your gallery you can see images with the title under the text when you hover over the image you see zoom icon, it opens each project of the gallery from your tape increasing them as a popup, with the text. In your gallery “Read More” button is under the text and inside the popup as well, it opens more information about the content, for closing the popup press “Cross” button and get back to your gallery images tape.
- Description text allows any type of HTML modifications, which you can make straight on image gallery admin page while creating your gallery.
-Your gallery images inside popup can take it’s natural size or can be resized up to the size of the whole popup. 
-With Image Gallery pro license you are allowed to make many kinds of changes on the element and on the popup, like color, size and so on. More information about available changes on Gallery/Content Popup view of Image gallery you can learn from User Manual.
+* **Gallery / Content Popup** - In your gallery you can see images with the title under the text when you hover over the image you see zoom icon.
 
-**Main features of Gallery/Content-Popup view of Image Gallery.**
+It opens each project from your tape increasing them as a popup, with the text.
 
-* Popup tool, with text content in it
-* Add description of the gallery in popup
-* External link on “view more” button
+*  In your gallery “Read More” button is under the text and inside the popup as well, it opens more information about the content, for closing the popup press “Cross” button and get back to your gallery images tape.
 
-* **Content Slider** - This type of Gallery in Image Gallery plugin allows you to see your images or videos with its description text, title and “View More” button inside the slider. Just click on the arrows to the right and left corners which appear as you hover a mouse over the gallery to see next/previous images in your gallery. By clicking on the arrows of the gallery in Content Slider view, you can slide your content, from left to right.
+*  Description text allows any type of HTML modifications, which you can make straight on image gallery admin page while creating your gallery.
+
+*  Your images inside popup can take it’s natural size or can be resized up to the size of the whole popup.
+
+*  With pro license you are allowed to make many kinds of changes on the element and on the popup, like color, size and so on.
+
+More information about available changes on Gallery/Content Popup view of Image gallery you can learn from User Manual.
+
+**Main features of Gallery/Content-Popup.**
+
+* Popup tool, with text content in it.
+* Add description in popup.
+* External link on “view more” button.
+
+* **Content Slider** - This type of Gallery in Image Gallery plugin allows you to see your images or videos with its description text, title and “View More” button inside the slider.
+
+*  Just click on the arrows to the right and left corners which appear as you hover a mouse over the gallery to see next/previous images in your gallery.
+
+*  By clicking on the arrows of the gallery in Content Slider view, you can slide your content, from left to right.
 
 **Main features of Content Slider.**
 
-* Add description of the gallery in popup
+* Add description in popup
 * External link - “View More” button
 * Sliding gallery items
 
 
-* **Lightbox Gallery** - Using Lightbox Gallery view while creating a gallery, there is no need to fill the description field for your gallery images/videos. As the gallery doesn't show any description. In Lightbox Gallery, you will see only the title of the gallery images, which comes up at the bottom of each image as you hover a mouse over it. Make images larger with the lightbox and slide to watch the gallery. If you need to be directed to your external URL link, you should click on the title of the gallery item.
+* **Lightbox Gallery** - Using Lightbox Gallery view while creating a gallery, there is no need to fill the description field for your images/videos.
 
-**Main features of Lightbox Gallery.**
+As the gallery doesn't show any description.
+
+*  In Lightbox Gallery, you will see only the title, which comes up at the bottom of each image as you hover a mouse over it. 
+
+*  Make images larger with the lightbox and slide to watch the gallery. If you need to be directed to your external URL link, you should click on the title of the item.
+
+**Main features**
 
 * No description.
 * External URL - on title click.
 * Full dimensions of the images.
 
-* **Slideshow** - Next view of Image Gallery plugin is Slideshow. Show your gallery images as Slider Your gallery demonstrated as pictures with its title and description on the image, which moves with many wonderful effects as you click on arrows. This is a very interesting way of demonstrating both videos and photos of your gallery.
+* **Slideshow** - Next view  plugin is Slideshow.
+
+*  Show your images as Slider Your gallery demonstrated as pictures with its title and description on the image, which moves with many wonderful effects as you click on arrows.
+
+*  This is a very interesting way of demonstrating both videos and photos.
 
 **Main features of Slider.**
 
-* Description text of the gallery on slider, if gallery items are images
-* External link - on image click, if gallery items are images
+* Description text on slider, if items are images
+* External link - on image click, if items are images
 * Current options available in free version
 * Sliding effects
 
 
-* **Thumbnails Gallery** - Gallery will look like thumbnails. If you want to show images with the same size in your gallery use Thumbnails Gallery view. Once you click on the thumbnail, your gallery images open in a lightbox, and you can scroll images within the gallery. Thumbnails Gallery does not show any description text, only the title which comes up with a transparent layer on the thumbnail of the gallery can be seen hovering a mouse over it.
+* **Thumbnails Gallery** - Gallery will look like thumbnails. If you want to show images with the same size use Thumbnails Gallery view.
+
+*  Once you click on the thumbnail, your images open in a lightbox, and you can scroll images within the gallery.
+
+*  Thumbnails Gallery does not show any description text, only the title which comes up with a transparent layer on the thumbnail of the gallery can be seen hovering a mouse over it.
+
 
 **Main features of Thumbnails view.**
 
 * Similar boxes for every image
 * Lightbox tool on images and videos on clicking the thumbnail
-* No description - in Thumbnails Gallery view
+* No description - in Thumbnails view
 
 
-* **Justified Gallery** - Justified view of the Image Gallery allows you to represent your images and videos within the gallery next to each other without padding between them. The interesting thing about this gallery type is that it has “Order Changing” function, which should be enabled from General Options, and your images/videos will be changed in order within gallery while refreshing the page. When hovering over the image of the gallery, appears the title with the background. Clicking on the gallery image/video it opens with lightbox, giving a beautiful view to them.
+* **Justified Gallery** - Justified view of the Image Gallery allows you to represent your images and videos within the gallery next to each other without padding between them.
+
+*  The interesting thing about this gallery type is that it has “Order Changing” function, which should be enabled from General Options, and your images/videos will be changed in order within gallery while refreshing the page. When hovering over the image of the gallery, appears the title with the background.
+
+*  Clicking on the gallery image/video it opens with lightbox, giving a beautiful view to them.
+
 
 **Main features of Justified view.**
 
-* No padding between gallery items
-* Shuffling effect on gallery items
+* No padding between items
+* Shuffling effect on items
 * Multi-sized items
-* Lightbox tool for gallery images/videos
+* Lightbox tool for images/videos
 * No description in Justified Gallery view
 
 
-* **Blog Style View** - Using Image Gallery with Blog Style Gallery view is the simplest and more clear way to demonstrating your content within the gallery. This view is made for displaying your images/videos with it’s natural dimensions, with the title above and description of it. In your gallery, the position of title and description can be changed from General Options of the Blog Style Gallery view. Description of the image gallery allows to use HTML modified text, so you can beautifully create your projects and place them one under each other. The outstanding feature of this gallery view is that you can add pagination or load more symbol at the end of the gallery page, and this way divide your projects into pages.
+* **Blog Style View** - Using plugin with Blog Style Gallery view is the simplest and more clear way to demonstrating your content within the gallery.
 
-* Gallery item natural size.
-* Pagination for gallery.
-* Load more button for gallery items.
+*  This view is made for displaying your images/videos with it’s natural dimensions, with the title above and description of it.
 
+*  In your gallery, the position of title and description can be changed from General Options of the Blog Style Gallery view. 
 
-### Unlimited Amount Of Gallery And Images
+*  Description allows to use HTML modified text, so you can beautifully create your projects and place them one under each other.
 
-Add unlimited number of images and videos in a single gallery. And as you created a number of image galleries, you can add as many gallery shortcodes in your page, as you need.
-
-### Fully Responsive gallery
-
-Image Gallery plugin is fully responsive for different sizes of screen. So your users will enjoy the gallery using it on any device.
-
-### Load More And Pagination
-
-This feature will allow to demonstrate only a part of your created images and videos, hiding the rest of them under «load more» button, or dividing all your projects into several pages. You also choose how many projects to display per page.
-
-### Title And Description
-
-Important possibility to add title and description to each image. Description can be seen not in all view, but some of them has a place for it. Image Gallery accomplished with title and description looks rich and perfect.
-
-### 7 Nicely Designed Views
-
-**7 ways to demonstrate images will make you satisfy with the look of your gallery. Among the views you can find.**
-
-* Gallery/content-popup.
-* Content Slider.
-* Ligthtbox-Gallery.
-* Huge-IT Slider.
-* Thumbnail View.
-* Justified View.
-* Blog Style View.
-
-### Hundreds Of Design Options
-
-General Options of Pro version, gives you big choice of different settings, make the gallery look exactly as you need will plenty of adjustments of colors, size, and effects.
-
-### Youtube Posts
-
-Image Gallery can be used with the most popular video site -YouTube, Simply copy the link and add it to the Image Gallery gallery will bring the video in it. This way you can transform your gallery into YouTube Gallery
-
-### Vimeo Posts
-
-The other source of adding videos in Image Gallery- Vimeo. Turn your gallery into Vimeo Gallery using your collection of vimeo videos. Inserting the links and making customization on it.
-
-### Lightbox Popup With Many Options
-
-Some of the views use our popular Lightbox tool. Images are opened using the Lightbox, or sometimes we say Popup. The idea of the Lightbox is to make image larger, ability to slide through all images withing the the gallery. And make some design customization on it, using varioty of Lightbox Options.
-
-= Demo 1 Gallery/Content Popup =
-
-In this gallery each post with the picture , title under text open in popup and make them larger. The button “View more” is under the text also inside the popup, it opens more information about the content. to close the popup press “cross” button and go back to the tape.
-
-= Demo 2 Content slider =
-
-In this view you can see your images with the text, title and “View More” button in slider. Just click on the arrows in the upper corners and slide the content.
-
-= Demo 3 Lightbox Gallery =
-
-In this gallery view you can add only the images of images without text. The title comes up from the bottom of the image as you hover the mouse on it. Images become larger with the lightbox and you can slide to watch them.
-
-= Demo 4 Slideshow =
-
-If you have seen Huge-IT Slider you will see this view is the same, your picture with its title and description on the image, moves with many beautiful effects as you click on arrows.
-
-= Demo 5 Thumbnails =
-
-This view shows your images like thumbnail. As you click they open in lightbox, and you can scroll them. there is not any text with it, only it’s title.
-
-= Demo 6 Justified Gallery =
-
-Justified view of the Image Gallery allows you to represent your images and videos within your created gallery next to each other without padding between them.
-
-= Demo 7 Blog Style View =
-
-Using Image Gallery with Blog Style Gallery views is the simplest and most understanding way of demonstrating your content within gallery. This view is made to simply display your images/videos with it’s natural dimensions, with title above and description under it.
+*  The outstanding feature of this gallery view is that you can add pagination or load more symbol at the end of the gallery page, and this way divide your projects into pages.
 
 
-> #### Image Gallery Demos
+* Item natural size.
+* Pagination.
+* Load more button for items.
+
+
+> #### Demos
 >
 >[Gallery /Content Popup](http://huge-it.com/wordpress-plugins-gallery-demo/#plugin_demo_wrapper)
 >
->[Gallery Content Slider](http://huge-it.com/wordpress-gallery-demo-2-content-slider/#plugin_demo_wrapper)
+>[Content Slider](http://huge-it.com/wordpress-gallery-demo-2-content-slider/#plugin_demo_wrapper)
 >
 >[Lightbox Gallery](http://huge-it.com/wordpress-gallery-demo-3-lightbox-gallery/#plugin_demo_wrapper)
 >
@@ -300,26 +270,23 @@ Using Image Gallery with Blog Style Gallery views is the simplest and most under
 
 > #### FAQ & User Manual
 >
->[Image gallery FAQ](http://huge-it.com/wordpress-gallery-faq/)
+>[FAQ](http://huge-it.com/wordpress-gallery-faq/)
 >
->[Image Gallery User Manual](http://huge-it.com/wordpress-gallery-user-manual/)
+>[User Manual](http://huge-it.com/wordpress-gallery-user-manual/)
 
 If you think, that you found a bug in our [WordPress Image Gallery](http://huge-it.com/wordpress-gallery/) plugin or have any question contact us at [info@huge-it.com](mailto:info@huge-it.com)
 
-### Wordpress Image Gallery
-
 == Installation ==
 
-### Uploading in WordPress Dashboard Image Gallery
+### Uploading in WordPress Dashboard
 
-1. First download the Image Gallery ZIP file from Wordpress website
+1. First download the ZIP file from Wordpress website
 2. Log in to your website administrator panel   
 3. Go to the 'Add New' in the plugins dashboard, click “Upload Plugin”
 4. Upload [WordPress Image Gallery](https://wordpress.org/plugins/gallery-images/) ZIP file by choosing it from your computer
 5. Click **Install** Now button
 6. Then click **Activate Plugin** button.
 7. You can see the Image Gallery plugin installed on Wordpress left menu.
-
 
 ### Using The WordPress Plugins Dashboard
 
@@ -329,7 +296,6 @@ If you think, that you found a bug in our [WordPress Image Gallery](http://huge-
 4. Then click **Activate Plugin** button
 5. You can see the plugin installed on Wordpress left menu
 
-
 ### Using FTP
 
 1. Download the ZIP file from Wordpress website
@@ -338,20 +304,19 @@ If you think, that you found a bug in our [WordPress Image Gallery](http://huge-
 4. Activate the plugin in the Plugin dashboard
 5. You can see the plugin installed on Wordpress left menu
 
-
 Now you can set your Image Gallery options, images and use our Image Gallery.
 
 If you think, that you found a bug in our [WordPress Image Gallery](http://huge-it.com/wordpress-gallery/) plugin or have any question contact us at [info@huge-it.com](mailto:info@huge-it.com)
 
 == Screenshots ==
     
-1.  WordPress Image Gallery view 1 - Gallery / Content Popup
-2.  WordPress Image Gallery view 2 - Content Slider
-3.  WordPress Image Gallery view 3 - Lightbox Gallery
-4.  WordPress Image Gallery view 4 - Slider
-5.  WordPress Image Gallery view 5 - Thumbnails
-51.  WordPress Image Gallery view 6 - Justified Gallery
-52.  WordPress Image Gallery view 7 - Blog Style View
+1.  [WordPress Image Gallery view 1](http://huge-it.com/wordpress-plugins-gallery-demo/#plugin_demo_wrapper) - Gallery / Content Popup
+2.  [WordPress Image Gallery view 2](http://huge-it.com/wordpress-gallery-demo-2-content-slider/#plugin_demo_wrapper) - Content Slider
+3.  [WordPress Image Gallery view 3](http://huge-it.com/wordpress-gallery-demo-3-lightbox-gallery/#plugin_demo_wrapper) - Lightbox Gallery
+4.  [WordPress Image Gallery view 4](http://huge-it.com/wordpress-gallery-demo-4-slideshow/#plugin_demo_wrapper) - Slider
+5.  [WordPress Image Gallery view 5](http://huge-it.com/wordpress-gallery-demo-5-thumbnails/#plugin_demo_wrapper) - Thumbnails
+51.  [WordPress Image Gallery view 6](http://huge-it.com/wordpress-gallery-demo-6-justified-gallery/#plugin_demo_wrapper) - Justified Gallery
+52.  [WordPress Image Gallery view 7](http://huge-it.com/wordpress-gallery-demo-7-blog-style-view/#plugin_demo_wrapper) - Blog Style View
 7.  [WordPress Image Gallery](http://wordpress.org/plugins/gallery-images/) - Image Gallery admin page  
 72.  [WordPress Image Gallery](http://wordpress.org/plugins/gallery-images/) - Image Gallery uploader
 73.  [WordPress Image Gallery](http://wordpress.org/plugins/gallery-images/) - Image Gallery General options
@@ -362,112 +327,110 @@ If you think, that you found a bug in our [WordPress Image Gallery](http://huge-
 78.  [WordPress Image Gallery](http://wordpress.org/plugins/gallery-images/) - Image Gallery General options
 79.  [WordPress Image Gallery](http://wordpress.org/plugins/gallery-images/) - Image Gallery General options Content Slider
 
-If you think, that you found a bug in our [WordPress Image Gallery](http://huge-it.com/wordpress-gallery/) plugin or have any question contact us at [info@huge-it.com](mailto:info@huge-it.com)
-
 == Frequently Asked Questions ==
 
 = Do you have some problems with backend? = 
  
-There can be a few reasons for such problem in the gallery. In this case, if you have a problem in your gallery contact our support to get fast help.
+*  There can be a few reasons for such problem. In this case, if you have a problem in your gallery contact our support to get fast help.
   	
   	
 = Do you have some gallery setup video guide? =
  
-Yes. We have video [find gallery demonstration guides here](https://www.youtube.com/channel/UCueCH_ulkgQZhSuc0L5rS5Q)
+*  Yes. We have video [find gallery demonstration guides here](https://www.youtube.com/channel/UCueCH_ulkgQZhSuc0L5rS5Q)
 
  
-= Where to find gallery functionality details? =
+= Where to find functionality details? =
  
-All details of the gallery, including demonstration and description you can find here [Gallery details,](http://huge-it.com/wordpress-gallery/)
+*  All details, including demonstration and description you can find here [Gallery details,](http://huge-it.com/wordpress-gallery/)
  
  
-= Is there some limits for adding images in the gallery? =
+= Is there some limits for adding images? =
  
-There is no any limits for gallery images amount. You can add as many images to your gallery as you want.
+*  There is no any limits for gallery images amount. You can add as many images to your gallery as you want.
   	
 
 = When I update to commercial version of the gallery will I lose all my changes that I have made in free version? = 
 
-All kind of changes made in free version will remain, even if you delete the plugin.
+*  All kind of changes made in free version will remain, even if you delete the plugin.
 
 
-= Do you have some problems with Image Gallery installation? =
+= Do you have some problems with installation? =
  
-Feel free to ask our support team, they will help you to install the plugin quickly.
+*  Feel free to ask our support team, they will help you to install the plugin quickly.
 
 
-= Is it possible to use HTML in image description in Image Gallery plugin? =
+= Is it possible to use HTML in image description? =
 
-Yes, you can use HTML tags inside gallery image description field.
-
-
-= How to get the updated version of the Image Gallery? =
-
-Pro users can get updated version of Image Gallery plugin contacting us via the following email address: info@huge-it.com.
-
-Free gallery version users will find update notification on their WordPress admin panel.
+*  Yes, you can use HTML tags inside gallery image description field.
 
 
-= I have paid for pro version gallery and didn't get the link or file to update the gallery. What to do? =
+= How to get the updated version? =
 
-If you make a purchase and does not receive the gallery zip file or file was corrupt, contact us via this email info@huge-it.com. Send us “Order Number” of the gallery plugin, we will check and send you the zip file of the Image Gallery quickly.
+*  Pro users can get updated version of plugin contacting us via the following email address: info@huge-it.com.
+
+*  Free version users will find update notification on their WordPress admin panel.
 
 
-= Have purchased Image Gallery pro version but still get the announcement to buy the commercial version. What to do? =
+= I have paid for pro version and didn't get the link or file to update. What to do? =
 
-This may occur because of your browser’s cache files. Press ctrl+f5 (Chrome, FF) in order to clean them, if you use safari, etc., clean from browser settings.
+*  If you make a purchase and does not receive the gallery zip file or file was corrupt, contact us via this email info@huge-it.com. Send us “Order Number” of the gallery plugin, we will check and send you the zip file quickly.
+
+
+= Have purchased pro version but still get the announcement to buy the commercial version. What to do? =
+
+*  This may occur because of your browser’s cache files. Press ctrl+f5 (Chrome, FF) in order to clean them, if you use safari, etc., clean from browser settings.
 
 
 = Will I lose all my gallery which I have made in free version if I update to pro version? =
 
-All kind of changes made in the free version of the gallery will remain, even if you delete the Image Gallery plugin.
+*  All kind of changes made in the free version of the gallery will remain, even if you delete the Image Gallery plugin.
 
 
-= How to change “New Gallery” name in Image Gallery plugin? =
+= How to change “New Gallery” name in plugin? =
 
-In order to change Image Gallery name just double-click on the New Gallery tab name.
+*  In order to change Image Gallery name just double-click on the New Gallery tab name.
 
 
 = How to see the title of the image in lightbox? =
 
-In order to add a name to your image and see it in the lightbox, add attribute title=” X” in <a> tag of image code, where X is the name, set “show the title” from Lightbox Options.
+*  In order to add a name to your image and see it in the lightbox, add attribute title=” X” in <a> tag of image code, where X is the name, set “show the title” from Lightbox Options.
 
 
-= I have already purchased Image Gallery Multi-Site version, how do I upgrade it to the Developer version, without buying gallery again? =
+= I have already purchased Multi-Site version, how do I upgrade it to the Developer version, without buying again? =
 
-If you have any pro version of our Image Gallery plugin and want to upgrade, you do not need to buy Image Gallery once again, you only need to pay the difference for the price. For having your desired version of the gallery plugin, simply contact via this email: info@huge-it.com or write our online chat and we will help you to pay the difference and get the gallery plugin.
+*  If you have any pro version and want to upgrade, you do not need to buy Image Gallery once again, you only need to pay the difference for the price. For having your desired version of the plugin, simply contact via this email: info@huge-it.com or write our online chat and we will help you to pay the difference and get the gallery plugin.
 
 
-= I have bought the commercial license, installed the file but the Image Gallery plugin seems to be still free version, what to do? =
+= I have bought the commercial license, installed the file but the plugin seems to be still free version, what to do? =
 
-After installation of the pro version of the Image Gallery plugin, all your changes will be saved in General Options.
-If you still see "free version" notification after the installation of the pro version of gallery plugin, in this case:
+After installation of the pro version, all your changes will be saved in General Options.
+If you still see "free version" notification after the installation of the pro version of plugin, in this case:
 
 * 1) Try to clean your cache files if this will not help.
-* 2) Delete, and install the gallery plugin again.
+* 2) Delete, and install the plugin again.
 
 
-= What can I do, if I have multi sites image gallery, and the Image Gallery plugin works only on one site but does not work on the other sites? =
+= What can I do, if I have multi sites version, and the plugin works only on one site but does not work on the other sites? =
 
 If you installed the multi-site (have a number of sites) version of the Image Gallery plugin in the main page and it does not work on other pages, in this case, you should do the following steps:
 
-* 1) Deactivate the gallery plugin from the main page
-* 2) Go to the other pages and activate gallery one by one
-* 3) When plugin will be activated on all your pages, go back to your main page and activate gallery.
+* 1) Deactivate the plugin from the main page
+* 2) Go to the other pages and activate one by one
+* 3) When plugin will be activated on all your pages, go back to your main page and activate.
 
 = In Content/Gallery Pop Up view popup overlays my navigation menu, how to prevent this? =
 
-This situation is related to z-index, try to enlarge the number of z-index, if you are unable to do yourself contact info@huge-it.com for technical support.
+*  This situation is related to z-index, try to enlarge the number of z-index, if you are unable to do yourself contact info@huge-it.com for technical support.
 
 
-= I have purchased the Gallery Plugin, and instead of zipping file got it in unzipping form, how to upload in Wordpress? =
+= I have purchased the Plugin, and instead of zipping file got it in unzipping form, how to upload in Wordpress? =
 
-If you got the gallery file unzip, that means your browser makes auto unzip, please zip the file yourself and upload Image Gallery into WordPress.
+*  If you got the file unzip, that means your browser makes auto unzip, please zip the file yourself and upload Image Gallery into WordPress.
 
 
-= How to add spacing between elements on image gallery? =
+= How to add spacing between elements? =
 
-Margin size is hard-coded, and it is not easy to change it.
+*  Margin size is hard-coded, and it is not easy to change it.
 
 
 = What if Lightbox in image gallery doesn't work? =
@@ -479,433 +442,459 @@ There can be two reasons:
 In both cases contact **[info@huge-it.com](mailto:info@huge-it.com)**
 
 
-= How to correct when my images are resized within a view of Image Gallery? =
+= How to correct when my images are resized within a view? =
 
-If you are an Image Gallery pro user, then from General Options gallery go in Image Behavior and set on "Natural". If you are a free user, just try to upload more proportional images for element box.
+*  If you are a pro user, then from General Options go in Image Behavior and set on "Natural". If you are a free user, just try to upload more proportional images for element box.
 
 
 = How to insert gallery into Wordpress page or post? =
 
-When you create a gallery in plugin galleries manager you can go to the post or page editor and there using Add Gallery button insert a gallery into your WordPress post or page. The other means is, that you can insert your gallery manually using shortcode, which you can find in gallery edit mode in shortcode section on the right side of the gallery settings.
+*  When you create a gallery in plugin galleries manager you can go to the post or page editor and there using Add Gallery button insert a gallery into your WordPress post or page. The other means is, that you can insert your gallery manually using shortcode, which you can find in gallery edit mode in shortcode section on the right side of the settings.
 
 
-= How to change font size and font color of the gallery image description text? =
+= How to change font size and font color of the description text? =
  
-Go to your General Options, choose the appropriate view and change the gallery description font size and font color into your desired one.
+*  Go to your General Options, choose the appropriate view and change the description font size and font color into your desired one.
 
 
-= Is it possible to change the background color of the gallery lightbox? =
+= Is it possible to change the background color of the lightbox? =
 
-Yes, it is possible to change the background color of the gallery lightbox. Go to your gallery General Options, find “Popup Styles” section, here you can change the background color of the gallery lightbox. 
+*  Yes, it is possible to change the background color of the lightbox. Go to your General Options, find “Popup Styles” section, here you can change the background color of the lightbox. 
 
 
-= How to upload a bunch of images into gallery image? =
+= How to upload a bunch of images? =
  
-Gallery has advanced media manager which allows uploading a lot of images by one click. Just upload files from your computer, mention as many images as you wish and you will see them in your Media Library, insert into the post.
+*  Gallery has advanced media manager which allows uploading a lot of images by one click. Just upload files from your computer, mention as many images as you wish and you will see them in your Media Library, insert into the post.
 
 
-= How to change Lightbox Style in Image Gallery? =
+= How to change Lightbox Style? =
 
-If the images in your gallery open with lightbox, go to Lightbox Options and choose among 5 lightbox styles your desired one and enjoy the result.
+*  If the images open with lightbox, go to Lightbox Options and choose among 5 lightbox styles your desired one and enjoy the result.
 
 
 = How to change text below image in lightbox? =
  
-In a gallery setting, you can select which text show below image in gallery lightbox. You can select Caption, Title or image Description as a source for this field in gallery lightbox.
+*  In a setting, you can select which text show below image in lightbox. You can select Caption, Title or image Description as a source for this field.
 
 
-= How to hide titles of the gallery image in lightbox? =
+= How to hide titles in lightbox? =
  
-In lightbox section of the gallery you can find show the title, just put check marks next to them and titles of the gallery images in lightbox will be turned off or just do not write the title for your gallery images and videos.
+*  In lightbox section you can find show the title, just put check marks next to them and titles in lightbox will be turned off or just do not write the title for your gallery images and videos.
 
 
-= How to define the custom link for some gallery images? =
+= How to define the custom link for some images? =
  
-In Huge-IT Gallery section, every image has its fields where you can add a link, title, description for each image in your gallery.
+*  In Huge-IT Gallery section, every image has its fields where you can add a link, title, description for each image.
 
 
-= Is it possible to insert video in a gallery? =
+= Is it possible to insert video? =
  
-You can add videos only from Youtube and Vimeo on gallery. Every gallery has an Add Video button, just click on the button and insert the URL link to your video into your gallery.
+*  You can add videos only from Youtube and Vimeo. Every gallery has an Add Video button, just click on the button and insert the URL link to your video.
 
 
-= Is there some limits for images amount in a gallery? =
+= Is there some limits for images amount? =
  
-No, there is no any limits for the amount of the images in the gallery.
+*  No, there is no any limits for the amount of the images.
 
 
-= May I change rating styles of the gallery image? =
+= May I change rating styles? =
  
-In gallery settings, you can change rating background color, Ratings Font Color, Ratings Rated Font Color according to your taste. 
+*  You can change rating background color, Ratings Font Color, Ratings Rated Font Color according to your taste. 
 
 
-= How can I show rating count on my gallery images? =
+= How can I show rating count? =
 
-In gallery general options you can put check marks next to Show Ratings Count. 
+*  In general options you can put check marks next to Show Ratings Count. 
 
  
-= How to install Gallery plugin? =
+= How to install plugin? =
 
-Go to Plugins page, add the new plugin, upload plugin image gallery, and Install Now, Activate Plugin image gallery and enjoy the process of creating your gallery. If you have some questions related with our gallery plugin feel free to contact our support team we are always ready to help you.
+*  Go to Plugins page, add the new plugin, upload plugin, and Install Now, Activate Plugin and enjoy the process of creating your gallery. If you have some questions related with our gallery plugin feel free to contact our support team we are always ready to help you.
+
 
 = Can i add description text in gallery lightbox? =
 
-Image gallery Lightbox can show only title of the images/videos. No description can be added in it.
+*  Lightbox can show only title of the images/videos. No description can be added in it.
+
+
+= Does the Image Gallery plugin has pagination function? =
+
+*  Plugin has pagination function, you can easily select how many images to show per page.
+
 
 If you think, that you found a bug in our [WordPress Image Gallery](http://huge-it.com/wordpress-gallery/) plugin or have any question contact us at [info@huge-it.com](mailto:info@huge-it.com).
-
 
 == Other Notes ==
 
 ### Step 1 Creating an Image Gallery 
 
-**Huge-IT Image Gallery  -> Add New Gallery**
+**Huge-IT Image Gallery -> Add New Gallery**
 
-* Add Images into the gallery :Use WordPress Image uploader to add an image from Media Library or upload from computer into the Image Gallery 
-* Add title for the gallery images:Give titles to your gallery images/videos  in the Image Gallery plugin
-* Add description for the gallery images: Give some information your gallery images in Image Gallery plugin
-* Add URL in the gallery: Provide links for gallery images: In Image Gallery plugin click to Open In New Tab or not  to open in the same tab the gallery images
+* Add Images: Use WordPress Image uploader to add an image from Media Library or upload from computer
+* Add title: Give titles
+* Add description: Give some information
+* Add URL: Provide links: Click to Open In New Tab or not  to open in the same tab
 
 ### Inserting Created Image Gallery 
 
-* After creating your gallery next step is to manage Image Gallery Custom Option
-* Gallery Name: Give a name to your gallery 
-* Select View for the gallery : Choose among 7 incredible views to complete the gallery 
-* Displaying Content: Select how to separate the gallery 
-* Ratings for the gallery :Rate your gallery images/videos then activate Like/Dislike or Heart button
+* After creating your next step is to manage Custom Option
+* Gallery Name: Give a name
+* Select View: Choose among 7 incredible views to complete
+* Displaying Content: Select how to separate
+* Ratings: Rate your images/videos then activate Like/Dislike or Heart button
 
 Usage:
 
-* Image Gallery Shortcode: find a shortcode of your Image Gallery Copy and Paste the shortcode of gallery in your WordPress posts. Or add this code automatically, when posting your Image Gallery there is a button  Add Gallery pressing on it the shortcode inserts into your post.
-* Image Gallery Template Include: This code made to be inserted into your template, it makes the inserting Image Gallery easy for using in a custom location within the theme. 
+* Shortcode: find a shortcode of your Image Gallery Copy and Paste the shortcode in your WordPress posts. Or add this code automatically, when posting your Image Gallery there is a button  Add Gallery pressing on it the shortcode inserts into your post.
+* Template Include: This code made to be inserted into your template, it makes the inserting Image Gallery easy for using in a custom location within the theme. 
 
 **Upgrade to [WordPress Image Gallery Pro](http://huge-it.com/wordpress-gallery/) to add some features:**
 
-### Step 2. General Options of Image Gallery
+### Step 2. General Options
 
-* General Options are available for commercial version users. With the help of Image Gallery General Options, change gallery font colors, size, background color,  element width and height.
+* General Options are available for commercial version users. With the help of General Options, change font colors, size, background color, element width and height.
 
 = 2.1 Gallery / Content-popup view =
 
-*   **Content Styles of Image Gallery**
-* Show Content In The Center: Tick to show gallery content in the center 
+*   **Content Styles**
+* Show Content In The Center: Tick to show content in the center 
 
-*   **Element Styles of Image Gallery**
-* Image Behavior: Choose Resize or Natural for the gallery images 
-* Element Width and Height: Set the width and height for the posted gallery images 
-* Element Border Width and Border Color: Set for the gallery images border width and color
-* Element's Image Overlay Color and transparency: Choose a gallery image color and its transparency while hovering on the gallery image
-* Zoom Image Style: Choose  Dark or Light  color for the  zoom icon on the gallery images
+*   **Element Styles**
+* Image Behavior: Choose Resize or Natural
+* Element Width and Height: Set the width and height for the posted
+* Element Border Width and Border Color: Set for the border width and color
+* Element's Image Overlay Color and transparency: Choose a color and its transparency while hovering
+* Zoom Image Style: Choose  Dark or Light  color for the  zoom icon
 
-*   **Popup Styles of Image Gallery**
+*   **Popup Styles**
 * Popup Image Full Width: If need the gallery images to have a full width, then put check mark
-* Popup Background Color: Change the background color of gallery popup images
-* Popup Overlay Color: Choose the color for popup overlay for the gallery images
-* Popup Overlay Transparency:  Set the level of background transparency for the gallery images
-* Popup Close Button Style: Change the color of “X” icon on the gallery  images 	
-* Show Separator Lines: Tick to show separator lines between title and text in popup for the gallery images
+* Popup Background Color: Change the background color of popup images
+* Popup Overlay Color: Choose the color for popup overlay
+* Popup Overlay Transparency:  Set the level of background transparency
+* Popup Close Button Style: Change the color of “X” icon
+* Show Separator Lines: Tick to show separator lines between title and text in popup
 
-*   **Popup Description of Image Gallery**
-* Show Description: Tick to show the description for the gallery images
-* Gallery Description Font Size and Color:Choose the size and color of description for the gallery images
+*   **Popup Description**
+* Show Description: Tick to show the description
+* Description Font Size and Color:Choose the size and color of description
 
-*  **Element Title of Image Gallery**
-* Element Title Font Size:  In the gallery change the element title font size
-* Element Title Background Color and Font Color: Choose the color of title background and title color in your gallery images
+*  **Element Title**
+* Element Title Font Size:  Change the element title font size
+* Element Title Background Color and Font Color: Choose the color of title background and title color
 
-*  **Element Link Button of Image Gallery**
-* Show Link Button On Element:  Tick to show “View More” button on the gallery images
-* Link Button Text: Change content of the “View More” text in Gallery Plugin
-* Link Button Font Size and Color: Change the font size and color of the link button on the gallery images/videos* Link Button Font Color and  Background Color:Change gallery link button the font color and background color 
+*  **Element Link Button**
+* Show Link Button On Element: Tick to show “View More” button
+* Link Button Text: Change content of the “View More” text
+* Link Button Font Size and Color: Change the font size and color of the link button
+* Link Button Font Color and  Background Color: Change link button the font color and background color 
 
 
-*  **Popup Title of Image Gallery**
-* Popup Title Font Size and Color: Choose Title font size and color  for the gallery images 
+*  **Popup Title**
+* Popup Title Font Size and Color: Choose Title font size and color
 
-*  **Popup Link Button of Image Gallery**
-* Show Link Button: Tick to show link button in gallery popup 
-* Link Button Text: Change the text of the link button in gallery popup 
-* Link Button Font Size: Change the font size of the link button in popup of the gallery images 
-* Link Button Font Color and Font Hover Color: Change font and font hover colors of the link button of the gallery images* Link Button Background Color and Hover Color: Set background color on gallery Link Button     
+*  **Popup Link Button**
+* Show Link Button: Tick to show link button in popup 
+* Link Button Text: Change the text of the link button in popup 
+* Link Button Font Size: Change the font size of the link button in popup
+* Link Button Font Color and Font Hover Color: Change font and font hover colors of the link button
+* Link Button Background Color and Hover Color: Set background color on Link Button     
 
 *  **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: Ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 *   **Pagination Styles**
-* Pagination Font Size and Color: Set the font size and color for the pagination of the gallery images/videos
-* Pagination Icons Size and Color: In your gallery set  pagination icon size and color
-* Pagination Position: Set the pagination position in Image Gallery plugin
+* Pagination Font Size and Color: Set the font size and color for the pagination
+* Pagination Icons Size and Color: Set pagination icon size and color
+* Pagination Position: Set the pagination position
 
 *    **Load More Styles**
-* Load More Text and Position:Write whatever you need in this field and in the gallery select  the position of Load More
-* Load More Font Size and Color: For the gallery set the font size and color for the Load More 
-* Load More Font Hover Color: Select Load More font hover color for gallery images/videos
-* Load More Button Color and Background Hover Color: Change Gallery Load More button color  and background hover color
-* Loading Animation 1: There are 4 types of animation for the gallery images/videos
+* Load More Text and Position:Write whatever you need in this field and select the position of Load More
+* Load More Font Size and Color: Set the font size and color for the Load More 
+* Load More Font Hover Color: Select Load More font hover color for images/videos
+* Load More Button Color and Background Hover Color: Change Load More button color  and background hover color
+* Loading Animation 1: There are 4 types of animation
 
 = 2.2 Content slider =
 
 *  **Slider Container**
-* Main Image width: Set the main image width of the gallery images
-* Slider Background Color: Set the background color for gallery Slider
-* Arrow Icons Style: Set black or white color for arrows in slider of  the gallery  images 
-* Show Separator Lines: Click to show the lines between text, title, and link in the gallery images/ videos
+* Main Image width: Set the main image width
+* Slider Background Color: Set the background color for Slider
+* Arrow Icons Style: Set black or white color for arrows in slider
+* Show Separator Lines: Click to show the lines between text, title, and link
 
 *   **Title**
-* Title Font Size and Color: Set the font size and color for the title of the gallery images
+* Title Font Size and Color: Set the font size and color for the title
 
 *   **Link Button**
-* Show Link Button and text:Click to show the link button in gallery or change its text
-* Link Button Font Size and Color:  Change the font size and color of the gallery link text 
-* Link Button Font Hover Color: Change the color for the link text in Image Gallery plugin
+* Show Link Button and text:Click to show the link button or change its text
+* Link Button Font Size and Color:  Change the font size and color of the link text 
+* Link Button Font Hover Color: Change the color for the link text
 * Link Button Background Color: Choose the color for link background 
 * Link Button Background Hover Color: Choose the color for the link background while hovering 
 
 *   **Description**
-* Show Description: Click to show the description of the text of the gallery images
-* Description Font Size: Set the font size of description of the gallery images
-* Description Font Color: Set the color of the description font of the gallery images
+* Show Description: Click to show the description of the text
+* Description Font Size: Set the font size of description
+* Description Font Color: Set the color of the description font
 
 *   **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count for images/videos  
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: Ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 = 2.3 Lightbox Gallery =
 
 *   **Content Styles**
-* Show Content In The Center: Tick to show gallery content in the center
+* Show Content In The Center: Tick to show content in the center
 
 *   **Image**
-* Image Width:  Set the size of the gallery images
+* Image Width:  Set the size
 * Image Border Width: Set the width of borders
 * Image Border Color: Choose the color for border
 * Border Radius: Choose the radius of border corners
 
 *   **Title**
-* Title Font Size and Color: Set the font size and color of the title on the gallery images
-* Title Font Hover Color: Set the color of the gallery title while hovering on it
+* Title Font Size and Color: Set the font size and color of the title
+* Title Font Hover Color: Set the color of the title while hovering on it
 * Title Background Color and Transparency: Choose the title background color and its transparency.
 
 *   **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: Ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
  
 *   **Pagination Styles**
-* Pagination Font Size and Color: Set the font size and color for the pagination of the gallery images/videos
-* Pagination Icons Size and Color: In your gallery set  pagination icon size and color
-* Pagination Position: Set the pagination position in Image Gallery plugin
+* Pagination Font Size and Color: Set the font size and color for the pagination
+* Pagination Icons Size and Color: Set pagination icon size and color
+* Pagination Position: Set the pagination position
 
 *   **Load More Styles**
-* Load More Text and Position:Write whatever you need in this field and in the gallery select  the position of Load More
-* Load More Font Size and Color: For the gallery set the font size and color for the Load More 
-* Load More Font Hover Color: Select Load More font hover color for gallery images/videos
-* Load More Button Color and Background Hover Color: Change Gallery Load More button color  and background hover color
-* Loading Animation 1: There are 4 types of animation for the gallery images/videos
+* Load More Text and Position: Write whatever you need in this field and in the gallery select the position of Load More
+* Load More Font Size and Color: Set the font size and color for the Load More 
+* Load More Font Hover Color: Select Load More font hover color
+* Load More Button Color and Background Hover Color: Change Load More button color and background hover color
+* Loading Animation 1: There are 4 types of animation
 
 = 2.4 Slider =
 
 *   **Slider**
-* Image Behavior: Choose resized if you need your gallery images have the size of the slider
-* Slider Background Color: Choose the color of background while gallery images have its natural size 
-* Slider Border Size: Set the size of the slider border for the gallery images
-* Slider Border Color:  Choose the color for the slider border  for the gallery images
-* Slider Border-radius: Choose the radius for slider border  for the gallery images
+* Image Behavior: Choose resized if you need your images have the size of the slider
+* Slider Background Color: Choose the color of background while images have its natural size 
+* Slider Border Size: Set the size of the slider borde
+* Slider Border Color:  Choose the color for the slider border
+* Slider Border-radius: Choose the radius for slider border
 
 *   **Title**
 * Title Width: Choose the width for title box.
-* Title Has Margin: Click if you need the title to have margin in your gallery images
-* Title Font Size and Color: Set the font size and color of the gallery images title 
-* Title Text Align: Set the position of the title in the box of the gallery images		
-* Title Background Transparency: Set the level of background transparency for your gallery 
-* Title Background Color: Choose the color of title background for the gallery images
-* Title Border Size and Color: Set the size and color for the gallery title border
-* Title Border Radius and position: Set the radius for border corners and title position in gallery 
+* Title Has Margin: Click if you need the title to have margin
+* Title Font Size and Color: Set the font size and color of the title 
+* Title Text Align: Set the position of the title in the box
+* Title Background Transparency: Set the level of background transparency
+* Title Background Color: Choose the color of title background
+* Title Border Size and Color: Set the size and color for the title border
+* Title Border Radius and position: Set the radius for border corners and title position
 
 *   **Description**
 * Description Has Margin: Choose if description of the gallery image needs to have margin  
-* Description Font Size: Set the font size for the gallery description 
-* Description Text Color: Set text color for the gallery description 
-* Description Text Align: Select among 4 position for the gallery image description  
-* Description Background Transparency: Set the level of transparency for the background of the description for the gallery images
+* Description Font Size: Set the font size for the description 
+* Description Text Color: Set text color for the description 
+* Description Text Align: Select among 4 position for the image description  
+* Description Background Transparency: Set the level of transparency for the background of the description
 * Description Background Color: Choose the color for description background when to open your gallery images
-* Description Border Size and Color: Set the gallery size and color for the border in description 
-* Description Border Radius: Set the radius of the description box corners on gallery image 
-* Description Position: Set the position of description on gallery image 
+* Description Border Size and Color: Set the size and color for the border in description 
+* Description Border Radius: Set the radius of the description box corners
+* Description Position: Set the position of description
 
 *   **Navigation**
-* Show Navigation Arrows: Click to show navigation arrows on the gallery images
-* Navigation Dots Position / Hide Dots: For the gallery images choose the location for dots, or choose to remove them * Navigation Dots Color: Choose the color for navigation dots on the images of the gallery * Navigation Active Dot Color: Choose the color of moving dots for the gallery image
+* Show Navigation Arrows: Click to show navigation arrows
+* Navigation Dots Position / Hide Dots: For the gallery images choose the location for dots, or choose to remove them 
+* Navigation Dots Color: Choose the color for navigation dots on the images
+* Navigation Active Dot Color: Choose the color of moving dots
 
 *   **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings coun
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: Ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 = 2.5 Thumbnails View =
 
 *  **Image**
 * Image Behavior: Click to give your gallery images a behavior
-* Image Width and Height: Set the width and height of thumbnail of your gallery 
-* Image Border Width: Set the width of the border between gallery thumbnail
-* Image Border Color:  Set the color of the border between gallery thumbnail
-* Border Radius:  Set border radius for the gallery images 
+* Image Width and Height: Set the width and height of thumbnail
+* Image Border Width: Set the width of the border between thumbnail
+* Image Border Color:  Set the color of the border between thumbnail
+* Border Radius:  Set border radius
 * Margin Image: Set the distance between each gallery thumbnail
 
 *   **Title**
-* Title Font Size: Set the title font size of the gallery images 
-* Title Font Color: Choose the color of the title for the gallery thumbnail  
-* Overlay Background Color: Choose the overlay color of the title of the gallery thumbnail
-* Title Background Transparency: For gallery title set the level of background transparency 
+* Title Font Size: Set the title font size
+* Title Font Color: Choose the color of the title
+* Overlay Background Color: Choose the overlay color of the title of the thumbnail
+* Title Background Transparency: Title set the level of background transparency 
 
 *   **Container Style**
-* Box Has background:  Click to have background for the gallery thumbnail
-* Box background:  For the gallery set the color of surrounded box 
-* Box Use shadow:  Click if you need to have shadows in the box of  Image Gallery plugin
-* Box padding: Set the distance between the box and images in gallery thumbnail
+* Box Has background:  Click to have background for the thumbnail
+* Box background: Set the color of surrounded box 
+* Box Use shadow: Click if you need to have shadows in the box
+* Box padding: Set the distance between the box and images in thumbnail
 
 *   **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: Ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 *   **Pagination Styles**
-* Pagination Font Size and Color: Set the font size and color for the pagination of the gallery images/videos
-* Pagination Icons Size and Color: In your gallery set  pagination icon size and color
-* Pagination Position: Set the pagination position in Image Gallery plugin
+* Pagination Font Size and Color: Set the font size and color for the pagination
+* Pagination Icons Size and Color: Set pagination icon size and color
+* Pagination Position: Set the pagination position
 
 *    **Load More Styles**
-* Load More Text and Position:Write whatever you need in this field and in the gallery select  the position of Load More
-* Load More Font Size and Color: For the gallery set the font size and color for the Load More 
-* Load More Font Hover Color: Select Load More font hover color for gallery images/videos
-* Load More Button Color and Background Hover Color: Change Gallery Load More button color  and background hover color
-* Loading Animation 1: There are 4 types of animation for the gallery images/videos
+* Load More Text and Position:Write whatever you need in this field and select the position of Load More
+* Load More Font Size and Color: Set the font size and color for the Load More 
+* Load More Font Hover Color: Select Load More font hover color for images/videos
+* Load More Button Color and Background Hover Color: Change Load More button color  and background hover color
+* Loading Animation 1: There are 4 types of animation for the images/videos
 
  = 2.6 Justified View =
 
 *   **Element Styles**
-* Image height: Set the height of the gallery images/videos in the tape 
-* Image margin: Set the distance between each gallery image/video in the tape  
-* Image Justify: Select to make the width of all gallery image up to 100% in a container. Together they will fit into the container of your theme, and tick off to bring each of them with its natural size
-* Image Randomize: Select to show your gallery images randomly 
-* Opening With Animation: Choose to see the tape of gallery images/videos appearing animated 
-* Opening Animation Speed: Select the speed of the gallery animation 
+* Image height: Set the height of the images/videos in the tape 
+* Image margin: Set the distance between each image/video in the tape  
+* Image Justify: Select to make the width of all image up to 100% in a container. Together they will fit into the container of your theme, and tick off to bring each of them with its natural size
+* Image Randomize: Select to show your images randomly 
+* Opening With Animation: Choose to see the tape of images/videos appearing animated 
+* Opening Animation Speed: Select the speed of the animation 
 
 *   **Element Title**
-* Show Title:  Choose to show the title or not for the gallery images
-* Element Title Font Size: Choose the font size for the title of the gallery image/video 
-* Element Title Font Color: Select preferable color for the title of the gallery  image/video 
-* Element Title Background Color: Choose the color of title background for the gallery 
-* Element's Title Overlay Transparency: For the gallery set the level of transparency for title overlay 
+* Show Title:  Choose to show the title or not
+* Element Title Font Size: Choose the font size for the title
+* Element Title Font Color: Select preferable color for the title
+* Element Title Background Color: Choose the color of title background
+* Element's Title Overlay Transparency: Set the level of transparency for title overlay 
 
 *  **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count
+* Ratings Background Color and Transparency:Set ratings background color and its transparency
+* Ratings Font Color and Rated Font Color: For the ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 *   **Pagination Styles**
-* Pagination Font Size and Color: Set the font size and color for the pagination of the gallery images/videos
-* Pagination Icons Size and Color: In your gallery set  pagination icon size and color
-* Pagination Position: Set the pagination position in Image Gallery plugin
+* Pagination Font Size and Color: Set the font size and color for the pagination
+* Pagination Icons Size and Color: Set pagination icon size and color
+* Pagination Position: Set the pagination position
 
 *    **Load More Styles**
-* Load More Text and Position:Write whatever you need in this field and in the gallery select  the position of Load More
-* Load More Font Size and Color: For the gallery set the font size and color for the Load More 
-* Load More Font Hover Color: Select Load More font hover color for gallery images/videos
-* Load More Button Color and Background Hover Color: Change Gallery Load More button color  and background hover color
-* Loading Animation 1: There are 4 types of animation for the gallery images/videos
+* Load More Text and Position:Write whatever you need in this field and select the position of Load More
+* Load More Font Size and Color: Set the font size and color for the Load More 
+* Load More Font Hover Color: Select Load More font hover color
+* Load More Button Color and Background Hover Color: Change Load More button color and background hover color
+* Loading Animation 1: There are 4 types of animation
 
 = 2.7 Blog Style Gallery =
 
 *  **General Styles**
-* Width: Change the width size  of the gallery image
-* Content Position: Decide where to place the gallery content on the page 
-* Image Position: Choose, where to place your gallery image relative to title and description text
-* Space Between Containers: Set the space between each project of the gallery
-* Separator Line Style:Choose a style for separation line between each item of the gallery 
+* Width: Change the width size
+* Content Position: Decide where to place the content on the page 
+* Image Position: Choose, where to place your image relative to title and description text
+* Space Between Containers: Set the space between each project
+* Separator Line Style:Choose a style for separation line between each item
 * Separator Line Size: Choose the size for the separation line, which divides gallery among projects 
-* Separator Line Color: Pick up a color for separation line in gallery 
-* Content Per Page: Decide how many gallery  images/videos you need to show per page 
+* Separator Line Color: Pick up a color for separation line
+* Content Per Page: Decide how many gallery images/videos you need to show per page 
 
 *  **Right Title Styles**
-* Show Title: Select, if you need to display the title of the gallery  project 
-* Font Size and Color:In Image Gallery choose title font size and color for the gallery images
-* Background Color: Title has background, pick up a color for your gallery content title
+* Show Title: Select, if you need to display the title
+* Font Size and Color: Choose title font size and color
+* Background Color: Title has background, pick up a color for your content title
 * Background Transparency:  Adjust title background Transparency level 
-* Text Align: Choose text to align for title for the gallery
+* Text Align: Choose text to align for title
 
 *  **Description Styles**
-* Show Description: For your gallery select whether to see the description text or not 
-* Font Size and color: Change the font size and color for the description of the gallery images
-* Background Color: Change color for description background in the gallery 
-* Background Transparency: Adjust gallery image description background transparency level 
-* Text Align: Choose the text to align for description of the gallery images
+* Show Description: Select whether to see the description text or not 
+* Font Size and color: Change the font size and color for the description
+* Background Color: Change color for description background
+* Background Transparency: Adjust description background transparency level 
+* Text Align: Choose the text to align for description
 
 *   **Ratings Styles**
-* Show Ratings Count: Tick to show ratings count for gallery images/videos  
-* Ratings Background Color and Transparency:Set ratings background color and its transparency on gallery images
-* Ratings Font Color and Rated Font Color: For the gallery ratings set font colors 
-* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color on the gallery images 
-* Heart Icon Color and Rated Icon Color: Set Heart icon color on the gallery images/videos 
+* Show Ratings Count: Tick to show ratings count
+* Ratings Background Color and Transparency:Set ratings background color and its transparency 
+* Ratings Font Color and Rated Font Color: For the ratings set font colors 
+* Like/Dislike Icon Color and  Rated Icon Color:Set Like/Dislike icon color
+* Heart Icon Color and Rated Icon Color: Set Heart icon color
 
 *   **Pagination Styles**
-* Pagination Font Size and Color: Set the font size/color for the pagination of the gallery images/videos
-* Pagination Icons Size and Color: In your gallery set  pagination icon size and color
-* Pagination Position: Set the pagination position in Image Gallery plugin
+* Pagination Font Size and Color: Set the font size/color for the pagination
+* Pagination Icons Size and Color: Set pagination icon size and color
+* Pagination Position: Set the pagination position
 
 *    **Load More Styles**
-* Load More Text and Position:Write whatever you need in this field and in the gallery select  the position of Load More
-* Load More Font Size and Color: For the gallery set the font size and color for the Load More 
-* Load More Font Hover Color: Select Load More font hover color for gallery images/videos
-* Load More Button Color and Background Hover Color: Change Gallery Load More button color  and background hover color
-* Loading Animation 1: There are 4 types of animation for the gallery images/videos
+* Load More Text and Position:Write whatever you need in this field and select the position of Load More
+* Load More Font Size and Color: Set the font size and color for the Load More 
+* Load More Font Hover Color: Select Load More font hover color
+* Load More Button Color and Background Hover Color: Change Load More button color and background hover color
+* Loading Animation 1: There are 4 types of animation
 
-###Lightbox Options of Image Gallery 
+###Lightbox Options
 
-The commercial version users of Image Gallery can do unlimited customization, if your gallery images/videos open with lightbox, in Lightbox Options do all the necessary changes.
+The commercial version users can do unlimited customization, if your images/videos open with lightbox, in Lightbox Options do all the necessary changes.
 
 *   **Internationalization**
-* Lightbox style: Choose how to show your gallery images/videos among 5 beautiful views
-* Transition type: Select among 3 transition type for showing your gallery images/videos*Gallery lightbox Opening and Closing speed: Set the lightbox opening and closing speed for your gallery images/videos 
-* Show the title: Tick to show the title when to open your gallery content
-* Overlay transparency: Select the level of transparency for the gallery image /video overlay
-* Auto-open: lightbox opens automatically your gallery images 
-* Overlayclose true and Esc Key close: Put checkmark to close the lightbox clicking on the background  or with Esc Key for the gallery images or videos
-* Keyboard Navigation: Turn on to navigate your gallery images/videos  with keyboard  
-* Loop content: If you select loop content for your gallery images and videos, in this case, the Images will have endless circulation in lightbox
-* Show close button: Tick to show close button or not to show it on your gallery images
+* Lightbox style: Choose how to show your images/videos among 5 beautiful views
+* Transition type: Select among 3 transition type for showing your images/videos
+* lightbox Opening and Closing speed: Set the lightbox opening and closing speed for your images/videos 
+* Show the title: Tick to show the title when to open your content
+* Overlay transparency: Select the level of transparency for the video overlay
+* Auto-open: lightbox opens automatically
+* Overlayclose true and Esc Key close: Put checkmark to close the lightbox clicking on the background  or with Esc Key for the images or videos
+* Keyboard Navigation: Turn on to navigate your images/videos with keyboard  
+* Loop content: If you select loop content for your images and videos, in this case, the Images will have endless circulation in lightbox
+* Show close button: Tick to show close button or not to show it
 
 *  **Dimensions**
-* Popup size fix: When need to show your gallery images with fixed size then put check mark
-* Popup width and height: Set the Gallery Popup width and height to choose the size for the gallery images
-* Gallery Popup initial width and height: Choose the initial width and height when the images of your gallery open in lightbox 
+* Popup size fix: When need to show your images with fixed size then put check mark
+* Popup width and height: Set the Popup width and height to choose the size
+* Popup initial width and height: Choose the initial width and height when the images of your open in lightbox 
 
 *   **Slideshow**
-* Gallery Slideshow and its interval: Set the slideshow effect and the interval to slide the gallery images 
-* Slideshow autostart: Select to start the gallery images slideshow automatically
-* Gallery Slideshow start and stop button text: Change the start and stop slideshow text on your gallery images
+* Slideshow and its interval: Set the slideshow effect and the interval to slide
+* Slideshow autostart: Select to start the slideshow automatically
+* Slideshow start and stop button text: Change the start and stop slideshow text
 
 *   **Positioning**
-* Fixed position: If you need the gallery lightbox to have fixed position just put check mark
-* Popup position. Choose from  9 position to open  the images in your gallery with lightbox
+* Fixed position: If you need the lightbox to have fixed position just put check mark
+* Popup position. Choose from 9 position to open the images in your lightbox
 
 
 == Changelog ==
+
+= 1.9.65 =
+*  Added credits and attribution in the source code refering the original authors.
+
+= 1.9.64 =
+*  Back end bug fixed.
+
+= 1.9.63 =
+*  Autoslide in Content Slider view, keyboard navigation in Content Popup View added, numerous bug fixes.
+
+= 1.9.62 =
+*  Some mirror bug has been fixed.
+
+= 1.9.61 =
+*  Enqueue bug has been fixed.
 
 = 1.9.59 =
 *  Security bugs has been fixed
@@ -959,46 +948,46 @@ The commercial version users of Image Gallery can do unlimited customization, if
 *  Mirror Bug fixed.
 
 = 1.8.7 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.8.6 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.8.5 =
-*  Mirror Bug fixed in image gallery.
+*  Mirror Bug fixed.
 
 = 1.8.4 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.8.3 =
-*  Mirror Bug fixed in image gallery.
+*  Mirror Bug fixed.
 
 = 1.8.2 =
-*  jQuery version Bug fixed in image gallery.
+*  jQuery version Bug fixed.
 
 = 1.8.1 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.8.0 =
-*  Backend bug fixed in image gallery.
+*  Backend bug fixed.
 
 = 1.7.9 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.7.8 =
-*  Translation already available in image gallery.
+*  Translation already available.
 
 = 1.7.7 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.7.6 =
-*  Front end bug fixed in image gallery.
+*  Front end bug fixed.
 
 = 1.7.5 =
-*  Front end bug fixed in image gallery.
+*  Front end bug fixed.
 
 = 1.7.4 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.7.3 =
 *  More load images bug fixed.
@@ -1007,175 +996,175 @@ The commercial version users of Image Gallery can do unlimited customization, if
 *  Front end Bug fixed.
 
 = 1.7.1 =
-*  Security Bug fixed in image gallery.
+*  Security Bug fixed.
 
 = 1.7.0 =
-*  Clone Bug updated in Image Gallery.
+*  Clone Bug updated.
 
 = 1.6.9 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.8 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.7 =
-*  Mirror Bug fixed in image gallery.
+*  Mirror Bug fixed.
 
 = 1.6.6 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.5 =
 *  Rating system has been added.
 
 = 1.6.4 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.3 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.2 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.1 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.6.0 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.5.9 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.5.8 =
-*  Few Minor Bugs Fixed in image gallery.
+*  Few Minor Bugs Fixed.
 
 = 1.5.7 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.5.6 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.5.1 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.5.0 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.4.9 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.4.8 =
-*  Added page navigation and load more on Image Gallery.
+*  Added page navigation and load more.
 
 = 1.4.7 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.4.6 =
-*  Added new view in Image Gallery.
+*  Added new view.
 
 = 1.4.5 =
-*  Bug fixed and w3c standards in Image Gallery.
+*  Bug fixed and w3c standards.
 
 = 1.4.4 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.4.3 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.4.2 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.4.1 =
-*  Security bug fixed in Image Gallery.
+*  Security bug fixed.
 
 = 1.4.0 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.9 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.3.8 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.7 =
-*  Widget Bug fixed in Image Gallery.
+*  Widget Bug fixed.
 
 = 1.3.6 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.5 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.4 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.3 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.2 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.1 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.3.0 =
-*  Front end Bug fixed in Image Gallery.
+*  Front end Bug fixed.
 
 = 1.2.9 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.8 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.7 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.6 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.5 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
 
 = 1.2.4 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.3 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.2 =
-*  Double alt Bug fixed in Image Gallery.
+*  Double alt Bug fixed.
 
 = 1.2.1 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.2.0 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.1.9 =
-*  Added new option in Image Gallery.
+*  Added new option.
 
 = 1.1.8 =
-*  Alt tag added in images in image gallery.
+*  Alt tag added in images.
 
 = 1.1.7 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.1.6 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.1.5 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.1.4 =
-*  Two or more galleries on one page already available in image gallery.
+*  Two or more galleries on one page already available.
 
 = 1.1.3 =
-*  Bugs have been fixed on Image Gallery's lightbox.
+*  Bugs have been fixed on lightbox.
 
 = 1.1.2 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.1.1 =
-*  New awesome 'Justified' view has been launched in Image Gallery.
+*  New awesome 'Justified' view has been launched.
 
 = 1.1.0 =
 *  Notices errors has been fixed.
@@ -1184,25 +1173,25 @@ The commercial version users of Image Gallery can do unlimited customization, if
 *  Change view admin Bug fixed.
 
 = 1.0.8 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.0.7 =
 *  SQL Injection bug has been fixed.
 
 = 1.0.6 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.0.5 =
-*  Add image Bug fixed in image gallery.
+*  Add image Bug fixed.
 
 = 1.0.4 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.0.3 =
-*  Bug fixed and added some features Image Gallery.
+*  Bug fixed and added some features.
 
 = 1.0.2 =
-*  Bug fixed in Image Gallery.
+*  Bug fixed.
 
 = 1.0.1 =
-*  Bug fixed in image gallery.
+*  Bug fixed.
