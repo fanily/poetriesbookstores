@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 // displays the 'Optimize Everything Else' section of the Bulk Optimize page
 function ewww_image_optimizer_aux_images () {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
@@ -197,6 +200,7 @@ function ewww_image_optimizer_image_scan( $dir ) {
 			switch ( $pathextension ) {
 				case 'jpg':
 				case 'jpeg':
+				case 'jpe':
 				case 'png':
 				case 'gif':
 				case 'pdf':
@@ -221,10 +225,10 @@ function ewww_image_optimizer_image_scan( $dir ) {
 			}
 			if ( empty( $skip_optimized ) || ! empty( $_REQUEST['ewww_force'] ) ) {
 				ewwwio_debug_message( "queued $path" );
-				$images[] = $path;
+				$images[] = utf8_encode( $path );
 			}
 		}
-		ewww_image_optimizer_debug_log();
+//		ewww_image_optimizer_debug_log();
 	}
 	$end = microtime( true ) - $start;
         ewwwio_debug_message( "query time for $file_counter files (seconds): $end" );
@@ -268,6 +272,7 @@ function ewww_image_optimizer_aux_images_script( $hook ) {
 	if ( 'ewww-image-optimizer-auto' !== $hook && empty( $_REQUEST['ewww_scan'] ) ) {
 		return;
 	}
+	session_write_close();
 	global $wpdb;
 	if ( ! empty( $_REQUEST['ewww_force'] ) ) {
 		ewwwio_debug_message( 'forcing re-optimize: true' );
@@ -344,17 +349,6 @@ function ewww_image_optimizer_aux_images_script( $hook ) {
 								continue;
 							}
 							$already_optimized = ewww_image_optimizer_find_already_optimized( $path );
-							/*$query = $wpdb->prepare( "SELECT id,path FROM $wpdb->ewwwio_images WHERE path LIKE %s AND image_size LIKE '$image_size'", $path );
-							$optimized_query = $wpdb->get_results( $query, ARRAY_A );
-							if ( ! empty( $optimized_query ) ) {
-								foreach ( $optimized_query as $image ) {
-									if ( $image['path'] != $path ) {
-										ewwwio_debug_message( "{$image['path']} does not match $path, continuing our search" );
-									} else {
-										$already_optimized = $image;
-									}
-								}
-							}*/
 							$mimetype = ewww_image_optimizer_mimetype( $path, 'i' );
 							if ( preg_match( '/^image\/(jpeg|png|gif)/', $mimetype ) && empty( $already_optimized ) ) {
 								$slide_paths[] = $path;
@@ -412,6 +406,7 @@ function ewww_image_optimizer_aux_images_initialize( $auto = false ) {
 	if ( ! $auto && ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) ) {
 		wp_die( esc_html__( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	}
+	session_write_close();
 	$output = array(); 
 	// update the 'aux resume' option to show that an operation is in progress
 	update_option( 'ewww_image_optimizer_aux_resume', 'true' );

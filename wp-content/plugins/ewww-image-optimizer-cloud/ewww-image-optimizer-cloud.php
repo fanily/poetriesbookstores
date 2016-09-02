@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate cloud image optimization into WordPress.
- * @version 2.8.3
+ * @version 2.9.6
  * @package EWWW_Image_Optimizer_Cloud
  */
 /*
@@ -10,32 +10,38 @@ Plugin URI: https://ewww.io/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery via paid cloud service.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer-cloud
-Version: 2.8.3
+Version: 2.9.6
 Author URI: https://ewww.io/
 License: GPLv3
 */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Constants
-define('EWWW_IMAGE_OPTIMIZER_DOMAIN', 'ewww-image-optimizer-cloud');
+define( 'EWWW_IMAGE_OPTIMIZER_DOMAIN', 'ewww-image-optimizer-cloud' );
 // this is the full system path to the plugin file itself
-define('EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE', __FILE__);
+define( 'EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE', __FILE__ );
 // this is the path of the plugin file relative to the plugins/ folder
-define('EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE_REL', 'ewww-image-optimizer-cloud/ewww-image-optimizer-cloud.php');
+define( 'EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE_REL', 'ewww-image-optimizer-cloud/ewww-image-optimizer-cloud.php' );
 // this is the full system path to the plugin folder
-define('EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define( 'EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 // this is the full system path to the plugin images for testing 
 define( 'EWWW_IMAGE_OPTIMIZER_IMAGES_PATH', plugin_dir_path( __FILE__ ) . 'images/' ); 
 
-require_once(EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'common.php');
+require_once( EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'common.php' );
+require_once( EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'background.php' );
 
 // check to see if the cloud constant is defined (which would mean we've already run init) and then set it properly if not
 function ewww_image_optimizer_cloud_init() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	ewww_image_optimizer_disable_tools();
 	if ( ! defined( 'EWWW_IMAGE_OPTIMIZER_CLOUD' ) ) {
-		define('EWWW_IMAGE_OPTIMIZER_CLOUD', TRUE);
+		define( 'EWWW_IMAGE_OPTIMIZER_CLOUD', TRUE );
 	}
 	if ( ! defined( 'EWWW_IMAGE_OPTIMIZER_NOEXEC' ) ) {
-		define('EWWW_IMAGE_OPTIMIZER_NOEXEC', TRUE);
+		define( 'EWWW_IMAGE_OPTIMIZER_NOEXEC', TRUE );
 	}
 	if ( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) && empty( $_POST['ewww_image_optimizer_cloud_key'] ) ) {
 		add_action( 'network_admin_notices', 'ewww_image_optimizer_cloud_key_missing' );
@@ -66,6 +72,8 @@ function ewww_image_optimizer_set_defaults() {
 	add_site_option( 'ewww_image_optimizer_png_level', '20' );
 	add_site_option( 'ewww_image_optimizer_gif_level', '10' );
 	add_site_option( 'ewww_image_optimizer_pdf_level', '10' );
+	//perhaps to return in a future version
+//	add_site_option( 'ewww_image_optimizer_parallel_optimization', TRUE );
 }
 
 // display a notice in the admin for a missing key
@@ -109,6 +117,7 @@ function ewww_image_optimizer_mimetype( $path, $case ) {
 		switch ( $pathextension ) {
 			case 'jpg':
 			case 'jpeg':
+			case 'jpe':
 				ewwwio_debug_message( 's3 type: image/jpeg' );
 				return 'image/jpeg';
 			case 'png':
@@ -170,7 +179,7 @@ function ewww_image_optimizer_mimetype( $path, $case ) {
  * Returns an array of the $file, $results, $converted to tell us if an image changes formats, and the $original file if it did.
  *
  * @param   string $file		Full absolute path to the image file
- * @param   int $gallery_type		1=wordpress, 2=nextgen, 3=flagallery, 4=aux_images, 5=image editor, 6=imagestore, 7=retina
+ * @param   int $gallery_type		1=wordpress, 2=nextgen, 3=flagallery, 4=aux_images, 5=image editor, 6=imagestore
  * @param   boolean $converted		tells us if this is a resize and the full image was converted to a new format
  * @param   boolean $new		tells the optimizer that this is a new image, so it should attempt conversion regardlress of previous results
  * @param   boolean $fullsize		indicates that this is a full size image, not a resized version
@@ -182,6 +191,7 @@ function ewww_image_optimizer( $file, $gallery_type = 4, $converted = false, $ne
 	if ( ! defined( 'EWWW_IMAGE_OPTIMIZER_CLOUD' ) ) {
 		ewww_image_optimizer_init();
 	}
+	session_write_close();
 	$bypass_optimization = apply_filters( 'ewww_image_optimizer_bypass', false, $file ); 
 	if ( true === $bypass_optimization ) { 
 		// tell the user optimization was skipped 
@@ -441,6 +451,10 @@ function ewww_image_optimizer( $file, $gallery_type = 4, $converted = false, $ne
 		return array( $file, __( 'License exceeded', EWWW_IMAGE_OPTIMIZER_DOMAIN ), $converted, $original );
 	}
 	if ( ! empty( $new_size ) ) {
+		// Set correct file permissions 
+		$stat = stat( dirname( $file ) ); 
+		$perms = $stat['mode'] & 0000666; //same permissions as parent folder, strip off the executable bits 
+		@chmod( $file, $perms );
 		$results_msg = ewww_image_optimizer_update_table ( $file, $new_size, $orig_size, $new );
 		ewwwio_memory( __FUNCTION__ );
 		return array( $file, $results_msg, $converted, $original );
@@ -467,6 +481,11 @@ function ewww_image_optimizer_webp_create( $file, $orig_size, $type, $tool, $rec
 	if ( is_file( $webpfile ) && $orig_size < $webp_size ) {
 		ewwwio_debug_message( 'webp file was too big, deleting' );
 		unlink( $webpfile );
+	} elseif ( is_file( $webpfile ) ) {
+		// Set correct file permissions 
+		$stat = stat( dirname( $webpfile ) ); 
+		$perms = $stat['mode'] & 0000666; //same permissions as parent folder, strip off the executable bits 
+		@chmod( $webpfile, $perms ); 
 	}
 	ewwwio_memory( __FUNCTION__ );
 }
