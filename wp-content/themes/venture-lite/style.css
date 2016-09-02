@@ -4,11 +4,11 @@ Theme URI: http://www.nimbusthemes.com/free/venture/
 Author: Nimbus Themes
 Author URI: http://www.nimbusthemes.com/
 Description: Venture is a one-page WordPress theme from Nimbus Themes that's perfect for creative agencies, personal blogs, small businesses, corporate sites, freelancers, or any established company. It's built on the Bootstrap framework 3.x with full parallax support. It's responsive, clean, modern, flat and minimal. The ultimate business theme.
-Version: 1.0.9
-License: GNU General Public License version 3
+Version: 1.1.7
 Text Domain: venture-lite
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Tags: black,blue,white,gray,dark,light,responsive-layout,one-column,two-columns,right-sidebar,custom-background,custom-menu,featured-images,theme-options,threaded-comments,fluid-layout,translation-ready
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: one-column,two-columns,right-sidebar,custom-background,custom-menu,featured-images,theme-options,threaded-comments,translation-ready
 */
 
 
@@ -156,7 +156,9 @@ footer.main-footer .credit a, footer.main-footer .credit a:visited {color:#959b9
 .archive-singular-wrap>div div.tags{padding:0 0 0;}
 .archive-singular-wrap>div span.tag a{display: inline-block;padding:5px 10px;margin-right:5px;border:1px solid #e8eaea;color:#000;-webkit-transition: all ease .4s;-moz-transition: all ease .4s;transition: all ease .4s;}
 .archive-singular-wrap>div span.tag a:hover{background:#00aeef;}
-
+.paginate_links_wrap {text-align:center;}
+.archive-singular-wrap img{max-width:100%;height:auto;}
+.archive-singular-wrap .wp-caption{max-width:100%;}
 
 /** SIDEBAR **/
 

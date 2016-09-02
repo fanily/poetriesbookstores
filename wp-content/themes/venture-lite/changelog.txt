@@ -1,3 +1,45 @@
+v1.1.7  - Updated TGMPA include for companion plugin
+
+v1.1.6  - Updated TGMPA
+
+v1.1.5  - Exclude banner from home
+
+v1.1.4  - Moved companion plugin templates into unique dir in /partials/
+        - Removed demo logic from social buttons
+        - Changed demo banner in to full featured post/page banner
+        - Added wp_link_pages
+        - Fixed display issue with oversized images
+
+v1.1.3  - Moved landing page features into custom page template
+
+v1.1.2  - Removed userguide link from customizer head
+        - Added userguide section from customizer
+        - Default to partials/loop.php on frontpage.php
+        - Added TGMPA
+        - Removed all frontpage sidebar areas
+        - Removed all custom widgets
+        - Removed all frontpage kirki frontpage options
+        - Added condition to show subpage banner only on frontpage/X/ or subpages
+        - Added pagination to loop.php
+
+v1.1.1  - Fixed Copyright for theme in readme.txt
+        - Sanatized all form ellements in widgets admin
+        - Changed sanitize_key to esc_attr where appropriate
+        - Added a few additional escapes where appropriate
+
+v1.1.0  - Added support for custom logo
+        - Added sanitize and escape for all i/o in widgets
+        - Added escapes on all customizer output
+        - Added download links to all image copyright delerations
+        - Updated licence tags in style.css
+        - Added languages dir.
+        - Added custom sanitize functions to kirki
+        - Fixed all text-domain issues
+        - Updated kirki
+        - Fixed extra echos on _e( functions
+        - Removed all extra upsell messages in customizer
+        - Updated tags in style.css
+
 v1.0.9  - Added NiceScroll
         - Updated screenshot
         - Fixed css issues with banner display

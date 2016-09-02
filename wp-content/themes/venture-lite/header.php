@@ -8,14 +8,24 @@
 		<?php wp_head(); ?>
 	</head>
 	<body <?php body_class(); ?> data-spy="scroll" data-target=".navbar-default">
-		<header id="<?php if (nimbus_get_option('fp-banner-slug')=='') {echo "home";} else {echo nimbus_get_option('fp-banner-slug');} ?>" >
+		<header id="<?php if (nimbus_get_option('fp-banner-slug')=='') {echo "home";} else {echo esc_attr(nimbus_get_option('fp-banner-slug'));} ?>" >
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-6 col-sm-push-6">
 						<?php get_template_part( 'partials/social'); ?>
 					</div>		
 					<div class="col-sm-6  col-sm-pull-6">
-						<h1><a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a></h1> <span class="tagline"><?php bloginfo('description'); ?></span>
+						<?php
+						if ( function_exists( 'the_custom_logo' ) ) {
+							if (has_custom_logo()){
+								the_custom_logo();
+							} else {
+								get_template_part( 'partials/textlogo');
+							}
+						} else {
+							get_template_part( 'partials/textlogo');
+						}
+						?>
 					</div>
 				</div>	
 			</div>
@@ -29,3 +39,6 @@
 				<div>
 			</div>
 	    </nav>
+	    <?php if (is_front_page() && !is_home() && !is_paged()) {
+		    get_template_part( 'partials/frontpage','banner');
+	    } ?>

@@ -26,6 +26,10 @@ if ( ! function_exists( 'venture_lite_theme_setup' ) ) {
 		// Let WordPress manage the document title.
 
 		add_theme_support( 'title-tag' );
+		
+		// Custom Logo
+		
+		add_theme_support( 'custom-logo' );
 
 		// Set content width
 
@@ -76,6 +80,13 @@ require_once(get_template_directory() . '/inc/wp_bootstrap_navwalker.php');
 
 
 // #################################################
+// TGMPA
+// #################################################
+ 
+require_once(get_template_directory() . '/inc/tgm/tgm-init.php');
+
+
+// #################################################
 // Register widget area.
 // #################################################
 
@@ -91,110 +102,6 @@ function venture_lite_theme_widgets_init() {
         'before_title' => '<h5 class="widget-title">',
         'after_title' => '</h5>'
     ));
-
-    // frontpage - featured - left
-    register_sidebar(array(
-        'id' => 'frontpage-featured-left',
-        'name' => __('Frontpage Featured Left', 'venture-lite' ),
-        'before_widget' => '',
-        'after_widget' => '',
-        'before_title' => '<h4 class="featured-item-title">',
-        'after_title' => '</h4>'
-    ));
-
-    // frontpage - featured - center left
-    register_sidebar(array(
-        'id' => 'frontpage-featured-center-left',
-        'name' => __('Frontpage Featured Center Left', 'venture-lite' ),
-        'before_widget' => '',
-        'after_widget' => '',
-        'before_title' => '<h4 class="featured-item-title">',
-        'after_title' => '</h4>'
-    ));
-    
-    // frontpage - featured - center right
-    register_sidebar(array(
-        'id' => 'frontpage-featured-center-right',
-        'name' => __('Frontpage Featured Center Right', 'venture-lite' ),
-        'before_widget' => '',
-        'after_widget' => '',
-        'before_title' => '<h4 class="featured-item-title">',
-        'after_title' => '</h4>'
-    ));
-    
-    // frontpage - featured - right
-    register_sidebar(array(
-        'id' => 'frontpage-featured-right',
-        'name' => __('Frontpage Featured Right', 'venture-lite' ),
-        'before_widget' => '',
-        'after_widget' => '',
-        'before_title' => '<h4 class="featured-item-title">',
-        'after_title' => '</h4>'
-    ));
-
-
-    // frontpage - about
-    register_sidebar(array(
-        'id' => 'frontpage-about',
-        'name' => __('Frontpage About', 'venture-lite' ),
-        'before_widget' => '<div class="row frontpage-about-row" data-sr="enter left and move 50px after 1s">',
-        'after_widget' => '</div>',
-        'before_title' => '<h4>',
-        'after_title' => '</h4>'
-    ));
-    
-    
-    
-    // frontpage - team - left
-    register_sidebar(array(
-        'id' => 'frontpage-team-left',
-        'name' => __('Frontpage Team Left', 'venture-lite' ),
-        'before_widget' => '<div class="team-item" data-sr="wait 0.3s, enter right and move 50px after 1s">',
-        'after_widget' => '</div>',
-        'before_title' => '<h4 class="team-item-title">',
-        'after_title' => '</h4>'
-    ));
-
-    // frontpage - team - center left
-    register_sidebar(array(
-        'id' => 'frontpage-team-center-left',
-        'name' => __('Frontpage Team Center Left', 'venture-lite' ),
-        'before_widget' => '<div class="team-item" data-sr="wait 0.3s, enter right and move 50px after 1s">',
-        'after_widget' => '</div>',
-        'before_title' => '<h4 class="team-item-title">',
-        'after_title' => '</h4>'
-    ));
-    
-    // frontpage - team - center right
-    register_sidebar(array(
-        'id' => 'frontpage-team-center-right',
-        'name' => __('Frontpage Team Center Right', 'venture-lite' ),
-        'before_widget' => '<div class="team-item" data-sr="wait 0.3s, enter right and move 50px after 1s">',
-        'after_widget' => '</div>',
-        'before_title' => '<h4 class="team-item-title">',
-        'after_title' => '</h4>'
-    ));
-    
-    // frontpage - team - right
-    register_sidebar(array(
-        'id' => 'frontpage-team-right',
-        'name' => __('Frontpage Team Right', 'venture-lite' ),
-        'before_widget' => '<div class="team-item" data-sr="wait 0.3s, enter right and move 50px after 1s">',
-        'after_widget' => '</div>',
-        'before_title' => '<h4 class="team-item-title">',
-        'after_title' => '</h4>'
-    ));    
-    
-    // frontpage - social
-    register_sidebar(array(
-        'id' => 'frontpage-social-media',
-        'name' => __('Frontpage Social Media', 'venture-lite' ),
-        'before_widget' => '',
-        'after_widget' => '',
-        'before_title' => '',
-        'after_title' => ''
-    ));
-
 
     // footer - box 1
     register_sidebar(array(
@@ -238,14 +145,6 @@ function venture_lite_theme_widgets_init() {
 
 }
 add_action( 'widgets_init', 'venture_lite_theme_widgets_init' );
-
-
-
-// #################################################
-// Custom Widgets
-// #################################################
- 
-require_once(get_template_directory() . '/inc/widgets.php');
 
 
 

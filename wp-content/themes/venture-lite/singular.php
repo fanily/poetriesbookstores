@@ -13,6 +13,7 @@
                                 <div>
                                     <?php get_template_part( 'partials/meta'); ?>
                                     <div class="full-detail"><?php the_content(); ?></div>
+                	                <?php wp_link_pages(); ?>
                                     <?php if (is_page()){ wp_link_pages( array( 'before' => '<div class="wp_link_pages">' . __( 'Pages:', 'venture-lite' ),'after'  => '</div>',) ); } ?>
                                     <?php if ( has_tag() ) { ?>
                                         <hr>
@@ -26,7 +27,7 @@
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                    <p><?php echo _e('No posts found.', 'venture-lite' ); ?></p>
+                    <p><?php _e('No posts found.', 'venture-lite' ); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
