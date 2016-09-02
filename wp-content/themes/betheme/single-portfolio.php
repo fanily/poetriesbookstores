@@ -35,8 +35,8 @@ if( get_post_meta( get_the_ID(), 'mfn-post-template', true ) == 'builder' ) $cla
 						$post_prev = get_adjacent_post( $in_same_term, '', true, 'portfolio-types' );
 						$post_next = get_adjacent_post( $in_same_term, '', false, 'portfolio-types' );
 						
-						echo mfn_post_navigation( $post_prev, 'prev', 'icon-left-open-big' );
-						echo mfn_post_navigation( $post_next, 'next', 'icon-right-open-big' );
+						echo mfn_post_navigation_sticky( $post_prev, 'prev', 'icon-left-open-big' );
+						echo mfn_post_navigation_sticky( $post_next, 'next', 'icon-right-open-big' );
 					}
 					
 					

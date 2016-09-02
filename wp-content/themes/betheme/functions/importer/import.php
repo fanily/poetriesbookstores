@@ -47,8 +47,8 @@ class mfnImport {
 			
 		}
 	
-		wp_enqueue_style( 'mfn.import', LIBS_URI. '/importer/import.css', false, time(), 'all');
-		wp_enqueue_script( 'mfn.import', LIBS_URI. '/importer/import.js', false, time(), true );
+		wp_enqueue_style( 'mfn-import', LIBS_URI. '/importer/import.css', false, time(), 'all');
+		wp_enqueue_script( 'mfn-import', LIBS_URI. '/importer/import.js', false, time(), true );
 	}
 	
 	
@@ -554,6 +554,7 @@ class mfnImport {
 								<option value="accountant">Accountant</option>
 								<option value="adagency">Ad Agency</option>
 								<option value="agency">Agency</option>
+								<option value="agency2">Agency 2</option>
 								<option value="agro">Agro</option>
 								<option value="animals">Animals</option>
 								<option value="app">App</option>
@@ -567,8 +568,10 @@ class mfnImport {
 								<option value="band">Band</option>
 								<option value="bar">Bar</option>
 								<option value="barber">Barber</option>
+								<option value="barber2">Barber 2</option>
 								<option value="beauty">Beauty</option>
 								<option value="beauty2">Beauty 2</option>
+								<option value="biker">Biker</option>
 								<option value="bikerental">Bike Rental</option>
 								<option value="billiard">Billiard</option>
 								<option value="bistro">Bistro</option>
@@ -611,6 +614,7 @@ class mfnImport {
 								<option value="disco">Disco</option>
 								<option value="dj">DJ</option>
 								<option value="driving">Driving</option>
+								<option value="ebook">eBook</option>
 								<option value="eco">Eco</option>
 								<option value="electric">Electric</option>
 								<option value="energy">Energy</option>
@@ -631,6 +635,7 @@ class mfnImport {
 								<option value="furniture">Furniture</option>
 								<option value="garden">Garden</option>
 								<option value="glasses">Glasses</option>
+								<option value="goodfood">Good Food</option>
 								<option value="golf">Golf</option>
 								<option value="gym">Gym</option>
 								<option value="handmade">Handmade</option>
@@ -662,6 +667,7 @@ class mfnImport {
 								<option value="language">Language School</option>
 								<option value="launch">Launch</option>
 								<option value="lawyer">Lawyer</option>
+								<option value="lawyer2">Lawyer 2</option>
 								<option value="library">Library</option>
 								<option value="lifestyle">Lifestyle</option>
 								<option value="loans">Loans</option>
@@ -669,9 +675,11 @@ class mfnImport {
 								<option value="marketing">Marketing</option>
 								<option value="massage">Massage</option>
 								<option value="mechanic">Mechanic</option>
+								<option value="mechanic2">Mechanic 2</option>
 								<option value="media">Media</option>
 								<option value="medic">Medic</option>
 								<option value="medic2">Medic 2</option>
+								<option value="minimal">Minimal</option>
 								<option value="mining">Mining</option>
 								<option value="model">Model</option>
 								<option value="movie">Movie</option>
@@ -731,6 +739,7 @@ class mfnImport {
 								<option value="story">Story</option>
 								<option value="surfing">Surfing</option>
 								<option value="sushi">Sushi</option>
+								<option value="tailor">Tailor</option>
 								<option value="tattoo">Tattoo</option>
 								<option value="taxi">Taxi</option>
 								<option value="tea">Tea</option>
@@ -752,11 +761,13 @@ class mfnImport {
 								<option value="vision">Vision</option>
 								<option value="voyager">Voyager</option>
 								<option value="vpn">VPN</option>
+								<option value="watch">Watch</option>
 								<option value="webdesign">Web Design</option>
 								<option value="webmaster">Webmaster</option>
 								<option value="wedding">Wedding</option>
 								<option value="wedding2">Wedding 2</option>
 								<option value="wine">Wine</option>
+								<option value="writer">Writer</option>
 								<option value="xmas">Xmas</option>
 								<option value="yoga">Yoga</option>
 								<option value="zoo">Zoo</option>

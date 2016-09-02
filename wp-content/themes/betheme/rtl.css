@@ -55,6 +55,12 @@ body{direction:rtl;unicode-bidi:embed}
 .offer .offer_li .desc_wrapper .title a.button{right:auto;left:0}
 .offer .offer_li .desc_wrapper{text-align:right}
 
+/* Clients slider -------------------------------------------------------------------- */
+.clients_slider .clients_slider_header{ padding-left: 0; padding-right: 0; text-align: right;}
+.clients_slider .clients_slider_header a.slider_prev { left: 0; right: auto;}
+.clients_slider .clients_slider_header a.slider_next { left: 50px; right: auto;}
+.clients_slider .clients_slider_ul li {float: left;}
+
 /* Lists ----------------------------------------------------------------------------- */
 ul.list_mixed li,ul.list_check li,ul.list_star li,ul.list_idea li{padding-right:50px;padding-left:0;margin-right:0}
 ul.list_check li,li.list_check{background-position:right 5px}
@@ -65,14 +71,12 @@ ul.list_mixed li:after,ul.list_check li:after,ul.list_star li:after,ul.list_idea
 dl > dt{float:right}
 dl > dd{margin-right:110px;margin-left:0}
 
+/* Dropcap --------------------------------------------------------------------------- */
+.dropcap{float:right;margin:0 0 5px 10px}
 
-/* Dropcap */
-.dropcap { float: right; margin: 0 0 5px 10px; }
-
-
-/* Idea box x*/
-.idea_box { padding: 25px 70px 25px 25px; }
-.idea_box .icon { left: auto; right: 15px; }
+/* Idea box -------------------------------------------------------------------------- */
+.idea_box{padding:25px 70px 25px 25px}
+.idea_box .icon{left:auto;right:15px}
 
 
 /* List icon */
@@ -305,6 +309,7 @@ blockquote { text-align: right; }
 ul.clients li {
     float: right;
 }
+
 .feature_list ul li {
     float: right;
 }

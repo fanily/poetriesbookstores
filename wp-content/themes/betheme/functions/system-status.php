@@ -145,7 +145,7 @@ class mfnServerStatus {
 							if ( $memory < 134217728 ) {
 								echo '<mark class="error">' . sprintf( __( '%s - We recommend setting memory to at least 128MB. See: <a href="%s" target="_blank">Increasing memory allocated to PHP</a>', 'mfn-opts' ), size_format( $memory ), 'http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP' ) . '</mark>';
 							} else {
-								echo '<mark class="yes">' . size_format( $memory ) . '</mark>';
+								echo '<mark class="yes">'. size_format( $memory ) .'</mark>';
 							}
 						?></td>
 					</tr>

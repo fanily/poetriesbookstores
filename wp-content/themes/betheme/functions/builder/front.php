@@ -212,7 +212,7 @@ if( ! function_exists( 'mfn_builder_print' ) )
 				
 					// parallax | translate3d -------
 					if( ! mfn_is_mobile() && $parallax && mfn_parallax_plugin() == 'translate3d' ){
-						echo '<img class="mfn-parallax" src="'. $section['attr']['bg_image'] .'" alt="'. __('parallax background','betheme') .'"/>';
+						echo '<img class="mfn-parallax" src="'. $section['attr']['bg_image'] .'" alt=""/>';
 					}
 					
 
@@ -231,24 +231,29 @@ if( ! function_exists( 'mfn_builder_print' ) )
 									echo '<source type="video/ogg" src="'. $ogv .'" />';
 								}
 			
-								echo '<object width="1900" height="1060" type="application/x-shockwave-flash" data="'. THEME_URI .'/js/flashmediaelement.swf">';
-								echo '<param name="movie" value="'. THEME_URI .'/js/flashmediaelement.swf" />';
-								echo '<param name="flashvars" value="controls=true&file='. $mp4 .'" />';
-								echo '<img src="'. $poster .'" title="No video playback capabilities" />';
-								echo '</object>';
+// 								echo '<object width="1900" height="1060" type="application/x-shockwave-flash" data="'. THEME_URI .'/assets/jplayer/flashmediaelement.swf">';
+// 								echo '<param name="movie" value="'. THEME_URI .'/assets/jplayer/flashmediaelement.swf" />';
+// 								echo '<param name="flashvars" value="controls=true&file='. $mp4 .'" />';
+// 								echo '<img src="'. $poster .'" title="No video playback capabilities" />';
+// 								echo '</object>';
 		
 							echo '</video>';
 							
 						echo '</div>';
 					}
 						
-					// Separator ------------------------
+					// Decoration SVG  ------------------------
 					if( key_exists( 'divider', $section['attr'] ) && $divider = $section['attr']['divider'] ){
 						echo '<div class="section-divider '. $divider .'"></div>';
 					}
 						
+					// Decoration Image Top  ------------------------
+					if( key_exists( 'decor_top', $section['attr'] ) && $decor_top = $section['attr']['decor_top'] ){
+						echo '<div class="section-decoration top" style="background-image:url('. $decor_top .');height:'. mfn_get_attachment_data( $decor_top, 'height' ) .'px"></div>';
+					}
+						
 					// Navigation ------------------------
-					if( key_exists( 'navigation', $section['attr'] ) && $divider = $section['attr']['navigation'] ){
+					if( key_exists( 'navigation', $section['attr'] ) && $section['attr']['navigation'] ){
 						echo '<div class="section-nav prev"><i class="icon-up-open-big"></i></div>';
 						echo '<div class="section-nav next"><i class="icon-down-open-big"></i></div>';
 					}
@@ -313,6 +318,11 @@ if( ! function_exists( 'mfn_builder_print' ) )
 									if( $wrap['attr']['padding'] )  $wrap_style[] = 'padding:'. $wrap['attr']['padding'];
 									if( $wrap['attr']['bg_color'] ) $wrap_style[] = 'background-color:'. $wrap['attr']['bg_color'];
 									
+									// move up -------
+									if( key_exists( 'move_up', $wrap['attr'] ) && $wrap['attr']['move_up'] ){
+										$wrap_style[] = 'margin-top:-'. intval( $wrap['attr']['move_up'] ) .'px';
+									}
+									
 									// background image attributes
 									
 									if( $wrap['attr']['bg_image'] ){
@@ -360,9 +370,9 @@ if( ! function_exists( 'mfn_builder_print' ) )
 								
 									// parallax | translate3d -------
 									if( ! mfn_is_mobile() && $parallax && mfn_parallax_plugin() == 'translate3d' ){
-										echo '<img class="mfn-parallax" src="'. $section['attr']['bg_image'] .'" alt="'. __('parallax background','betheme') .'"/>';
+										echo '<img class="mfn-parallax" src="'. $wrap['attr']['bg_image'] .'" alt=""/>';
 									}
-								
+									
 									
 									echo '<div class="mcb-wrap-inner">'; 
 										
@@ -409,6 +419,11 @@ if( ! function_exists( 'mfn_builder_print' ) )
 
 	
 					echo '</div>';
+					
+					// Decoration Image Bottom  ------------------------
+					if( key_exists( 'decor_bottom', $section['attr'] ) && $decor_bottom = $section['attr']['decor_bottom'] ){
+						echo '<div class="section-decoration bottom" style="background-image:url('. $decor_bottom .');height:'. mfn_get_attachment_data( $decor_bottom, 'height' ) .'px"></div>';
+					}
 					
 				echo '</div>';
 			}
@@ -620,7 +635,7 @@ if( ! function_exists( 'mfn_print_column' ) )
 			$style .= ' '. $item['fields']['style'];
 		}
 
-		echo '<div class="column_attr'. $column_class .'" '. $column_attr .' style="'. $style .'">';
+		echo '<div class="column_attr clearfix'. $column_class .'" '. $column_attr .' style="'. $style .'">';
 			echo do_shortcode( $item['fields']['content'] );
 		echo '</div>';
 	}

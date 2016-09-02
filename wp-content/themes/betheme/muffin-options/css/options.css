@@ -180,10 +180,14 @@
 
 
 /* Field | Info ---------------------------------------- */
-#mfn-wrapper .form-table tr.mfn-info { background: #dce7f7; border-bottom-color: transparent !important; position:relative; top:-1px;}
-#mfn-wrapper .form-table tr.mfn-info.desc { background: #fff; top:-2px;}
+#mfn-wrapper .form-table tr.mfn-info { background: #dce7f7; border-bottom-color:transparent !important; position:relative; top:-1px;}
 #mfn-wrapper .form-table tr.mfn-info td { box-shadow: -3px 0 0 0 #b9cbe4; color: #516676; font-size: 13px; font-weight: 400; padding: 15px 20px; letter-spacing: 2px; text-transform: uppercase; position:relative; left:-207px;}
 #mfn-wrapper .form-table tr.mfn-info td span { font-size: 10px; margin-left: 10px; opacity: 0.9;}
+
+#mfn-wrapper .form-table tr.mfn-info.desc { background: #fff; top:-2px;}
+
+#mfn-wrapper .form-table tr.mfn-info.info { background: none; top:0; border-bottom-color:#ebecec !important;}
+#mfn-wrapper .form-table tr.mfn-info.info td { box-shadow: -3px 0 0 0 #e5e5e5; color:#555; letter-spacing:0.5px; text-transform:none;}
 
 #mfn-wrapper .form-table tr.deprecated th,
 #mfn-wrapper .form-table tr.deprecated input,
@@ -267,6 +271,7 @@
 #mfn-wrapper a.mfn-opts-ajax { padding: 0 17px; display: inline-block;}
 #mfn-wrapper a.mfn-opts-ajax:hover {}
 
+
 /* -------------- .mfn-custom-field --------------- */
 #mfn-wrapper .mfn-custom-field p { font-size:90%; margin:0 0 10px;}
 #mfn-wrapper .mfn-custom-field a.btn-blue { display: inline-block;}
@@ -297,6 +302,14 @@
 .mfn-icon-field .mfn-icon.active > i:before,
 .mfn-icon-field .mfn-icon > i:hover:before { display:inline; margin:0; }
 
+
+/* -------------- Field | Typography --------------- */
+.mfn-field-typography .typography-wrapper { float:left; margin-right:40px; height:65px; }
+.mfn-field-typography .typography-wrapper label { font-size:13px; color:#666; display:block; cursor:default;}
+.mfn-field-typography .typography-wrapper input { width:80px !important; text-align:center; float:left;}
+.mfn-field-typography .typography-wrapper select { text-align:center; float:left;}
+.mfn-field-typography .typography-wrapper .desc-right { float:left; font-size:12px; color:#999; margin:11px 0 0 2px;}
+.mfn-field-typography .description { margin-top:0 !important;}
 
 
 /* -------------- .mfn-switch-field --------------- */

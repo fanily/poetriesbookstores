@@ -222,7 +222,11 @@
 			section
 				.css( 'padding', 0 )
 				.css( 'min-height', windowH + offset );
+			
 			var padding = ( windowH + offset - wrapper.height() ) / 2;
+			
+			if( padding < 50 ) padding = 50;
+			
 			wrapper
 				.css( 'padding-top', padding + 10 )			// 20 = column margin-bottom / 2
 				.css( 'padding-bottom', padding - 10 );
@@ -328,7 +332,9 @@
 			        if( newActive ){
 				        var menu = $('#menu');
 				        menu.find('li').removeClass('current-menu-item current-menu-parent current-menu-ancestor current_page_item current_page_parent current_page_ancestor');
-				        $( active, menu ).closest('li').addClass('current-menu-item');
+				        $( active, menu )
+				        	.closest('li').addClass('current-menu-item')
+				        	.closest('.menu > li').addClass('current-menu-item');
 			        }
 				}
 			
@@ -405,7 +411,7 @@
 			e.preventDefault();
 			var el = $(this)
 			var menu = $('#Top_bar #menu');
-			var menuWrap = menu.closest('.menu_wrapper');
+			var menuWrap = menu.closest('.top_bar_left');
 			el.toggleClass('active');
 			
 			if( el.hasClass('is-sticky') && el.hasClass('active') && ( $(window).width() < 768 ) ){
@@ -443,7 +449,7 @@
 		// Muffin Menu -------------------------------
 		function mainMenu(){
 			
-			var mobileInit = ( window.mfn_mobile_init ) ? window.mfn_mobile_init : 1240;
+			var mobileInit = ( window.mfn.mobile_init ) ? window.mfn.mobile_init : 1240;
 			
 			if( $('body').hasClass('header-simple') || $('#Header_creative.dropdown').length ){
 				mobileInit = 1921;
@@ -452,11 +458,13 @@
 			$("#menu > ul.menu").mfnMenu({
 				addLast		: true,
 				arrows		: true,
-				mobileInit	: mobileInit
+				mobileInit	: mobileInit,
+				responsive	: window.mfn.responsive
 			});
 			
 			$("#secondary-menu > ul.secondary-menu").mfnMenu({
-				mobileInit	: mobileInit
+				mobileInit	: mobileInit,
+				responsive	: window.mfn.responsive
 			});
 			
 		}
@@ -552,25 +560,49 @@
 					
 				});
 				
+
+				// active
+				var activeSelector = '.menu > li.current-menu-item, .menu > li.current-menu-parent, .menu > li.current-menu-ancestor, .menu > li.current-page-ancestor, .menu > li.current_page_item, .menu > li.current_page_parent, .menu > li.current_page_ancestor';
 				
-				
-				// active | remove
-				menu.find( 'li' ).removeClass( 'current-menu-item current-menu-parent current-menu-ancestor current-page-ancestor current_page_item current_page_parent current_page_ancestor' );
-			
-				
-				// active | add for first element if offset().top == 0 			
-				var first = $( '.menu > li:first-child', menu );
-				var firstA  = first.children('a');
-				
-				if( firstA.attr( 'data-hash' ) ){		
-					var hash = firstA.attr( 'data-hash' );
-					hash = '[data-id="'+ hash +'"]';
+				if( $( activeSelector, menu ).length ){
 					
-					var wpadminbarH = $('#wpadminbar').innerHeight() * 1;
+					// remove duplicated 
+					$( activeSelector, menu )
+						.not(':first').removeClass( 'current-menu-item current-menu-parent current-menu-ancestor current-page-ancestor current_page_item current_page_parent current_page_ancestor' );
 					
-					if( $(hash).length && ( $(hash).offset().top == wpadminbarH ) ){
-						first.addClass( 'current-menu-item' );
+					// remove if 1st link to section & section is not visible
+					var hash = $( activeSelector, menu ).find('a[data-hash]').attr( 'data-hash' );
+					
+					if( hash ){
+						hash = '[data-id="'+ hash +'"]';
+						
+						if( $(hash).length && $( hash ).visible( true ) ){
+							// do nothing							
+						} else {
+							$( activeSelector, menu ).removeClass( 'current-menu-item current-menu-parent current-menu-ancestor current-page-ancestor current_page_item current_page_parent current_page_ancestor' )
+								.closest('.menu > li').removeClass( 'current-menu-item current-menu-parent current-menu-ancestor current-page-ancestor current_page_item current_page_parent current_page_ancestor' );
+						}
+					} else {
+						// do nothing
 					}
+					
+				} else {
+					
+					// add to first if none is active
+					var first = $( '.menu > li:first-child', menu );
+					var firstA  = first.children('a');
+					
+					if( firstA.attr( 'data-hash' ) ){		
+						var hash = firstA.attr( 'data-hash' );
+						hash = '[data-id="'+ hash +'"]';
+						
+						var wpadminbarH = $('#wpadminbar').innerHeight() * 1;
+						
+						if( $(hash).length && ( $(hash).offset().top == wpadminbarH ) ){
+							first.addClass( 'current-menu-item' );
+						}
+					}
+					
 				}
 
 				
@@ -580,7 +612,9 @@
 					
 					// active
 					menu.find('li').removeClass('current-menu-item');
-					$(this).closest('li').addClass('current-menu-item');
+					$(this)
+						.closest('li').addClass('current-menu-item')
+						.closest('.menu > li').addClass('current-menu-item');
 	
 					var hash = $(this).attr('data-hash');
 					hash = '[data-id="'+ hash +'"]';
@@ -732,7 +766,7 @@
         		cursorcolor			: '#222222',
         		cursorwidth			: 10,
         		horizrailenabled	: false,
-        		mousescrollstep		: ( window.mfn_nicescroll ) ? window.mfn_nicescroll : 40,
+        		mousescrollstep		: ( window.mfn.nicescroll ) ? window.mfn.nicescroll : 40,
         		scrollspeed			: 60
         	});
         	
@@ -916,7 +950,7 @@
 		
 		if( ! isMobileWebkit && $(window).width() >= 768 ){
 			
-			if( window.mfn_parallax == 'stellar' ){
+			if( window.mfn.parallax == 'stellar' ){
 				
 				// Stellar
 				$.stellar({
@@ -1459,7 +1493,7 @@
 		 * Isotope
 		 * --------------------------------------------------------------------------- */
 		// Portfolio - Isotope
-		$('.portfolio_wrapper .isotope:not( .masonry-flat, .masonry-hover )').isotope({
+		$('.portfolio_wrapper .isotope:not( .masonry-flat, .masonry-hover, .masonry-minimal )').isotope({
 			itemSelector	: '.portfolio-item',
 			layoutMode		: 'fitRows',
 			isOriginLeft	: rtl ? false : true
@@ -1476,7 +1510,7 @@
 		});
 
 		// Blog & Portfolio - Masonry
-		$('.isotope.masonry, .isotope.masonry-hover').isotope({
+		$('.isotope.masonry, .isotope.masonry-hover, .isotope.masonry-minimal').isotope({
 			itemSelector	: '.isotope-item',
 			layoutMode		: 'masonry',
 			isOriginLeft	: rtl ? false : true

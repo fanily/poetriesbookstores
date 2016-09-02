@@ -31,6 +31,9 @@ class MFN_Options_checkbox extends MFN_Options{
 			
 			echo '<div class="mfnf-checkbox multi '. $class .'">';
 			
+				// FIX | Post Meta Save | All values unchecked
+				echo '<input type="hidden" name="'. $name. '[post-meta]" value="1" checked="checked" />';
+			
 				echo '<ul>';
 					foreach( $this->field['options'] as $k => $v ){
 						

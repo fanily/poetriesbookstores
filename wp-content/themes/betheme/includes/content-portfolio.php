@@ -154,6 +154,17 @@ if( ! function_exists('mfn_content_portfolio') ){
 						$output .= '</div>';
 
 						
+					} elseif( $style == 'masonry-minimal' ){
+						// style: Masonry Minimal ---------------------------------------------------
+						
+						
+							$output .= '<div class="image_frame scale-with-grid">';
+								$output .= '<div class="image_wrapper">';
+									$output .= mfn_post_thumbnail( get_the_ID(), 'portfolio', 'masonry-minimal' );
+								$output .= '</div>';
+							$output .= '</div>';
+						
+						
 					} elseif( $style == 'masonry-hover' ){
 						// style: Masonry Hover ---------------------------------------------------
 						

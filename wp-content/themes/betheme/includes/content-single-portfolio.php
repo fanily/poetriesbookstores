@@ -10,10 +10,31 @@
 // prev & next post -------------------
 mfn_post_navigation_sort();
 
-$in_same_term = ( mfn_opts_get( 'prev-next-nav' ) == 'same-category' ) ? true : false;
-$post_prev = get_adjacent_post( $in_same_term, '', true, 'portfolio-types' );
-$post_next = get_adjacent_post( $in_same_term, '', false, 'portfolio-types' );
+$single_post_nav = array(
+		'hide-header'	=> false,
+		'hide-sticky'	=> false,
+		'in-same-term'	=> false,
+);
+
+$opts_single_post_nav = mfn_opts_get( 'prev-next-nav' );
+if( is_array( $opts_single_post_nav ) ){
+
+	if( isset( $opts_single_post_nav['hide-header'] ) ){
+		$single_post_nav['hide-header'] = true;
+	}
+	if( isset( $opts_single_post_nav['hide-sticky'] ) ){
+		$single_post_nav['hide-sticky'] = true;
+	}
+	if( isset( $opts_single_post_nav['in-same-term'] ) ){
+		$single_post_nav['in-same-term'] = true;
+	}
+
+}
+
+$post_prev = get_adjacent_post( $single_post_nav['in-same-term'], '', true, 'portfolio-types' );
+$post_next = get_adjacent_post( $single_post_nav['in-same-term'], '', false, 'portfolio-types' );
 $portfolio_page_id = mfn_opts_get( 'portfolio-page' );
+
 
 // categories -------------------------
 $categories 	= '';
@@ -27,6 +48,7 @@ if( is_array( $terms ) ){
 	}
 }
 
+
 // post classes -----------------------
 $classes = array();
 if( get_post_meta(get_the_ID(), 'mfn-post-slider-header', true) ) $classes[] = 'no-img';
@@ -36,6 +58,7 @@ if( mfn_opts_get( 'share' ) == 'hide-mobile' ){
 } elseif( ! mfn_opts_get( 'share' ) ) {
 	$classes[] = 'no-share';
 }
+
 
 $translate['published'] 	= mfn_opts_get('translate') ? mfn_opts_get('translate-published','Published by') : __('Published by','betheme');
 $translate['at'] 			= mfn_opts_get('translate') ? mfn_opts_get('translate-at','at') : __('at','betheme');
@@ -53,111 +76,103 @@ $translate['task'] 			= mfn_opts_get('translate') ? mfn_opts_get('translate-task
 <div id="portfolio-item-<?php the_ID(); ?>" <?php post_class( $classes ); ?>>
 
 	<?php 
-		// prev & next post navigation
-		if( mfn_opts_get('prev-next-nav') ){
-			echo mfn_post_navigation( $post_prev, 'prev', 'icon-left-open-big' ); 
-			echo mfn_post_navigation( $post_next, 'next', 'icon-right-open-big' );
+		// single post navigation | sticky
+		if( ! $single_post_nav['hide-sticky'] ){
+			echo mfn_post_navigation_sticky( $post_prev, 'prev', 'icon-left-open-big' ); 
+			echo mfn_post_navigation_sticky( $post_next, 'next', 'icon-right-open-big' );
 		} 
 	?>
+	
+	<?php if( get_post_meta( get_the_ID(), 'mfn-post-template', true ) != 'intro' ): ?>
 
-	<div class="section section-portfolio-header">
-		<div class="section_wrapper clearfix">
-	
-			<?php if( mfn_opts_get('prev-next-nav') ): ?>
-			<div class="column one post-nav">
-				
-				<ul class="next-prev-nav">
-					<?php if( $post_prev ): ?>
-						<li class="prev"><a class="button button_js" href="<?php echo get_permalink( $post_prev ); ?>"><span class="button_icon"><i class="icon-left-open"></i></span></a></li>
-					<?php endif; ?>
-					<?php if( $post_next ): ?>
-						<li class="next"><a class="button button_js" href="<?php echo get_permalink( $post_next ); ?>"><span class="button_icon"><i class="icon-right-open"></i></span></a></li>
-					<?php endif; ?>
-				</ul>
-				
-				<?php if( $portfolio_page_id ): ?>
-					<a class="list-nav" href="<?php echo get_permalink( mfn_wpml_ID( $portfolio_page_id ) ); ?>"><i class="icon-layout"></i><?php echo $translate['all']; ?></a>
-				<?php endif; ?>
-				
-			</div>
-			<?php endif; ?>
+		<div class="section section-post-header">
+			<div class="section_wrapper clearfix">
 		
-			<div class="column one post-header">
+				<?php 
+					// single post navigation | header
+					if( ! $single_post_nav['hide-header'] ){
+						echo mfn_post_navigation_header( $post_prev, $post_next, mfn_wpml_ID( $portfolio_page_id ), $translate );
+					}
+				?>
 			
-				<div class="button-love"><?php echo mfn_love() ?></div>
+				<div class="column one post-header">
 				
-				<div class="title_wrapper">
-				
-					<?php 
-						$h = mfn_opts_get( 'title-heading', 1 );
-						echo '<h'. $h .' class="entry-title" itemprop="headline">'. get_the_title() .'</h'. $h .'>';
-					?>
+					<div class="button-love"><?php echo mfn_love() ?></div>
 					
-					<div class="post-meta clearfix">
-						<div class="author-date">
-							<span class="author"><?php echo $translate['published']; ?> <i class="icon-user"></i> <a href="<?php echo get_author_posts_url( get_the_author_meta('ID') ); ?>"><?php the_author_meta( 'display_name' ); ?></a></span> 
-							<span class="date"><?php echo $translate['at']; ?> <i class="icon-clock"></i><time class="entry-date" datetime="<?php the_date('c'); ?>" itemprop="datePublished" pubdate><?php echo get_the_date(); ?></time></span>
+					<div class="title_wrapper">
+					
+						<?php 
+							$h = mfn_opts_get( 'title-heading', 1 );
+							echo '<h'. $h .' class="entry-title" itemprop="headline">'. get_the_title() .'</h'. $h .'>';
+						?>
+						
+						<div class="post-meta clearfix">
+							<div class="author-date">
+								<span class="author"><?php echo $translate['published']; ?> <i class="icon-user"></i> <a href="<?php echo get_author_posts_url( get_the_author_meta('ID') ); ?>"><?php the_author_meta( 'display_name' ); ?></a></span> 
+								<span class="date"><?php echo $translate['at']; ?> <i class="icon-clock"></i><time class="entry-date" datetime="<?php the_date('c'); ?>" itemprop="datePublished" pubdate><?php echo get_the_date(); ?></time></span>
+							</div>
+							<div class="category">
+								<span class="cat-btn"><?php echo $translate['categories']; ?> <i class="icon-down-dir"></i></span>
+								<div class="cat-wrapper"><ul><?php echo $categories ?></ul></div>
+							</div>
 						</div>
-						<div class="category">
-							<span class="cat-btn"><?php echo $translate['categories']; ?> <i class="icon-down-dir"></i></span>
-							<div class="cat-wrapper"><ul><?php echo $categories ?></ul></div>
-						</div>
+						
 					</div>
 					
 				</div>
-				
-			</div>
-	
-			<div class="column one single-photo-wrapper <?php echo mfn_post_thumbnail_type( get_the_ID() ); ?>">
-				
-				<?php if( mfn_opts_get( 'share' ) ): ?>
-				<div class="share_wrapper">
-					<span class='st_facebook_vcount' displayText='Facebook'></span>
-					<span class='st_twitter_vcount' displayText='Tweet'></span>
-					<span class='st_pinterest_vcount' displayText='Pinterest'></span>
+		
+				<div class="column one single-photo-wrapper <?php echo mfn_post_thumbnail_type( get_the_ID() ); ?>">
 					
-					<script src="http<?php mfn_ssl(1); ?>://w<?php mfn_ssl(1); ?>.sharethis.com/button/buttons.js"></script>
-					<script>stLight.options({publisher: "1390eb48-c3c3-409a-903a-ca202d50de91", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
-				</div>
-				<?php endif; ?>
-				
-				<?php if( ! get_post_meta(get_the_ID(), 'mfn-post-slider-header', true) ): ?>
-				<div class="image_frame scale-with-grid">
-				
-					<div class="image_wrapper">
-						<?php echo mfn_post_thumbnail( get_the_ID() ); ?>
+					<?php if( mfn_opts_get( 'share' ) ): ?>
+					<div class="share_wrapper">
+						<span class='st_facebook_vcount' displayText='Facebook'></span>
+						<span class='st_twitter_vcount' displayText='Tweet'></span>
+						<span class='st_pinterest_vcount' displayText='Pinterest'></span>
+						
+						<script src="http<?php mfn_ssl(1); ?>://w<?php mfn_ssl(1); ?>.sharethis.com/button/buttons.js"></script>
+						<script>stLight.options({publisher: "1390eb48-c3c3-409a-903a-ca202d50de91", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 					</div>
+					<?php endif; ?>
 					
-					<?php 
-						if( $caption = get_post( get_post_thumbnail_id() )->post_excerpt ){
-					    	echo '<p class="wp-caption-text '. mfn_opts_get( 'featured-image-caption' ) .'">'. $caption .'</p>';
-						}
-					?>
-							
+					<?php if( ! get_post_meta(get_the_ID(), 'mfn-post-slider-header', true) ): ?>
+					<div class="image_frame scale-with-grid">
+					
+						<div class="image_wrapper">
+							<?php echo mfn_post_thumbnail( get_the_ID() ); ?>
+						</div>
+						
+						<?php 
+							if( $caption = get_post( get_post_thumbnail_id() )->post_excerpt ){
+						    	echo '<p class="wp-caption-text '. mfn_opts_get( 'featured-image-caption' ) .'">'. $caption .'</p>';
+							}
+						?>
+								
+					</div>
+					<?php endif; ?>
+					
 				</div>
-				<?php endif; ?>
+				
+				<div class="column one project-description">
+					<ul>
+						<?php 
+							if( $client = get_post_meta( get_the_ID(), 'mfn-post-client', true ) ){
+								echo '<li class="one-third"><span class="label">'. $translate['client'] .'</span>'. $client .'</li>';
+							}
+							echo '<li class="one-third"><span class="label">'. $translate['date'] .'</span>'. get_the_date() .'</li>';
+							if( $link = get_post_meta( get_the_ID(), 'mfn-post-link', true ) ){
+								echo '<li class="one-third"><span class="label">'. $translate['website'] .'</span><a target="_blank" href="'. $link .'"><i class="icon-forward"></i>'. $translate['view'] .'</a></li>';
+							}
+							if( $task = get_post_meta( get_the_ID(), 'mfn-post-task', true ) ){
+								echo '<li><span class="label">'. $translate['task'] .'</span>'. $task .'</li>';
+							}
+						?>
+					</ul>
+				</div>
 				
 			</div>
-			
-			<div class="column one project-description">
-				<ul>
-					<?php 
-						if( $client = get_post_meta( get_the_ID(), 'mfn-post-client', true ) ){
-							echo '<li class="one-third"><span class="label">'. $translate['client'] .'</span>'. $client .'</li>';
-						}
-						echo '<li class="one-third"><span class="label">'. $translate['date'] .'</span>'. get_the_date() .'</li>';
-						if( $link = get_post_meta( get_the_ID(), 'mfn-post-link', true ) ){
-							echo '<li class="one-third"><span class="label">'. $translate['website'] .'</span><a target="_blank" href="'. $link .'"><i class="icon-forward"></i>'. $translate['view'] .'</a></li>';
-						}
-						if( $task = get_post_meta( get_the_ID(), 'mfn-post-task', true ) ){
-							echo '<li><span class="label">'. $translate['task'] .'</span>'. $task .'</li>';
-						}
-					?>
-				</ul>
-			</div>
-			
 		</div>
-	</div>
+		
+	<?php endif; ?>	
 	
 	<div class="entry-content" itemprop="mainContentOfPage">
 		<?php
@@ -231,7 +246,7 @@ $translate['task'] 			= mfn_opts_get('translate') ? mfn_opts_get('translate-task
 												echo mfn_post_thumbnail( get_the_ID(), 'portfolio' );
 											echo '</div>';
 											
-											if( $caption = get_post( get_post_thumbnail_id() )->post_excerpt ){
+											if( has_post_thumbnail() && $caption = get_post( get_post_thumbnail_id() )->post_excerpt ){
 												echo '<p class="wp-caption-text '. mfn_opts_get( 'featured-image-caption' ) .'">'. $caption .'</p>';
 											}
 											

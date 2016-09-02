@@ -32,6 +32,7 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 				'desc' 		=> __('This field is used as an Section Label in admin panel only', 'mfn-opts'),
 			),
 				
+			// background	
 			array(
 				'id' 		=> 'info_background',
 				'type' 		=> 'info',
@@ -81,6 +82,7 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 				'class'		=> __('video', 'mfn-opts'),
 			),
 				
+			// layout
 			array(
 				'id' 		=> 'info_layout',
 				'type' 		=> 'info',
@@ -93,7 +95,6 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 				'id' 		=> 'padding_top',
 				'type'		=> 'text',
 				'title' 	=> __('Padding | Top', 'mfn-opts'),
-				'sub_desc'	=> __('Section Padding Top', 'mfn-opts'),
 				'desc' 		=> __('px', 'mfn-opts'),
 				'class' 	=> 'small-text',
 				'std' 		=> '0',
@@ -103,12 +104,12 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 				'id' 		=> 'padding_bottom',
 				'type'		=> 'text',
 				'title' 	=> __('Padding | Bottom', 'mfn-opts'),
-				'sub_desc'	=> __('Section Padding Bottom', 'mfn-opts'),
 				'desc' 		=> __('px', 'mfn-opts'),
 				'class' 	=> 'small-text',
 				'std' 		=> '0',
 			),
 				
+			// options	
 			array(
 				'id' 		=> 'info_options',
 				'type' 		=> 'info',
@@ -120,22 +121,35 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 			array(
 				'id' 		=> 'divider',
 				'type' 		=> 'select',
-				'title' 	=> __('Separator', 'mfn-opts'),
-				'sub_desc'	=> __('Section Separator', 'mfn-opts'),
+				'title' 	=> __('Decoration SVG', 'mfn-opts'),
 				'desc' 		=> __('Works only with <b>background color</b> selected above. Do <b>not</b> work with parallax and some section\'s styles', 'mfn-opts'),
 				'options' 	=> array(
 					'' 						=> 'None',
 					'circle up' 			=> 'Circle Up',
-					'circle down' 			=> 'Circle Down',
 					'square up' 			=> 'Square Up',
-					'square down' 			=> 'Square Down',
 					'triangle up' 			=> 'Triangle Up',
-					'triangle down' 		=> 'Triangle Down',
 					'triple-triangle up' 	=> 'Triple Triangle Up',
+					'circle down' 			=> 'Circle Down',
+					'square down' 			=> 'Square Down',					
+					'triangle down' 		=> 'Triangle Down',					
 					'triple-triangle down' 	=> 'Triple Triangle Down',
 				),
 			),
-	
+
+			array(
+				'id'		=> 'decor_top',
+				'type'		=> 'upload',
+				'title'		=> __('Decoration Image | Top', 'mfn-opts'),
+				'desc'		=> __('Please use only images <b>from Media Library</b>. Recommended width: 1920px', 'mfn-opts'),
+			),
+
+			array(
+				'id'		=> 'decor_bottom',
+				'type'		=> 'upload',
+				'title'		=> __('Decoration Image | Bottom', 'mfn-opts'),
+				'desc'		=> __('Please use only images <b>from Media Library</b>. Recommended width: 1920px', 'mfn-opts'),
+			),
+
 			array(
 				'id' 		=> 'navigation',
 				'type' 		=> 'select',
@@ -146,6 +160,7 @@ if( ! function_exists( 'mfn_get_fields_section' ) )
 				),
 			),
 				
+			// advanced	
 			array(
 				'id' 		=> 'info_advanced',
 				'type' 		=> 'info',
@@ -256,6 +271,23 @@ if( ! function_exists( 'mfn_get_fields_wrap' ) )
 				'std' 		=> 'center top no-repeat',
 			),
 				
+			// options
+			array(
+				'id' 		=> 'info_options',
+				'type' 		=> 'info',
+				'title' 	=> '',
+				'desc' 		=> __('Options', 'mfn-opts'),
+				'class' 	=> 'mfn-info',
+			),
+			
+			array(
+				'id' 		=> 'move_up',
+				'type' 		=> 'text',
+				'title' 	=> __('Move Up', 'mfn-opts'),
+				'desc' 		=> __('px<br />Move this wrap to overflow on previous section. Do <b>not</b> work with <b>parallax</b>', 'mfn-opts'),
+				'class' 	=> 'small-text',
+			),
+				
 			array(
 				'id' 		=> 'padding',
 				'type' 		=> 'text',
@@ -264,6 +296,7 @@ if( ! function_exists( 'mfn_get_fields_wrap' ) )
 				'class' 	=> 'small-text',
 			),
 				
+			// items
 			array(
 				'id' 		=> 'info_items',
 				'type' 		=> 'info',
@@ -299,6 +332,7 @@ if( ! function_exists( 'mfn_get_fields_wrap' ) )
 				),
 			),
 	
+			// advanced
 			array(
 				'id' 		=> 'info_advanced',
 				'type' 		=> 'info',
@@ -348,7 +382,9 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id' 		=> 'info',
 						'type' 		=> 'info',
+						'title' 	=> '',
 						'desc' 		=> __('This is Muffin Builder Placeholder.', 'nhp-opts'),
+						'class' 	=> 'mfn-info info',
 					),
 							
 				),
@@ -442,8 +478,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'title' 	=> __('Title', 'mfn-opts'),
 					),
 						
-					// link
-						
+					// link	
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -470,7 +505,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -488,7 +522,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-						
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -556,7 +589,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type' 		=> 'textarea',
 						'title' 	=> __('Content', 'mfn-opts'),
 						'sub_desc' 	=> __('Blockquote content.', 'mfn-opts'),
-						'desc' 		=> __('HTML tags allowed.', 'mfn-opts')
+						'desc' 		=> __('Some HTML tags allowed.', 'mfn-opts')
 					),
 						
 					array(
@@ -642,6 +675,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'std' 		=> 3,
 					),
 						
+					// options	
 					array(
 						'id' 		=> 'info_options',
 						'type' 		=> 'info',
@@ -665,7 +699,8 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'sub_desc'	=> __('Categories <b>slugs</b>', 'mfn-opts'),
 						'desc'		=> __('Slugs should be separated with <b>coma</b> ( , )', 'mfn-opts'),
 					),
-						
+
+					// advanced
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -724,10 +759,19 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id'		=> 'greyscale',
 						'type'		=> 'select',
-						'title'		=> 'Greyscale Images',
+						'title'		=> __('Greyscale Images', 'mfn-opts'),
 						'options' 	=> array( 0 => 'No', 1 => 'Yes' ),
 					),
 						
+					array(
+						'id'		=> 'margin',
+						'type'		=> 'select',
+						'title'		=> __('Margin', 'mfn-opts'),
+						'desc'		=> __('for <b>Style: Masonry Tiles</b> only', 'mfn-opts'),
+						'options' 	=> array( 0 => 'No', 1 => 'Yes' ),
+					),
+						
+					// custom	
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -763,12 +807,31 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					array(
+						'id' 		=> 'style',
+						'type' 		=> 'select',
+						'title' 	=> __('Style', 'mfn-opts'),
+						'options' 	=> array(
+							'' 			=> __('Default', 'mfn-opts'),
+							'featured'	=> __('Featured 1st', 'mfn-opts'),
+						),
+					),
+						
+					array(
 						'id' 		=> 'count',
 						'type' 		=> 'text',
 						'title' 	=> __('Count', 'mfn-opts'),
 						'sub_desc' 	=> __('Number of posts to show', 'mfn-opts'),
 						'std' 		=> '5',
 						'class' 	=> 'small-text',
+					),
+						
+					// options		
+					array(
+						'id' 		=> 'info_options',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Options', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
 					),
 
 					array(
@@ -786,20 +849,49 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'sub_desc'	=> __('Categories Slugs', 'mfn-opts'),
 						'desc'		=> __('Slugs should be separated with <strong>coma</strong> (,).', 'mfn-opts'),
 					),
+						
+					// advanced
+					array(
+						'id' 		=> 'info_advanced',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Advanced', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
+						
+					array(
+						'id' 		=> 'excerpt',
+						'type' 		=> 'select',
+						'title' 	=> __('Excerpt', 'mfn-opts'),
+						'options' 	=> array(
+							0 			=> __('Hide', 'mfn-opts'),
+							1 			=> __('Show', 'mfn-opts'),
+							'featured' 	=> __('Show for Featured only', 'mfn-opts'),
+						),
+					),
 
 					array(
 						'id'		=> 'link',
 						'type' 		=> 'text',
-						'title' 	=> __('Button Link', 'mfn-opts'),
+						'title' 	=> __('Button | Link', 'mfn-opts'),
 					),
 						
 					array(
 						'id'		=> 'link_title',
 						'type' 		=> 'text',
-						'title' 	=> __('Button Title', 'mfn-opts'),
+						'title' 	=> __('Button | Title', 'mfn-opts'),
 						'class'		=> 'small-text',
 					),
 
+					// custom
+					array(
+						'id' 		=> 'info_custom',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Custom', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
+					
 					array(
 						'id' 		=> 'classes',
 						'type' 		=> 'text',
@@ -835,6 +927,15 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'std' 		=> '5',
 						'class' 	=> 'small-text',
 					),
+						
+					// options
+					array(
+						'id' 		=> 'info_options',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Options', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
 
 					array(
 						'id' 		=> 'category',
@@ -851,6 +952,15 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'sub_desc'	=> __('Categories Slugs', 'mfn-opts'),
 						'desc'		=> __('Slugs should be separated with <strong>coma</strong> (,).', 'mfn-opts'),
 					),
+
+					// advanced
+					array(
+						'id' 		=> 'info_advanced',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Advanced', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
 						
 					array(
 						'id' 		=> 'more',
@@ -865,9 +975,30 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type' 		=> 'select',
 						'title' 	=> __('Style', 'mfn-opts'),
 						'options'	=> array(
-							''			=> 'Default',
-							'flat'		=> 'Flat'
+							''			=> __('Default', 'mfn-opts'),
+							'flat'		=> __('Flat', 'mfn-opts'),
 						),
+					),
+						
+					array(
+						'id' 		=> 'navigation',
+						'type' 		=> 'select',
+						'title' 	=> __('Navigation', 'mfn-opts'),
+						'options'	=> array(
+							''				=> __('Default', 'mfn-opts'),
+							'hide-arrows'	=> __('Hide Arrows', 'mfn-opts'),
+							'hide-dots'		=> __('Hide Dots', 'mfn-opts'),
+							'hide-nav'		=> __('Hide Navigation', 'mfn-opts'),
+						),
+					),
+						
+					// custom
+					array(
+						'id' 		=> 'info_custom',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Custom', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
 					),
 
 					array(
@@ -924,6 +1055,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 
+					// icon	
 					array(
 						'id' 		=> 'info_icon',
 						'type' 		=> 'info',
@@ -949,6 +1081,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 						
+					// color	
 					array(
 						'id' 		=> 'info_color',
 						'type' 		=> 'info',
@@ -961,7 +1094,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'id' 		=> 'color',
 						'type' 		=> 'text',
 						'title' 	=> __('Background', 'mfn-opts'),
-						'desc' 		=> __('Use color name ( gray ) or hex ( #808080 )', 'mfn-opts'),
+						'desc' 		=> __('Use one of predefined colors, color name or hex. Example: <b>grey</b> or <b>#CCCCCC</b>', 'mfn-opts'),
 						'class' 	=> 'small-text',
 					),
 						
@@ -969,10 +1102,11 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'id' 		=> 'font_color',
 						'type' 		=> 'text',
 						'title' 	=> __('Font', 'mfn-opts'),
-						'desc' 		=> __('Use color name ( black ) or hex ( #000000 )', 'mfn-opts'),
+						'desc' 		=> __('Use color name or hex. Example: <b>black</b> or <b>#000000</b>', 'mfn-opts'),
 						'class' 	=> 'small-text',
 					),
 		
+					// style
 					array(
 						'id' 		=> 'info_style',
 						'type' 		=> 'info',
@@ -1000,6 +1134,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'options' 	=> array( 0 => 'No', 1 => 'Yes' ),
 					),
 					
+					// advanced
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -1072,8 +1207,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'class'		=> 'small-text',
 					),
 						
-					// link
-					
+					// link	
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -1099,8 +1233,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 						
-					// advanced
-						
+					// advanced	
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -1125,7 +1258,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-						
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -1160,8 +1292,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'title' 	=> __('Title', 'mfn-opts'),
 					),
 						
-					// chart	
-						
+					// chart		
 					array(
 						'id' 		=> 'info_chart',
 						'type' 		=> 'info',
@@ -1197,7 +1328,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// options
-					
 					array(
 						'id' 		=> 'info_options',
 						'type' 		=> 'info',
@@ -1216,7 +1346,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-					
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -1438,6 +1567,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 						
+					// background
 					array(
 						'id' 		=> 'info_background',
 						'type' 		=> 'info',
@@ -1450,7 +1580,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'id' 		=> 'column_bg',
 						'type' 		=> 'text',
 						'title' 	=> __('Color', 'mfn-opts'),
-						'desc' 		=> __('Use color name ( gray ) or hex ( #808080 )', 'mfn-opts'),
+						'desc' 		=> __('Use color name or hex, e.g.: <b>silver</b> or <b>#C0C0C0</b>', 'mfn-opts'),
 						'class' 	=> 'small-text',
 					),
 						
@@ -1469,6 +1599,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'std' 		=> 'center top no-repeat',
 					),
 						
+					// layout	
 					array(
 						'id' 		=> 'info_layout',
 						'type' 		=> 'info',
@@ -1501,6 +1632,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'class' 	=> 'small-text',
 					),
 						
+					// advanced	
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -1627,11 +1759,13 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 				'size' 		=> '1/4',
 				'cat' 		=> 'typography',
 				'fields'	 => array(
-							
+						
 					array(
 						'id' 		=> 'info',
 						'type' 		=> 'info',
+						'title' 	=> '',
 						'desc' 		=> __('Adding this Item will show Content from WordPress Editor above Page Options. You can use it only once per page. Please also remember to turn on "Hide The Content" option.', 'nhp-opts'),
+						'class' 	=> 'mfn-info info',
 					),
 
 					array(
@@ -1847,7 +1981,9 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id' 		=> 'info',
 						'type' 		=> 'info',
+						'title' 	=> '',
 						'desc' 		=> __('This item can only be used on pages <strong>Without Sidebar</strong>', 'nhp-opts'),
+						'class' 	=> 'mfn-info info',
 					),
 
 					array(
@@ -2057,7 +2193,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 	
 					// link
-	
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2084,8 +2219,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 	
-					// advanced
-						
+					// advanced					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -2173,22 +2307,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 				'fields' 	=> array(
 	
 					array(
-						'id' 		=> 'icon',
-						'type' 		=> 'icon',
-						'title' 	=> __('Icon', 'mfn-opts'),
-						'std' 		=> 'icon-lamp',
-						'class' 	=> 'small-text',
-					),
-
-					array(
-						'id' 		=> 'background',
-						'type' 		=> 'text',
-						'title' 	=> __('Icon background', 'mfn-opts'),
-						'desc' 		=> __('Use color name ( blue ) or hex ( #2991D6 ). Leave this field blank to use Theme Background', 'mfn-opts'),
-						'class' 	=> 'small-text',
-					),
-						
-					array(
 						'id' 		=> 'image',
 						'type' 		=> 'upload',
 						'title' 	=> __('Image', 'mfn-opts'),
@@ -2209,8 +2327,39 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'validate'	=> 'html',
 					),
 						
+					// icon
+					array(
+						'id' 		=> 'info_icon',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Icon', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
+						
+					array(
+						'id' 		=> 'icon',
+						'type' 		=> 'icon',
+						'title' 	=> __('Icon', 'mfn-opts'),
+						'std' 		=> 'icon-lamp',
+						'class' 	=> 'small-text',
+					),
+					
+					array(
+						'id' 		=> 'icon_image',
+						'type' 		=> 'upload',
+						'title' 	=> __('Icon | Image', 'mfn-opts'),
+						'desc' 		=> __('You can use image icon instead of font icon', 'mfn-opts'),
+					),
+					
+					array(
+						'id' 		=> 'background',
+						'type' 		=> 'text',
+						'title' 	=> __('Background', 'mfn-opts'),
+						'desc' 		=> __('Use color name ( blue ) or hex ( #2991D6 )<br />Leave this field blank to use Theme Background', 'mfn-opts'),
+						'class' 	=> 'small-text',
+					),
+						
 					// link
-
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2237,7 +2386,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -2486,7 +2634,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'title' 	=> __('Background color | Hover', 'mfn-opts'),
 						'desc' 		=> __('Use color name or hex. Example: <b>navy</b> or <b>#236A9C</b>', 'mfn-opts'),
 						'class' 	=> 'small-text',
-						'std' 		=> '#2991D6',
+						'std' 		=> '#236A9C',
 					),
 						
 					array(
@@ -2516,7 +2664,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// link
-					
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2550,7 +2697,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-					
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -2625,8 +2771,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'options' 	=> array( 0 => 'No', 1 => 'Yes' ),
 					),
 
-					// link
-						
+					// link	
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2653,7 +2798,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-						
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -2670,8 +2814,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'options' 	=> mfn_get_animations(),
 					),
 
-					// custom
-						
+					// custom					
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -2752,7 +2895,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// link
-					
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2786,7 +2928,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -2804,7 +2945,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-					
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -2857,8 +2997,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'class' 	=> 'small-text',
 					),
 						
-					// options	
-						
+					// options		
 					array(
 						'id' 		=> 'info_options',
 						'type' 		=> 'info',
@@ -2905,7 +3044,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 							
 					// link
-					
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -2946,8 +3084,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 					),
 						
-					// description
-						
+					// description	
 					array(
 						'id' 		=> 'info_description',
 						'type' 		=> 'info',
@@ -2969,7 +3106,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -2995,7 +3131,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-						
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -3318,7 +3453,9 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id' 		=> 'info',
 						'type' 		=> 'info',
+						'title' 	=> '',
 						'desc' 		=> __('This item can only be used on pages <strong>Without Sidebar</strong>.<br />Please also set Section Style to <strong>Full Width</strong> and use one Item in one Section.', 'nhp-opts'),
+						'class' 	=> 'mfn-info info',		
 					),
 						
 					array(
@@ -3326,9 +3463,30 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type'		=> 'select',
 						'title'		=> __('Category', 'mfn-opts'),
 						'options'	=> mfn_get_categories( 'offer-types' ),
-						'sub_desc'	=> __('Select the offer post category.', 'mfn-opts'),
 					),
+						
+					array(
+						'id'		=> 'align',
+						'type'		=> 'select',
+						'title'		=> __('Text Align', 'mfn-opts'),
+						'desc'		=> __('Text align center does not affect title if button is active', 'mfn-opts'),
+						'options' 	=> array(
+							'left'		=> 'Left',
+							'right'		=> 'Right',
+							'center'	=> 'Center',
+							'justify'	=> 'Justify',
+						),
+					),						
 
+					// custom
+					array(
+						'id' 		=> 'info_custom',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Custom', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
+						
 					array(
 						'id' 		=> 'classes',
 						'type' 		=> 'text',
@@ -3352,7 +3510,9 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id' 		=> 'info',
 						'type' 		=> 'info',
+						'title' 	=> '',
 						'desc' 		=> __('This item can only be used <strong>once per page</strong>.', 'nhp-opts'),
+						'class' 	=> 'mfn-info info',
 					),
 						
 					array(
@@ -3360,19 +3520,40 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type'		=> 'select',
 						'title'		=> __('Category', 'mfn-opts'),
 						'options'	=> mfn_get_categories( 'offer-types' ),
-						'sub_desc'	=> __('Select the offer post category.', 'mfn-opts'),
 					),
 
 					array(
 						'id' 		=> 'style',
 						'type' 		=> 'select',
-						'options'	=> array(
-							''			=> 'Thumbnails on the left',
-							'bottom'	=> 'Thumbnails at the bottom',
-						),
 						'title' 	=> __('Style', 'mfn-opts'),
+						'options'	=> array(
+							'bottom'	=> 'Thumbnails at the bottom',
+							''			=> 'Thumbnails on the left',
+						),
+					),
+						
+					array(
+						'id'		=> 'align',
+						'type'		=> 'select',
+						'title'		=> __('Text Align', 'mfn-opts'),
+						'desc'		=> __('Text align center does not affect title if button is active', 'mfn-opts'),
+						'options' 	=> array(
+							'left'		=> 'Left',
+							'right'		=> 'Right',
+							'center'	=> 'Center',
+							'justify'	=> 'Justify',
+						),
 					),
 
+					// custom
+					array(
+						'id' 		=> 'info_custom',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Custom', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
+						
 					array(
 						'id' 		=> 'classes',
 						'type' 		=> 'text',
@@ -3466,7 +3647,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// description
-					
 					array(
 						'id' 		=> 'info_description',
 						'type' 		=> 'info',
@@ -3496,7 +3676,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// social
-					
 					array(
 						'id' 		=> 'info_social',
 						'type' 		=> 'info',
@@ -3530,7 +3709,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// other
-					
 					array(
 						'id' 		=> 'info_other',
 						'type' 		=> 'info',
@@ -3558,7 +3736,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// link
-					
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -3585,7 +3762,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -3603,7 +3779,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// custom
-					
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -3651,7 +3826,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// description
-						
 					array(
 						'id' 		=> 'info_description',
 						'type' 		=> 'info',
@@ -3687,7 +3861,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// social
-						
 					array(
 						'id' 		=> 'info_social',
 						'type' 		=> 'info',
@@ -3721,7 +3894,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// link
-						
 					array(
 						'id' 		=> 'info_link',
 						'type' 		=> 'info',
@@ -3748,7 +3920,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// custom
-						
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -3800,11 +3971,11 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					array(
 						'id'		=> 'align',
 						'type'		=> 'select',
-						'title'		=> 'Text Align',
+						'title'		=> __('Text Align', 'mfn-opts'),
 						'options' 	=> array(
-							''		=> 'Center',
-							'left'	=> 'Left',
-							'right'	=> 'Right',
+							''			=> __('Center', 'mfn-opts'),
+							'left'		=> __('Left', 'mfn-opts'),
+							'right'		=> __('Right', 'mfn-opts'),
 						),
 					),
 						
@@ -3874,13 +4045,14 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type'		=> 'select',
 						'title'		=> 'Style',
 						'options' 	=> array(
-							'flat'			=> 'Flat',
-							'grid'			=> 'Grid',
-							'masonry'		=> 'Masonry Blog Style',
-							'masonry-hover'	=> 'Masonry Hover Description',
-							'masonry-flat'	=> 'Masonry Flat',
-							'list'			=> 'List',
-							'exposure'		=> 'Exposure',
+							'flat'				=> 'Flat',
+							'grid'				=> 'Grid',
+							'masonry'			=> 'Masonry Blog Style',
+							'masonry-hover'		=> 'Masonry Hover Description',
+							'masonry-minimal'	=> 'Masonry Minimal',
+							'masonry-flat'		=> 'Masonry Flat',
+							'list'				=> 'List',
+							'exposure'			=> 'Exposure',
 						),
 						'std' 		=> 'grid'
 					),
@@ -3899,7 +4071,8 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						),
 						'std' 		=> 3,
 					),
-						
+
+					// options
 					array(
 						'id' 		=> 'info_options',
 						'type' 		=> 'info',
@@ -3948,6 +4121,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'std'		=> 'DESC'
 					),
 						
+					// advanced	
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -4003,7 +4177,8 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'title'		=> 'Greyscale Images',
 						'options' 	=> array( 0 => 'No', 1 => 'Yes' ),
 					),
-						
+
+					// custom	
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -4304,7 +4479,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// description
-					
 					array(
 						'id' 		=> 'info_description',
 						'type' 		=> 'info',
@@ -4328,7 +4502,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// button
-					
 					array(
 						'id' 		=> 'info_button',
 						'type' 		=> 'info',
@@ -4370,7 +4543,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// advanced
-					
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -4405,8 +4577,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'options' 	=> mfn_get_animations(),
 					),
 
-					// custom
-					
+					// custom	
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -4446,7 +4617,7 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type' 		=> 'textarea',
 						'title' 	=> __('Content', 'mfn-opts'),
 						'desc' 		=> __('Please use <strong>[bar title="Title" value="50" size="20"]</strong> shortcodes here.', 'mfn-opts'),
-						'std' 		=> '[bar title="Bar1" value="50"]'."\n".'[bar title="Bar2" value="60"]',
+						'std' 		=> '[bar title="Bar1" value="50" size="20"]'."\n".'[bar title="Bar2" value="60" size="20"]',
 					),
 						
 					array(
@@ -4490,7 +4661,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 						
 					// button
-						
 					array(
 						'id' 		=> 'info_button',
 						'type' 		=> 'info',
@@ -4524,7 +4694,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// advanced
-						
 					array(
 						'id' 		=> 'info_advanced',
 						'type' 		=> 'info',
@@ -4562,7 +4731,6 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 					),
 
 					// custom
-						
 					array(
 						'id' 		=> 'info_custom',
 						'type' 		=> 'info',
@@ -4596,6 +4764,30 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'type' 		=> 'text',
 						'title' 	=> __('Heading', 'mfn-opts'),
 					),
+						
+					array(
+						'id' 		=> 'title',
+						'type' 		=> 'text',
+						'title' 	=> __('Title', 'mfn-opts'),
+				),
+				
+				array(
+						'id' 		=> 'content',
+						'type' 		=> 'textarea',
+						'title' 	=> __('Content', 'mfn-opts'),
+						'desc' 		=> __('Some Shortcodes and HTML tags allowed', 'mfn-opts'),
+						'class'		=> 'full-width sc',
+						'validate' 	=> 'html',
+					),
+						
+					// quick fact
+					array(
+						'id' 		=> 'info_quick',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Quick Fact', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
+					),
 
 					array(
 						'id' 		=> 'number',
@@ -4618,19 +4810,33 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'class' 	=> 'small-text',
 					),
 
+					// options
 					array(
-						'id' 		=> 'title',
-						'type' 		=> 'text',
-						'title' 	=> __('Title', 'mfn-opts'),
+						'id' 		=> 'info_options',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Options', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
 					),
-
+						
 					array(
-						'id' 		=> 'content',
-						'type' 		=> 'textarea',
-						'title' 	=> __('Content', 'mfn-opts'),
-						'desc' 		=> __('Some Shortcodes and HTML tags allowed', 'mfn-opts'),
-						'class'		=> 'full-width sc',
-						'validate' 	=> 'html',
+						'id' 		=> 'align',
+						'type' 		=> 'select',
+						'title' 	=> __('Align', 'mfn-opts'),
+						'options' 	=> array(
+							''			=> 'Center',
+							'left'		=> 'Left',
+							'right'		=> 'Right',
+						),
+					),
+						
+					// advanced
+					array(
+						'id' 		=> 'info_advanced',
+						'type' 		=> 'info',
+						'title' 	=> '',
+						'desc' 		=> __('Advanced', 'mfn-opts'),
+						'class' 	=> 'mfn-info',
 					),
 						
 					array(
@@ -5394,9 +5600,9 @@ if( ! function_exists( 'mfn_get_fields_item' ) )
 						'id' 		=> 'bg_color',
 						'type' 		=> 'text',
 						'title' 	=> __('Overlay background', 'mfn-opts'),
-						'desc' 		=> __('Use color HEX (ie. "#000000").', 'mfn-opts'),
+						'desc' 		=> __('Use color name or hex, e.g.: <b>grey</b> or <b>#CCCCCC</b>', 'mfn-opts'),
 						'class' 	=> 'small-text',
-						'std' 		=> '#000000',
+						'std' 		=> '#CCCCCC',
 					),
 
 					array(

@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	?>
 	background-color: <?php hex2rgba( $subheaderB, $subheaderA, true ); ?>;
 }
-.header-classic #Action_bar, .header-plain #Action_bar, .header-stack #Action_bar {
+.header-classic #Action_bar, .header-plain #Action_bar, .header-split #Action_bar, .header-stack #Action_bar {
     background-color: <?php mfn_opts_show( 'background-action-bar', '#2C2C2C' ) ?>;
 }
 
@@ -57,8 +57,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /* Content font */
 	body, ul.timeline_items, .icon_box a .desc, .icon_box a:hover .desc, .feature_list ul li a, .list_item a, .list_item a:hover,
 	.widget_recent_entries ul li a, .flat_box a, .flat_box a:hover, .story_box .desc, .content_slider.carousel  ul li a .title,
-	.content_slider.flat.description ul li .desc, .content_slider.flat.description ul li a .desc {
+	.content_slider.flat.description ul li .desc, .content_slider.flat.description ul li a .desc, .post-nav.minimal a i {
 		color: <?php mfn_opts_show( 'color-text', '#626262' ) ?>;
+	}
+	.post-nav.minimal a svg {
+		fill: <?php mfn_opts_show( 'color-text', '#626262' ) ?>;
 	}
 	
 /* Theme color */
@@ -84,8 +87,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	.tparrows.default, .tp-bullets.tp-thumbs .bullet.selected:after, .offer_thumb .slider_pagination a:before, .offer_thumb .slider_pagination a.selected:after,
 	.style-simple .accordion .question:after, .style-simple .faq .question:after, .style-simple .icon_box .desc_wrapper h4:before,
 	.style-simple #Filters .filters_wrapper ul li a:after, .style-simple .article_box .desc_wrapper p:after, .style-simple .sliding_box .desc_wrapper:after,
-	.style-simple .trailer_box:hover .desc, .woocommerce-account table.my_account_orders .order-number a, .portfolio_group.exposure .portfolio-item .desc-inner .line,
-	.style-simple .zoom_box .desc .desc_txt {
+	.style-simple .trailer_box:hover .desc, .portfolio_group.exposure .portfolio-item .desc-inner .line, .style-simple .zoom_box .desc .desc_txt,
+	.woocommerce-account table.my_account_orders .order-number a, .woocommerce-MyAccount-navigation ul li.is-active a {
 		background-color: <?php mfn_opts_show( 'color-theme', '#2991d6' ) ?>;
 	}
 	

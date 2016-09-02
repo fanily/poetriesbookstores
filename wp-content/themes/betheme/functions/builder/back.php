@@ -710,7 +710,7 @@ if( ! function_exists( 'mfn_builder_show' ) )
 			<div id="mfn-items-seo">
 				<?php 
 					$mfn_items_seo = get_post_meta($post->ID, 'mfn-page-items-seo', true);
-					echo '<textarea id="mfn-items-seo-data">'. $mfn_items_seo .'</textarea>'; 
+					echo '<textarea id="mfn-items-seo-data">'. esc_attr( $mfn_items_seo ) .'</textarea>'; 
 				?>
 			</div>
 				
@@ -886,12 +886,21 @@ if( ! function_exists( 'mfn_builder_save' ) )
 							// FIX | Yoast SEO
 							$seo_val = trim( $attr[$count[$type]] );
 							if( $seo_val && $seo_val != 1 ){
-								if( $attr_k == 'image' ){
-									$seo_content .= '<img src="'. $seo_val .'" alt=""/>'."\n\n";
+								
+								if( in_array( $attr_k, array( 'image', 'src' ) ) ){
+									
+									// Image
+									$seo_content .= '<img src="'. $seo_val .'" alt="'. mfn_get_attachment_data( $seo_val, 'alt' ) .'"/>'."\n\n";	
+											
 								} elseif( $attr_k == 'link' ){
+									
+									// Link
 									$seo_content .= '<a href="'. $seo_val .'">'. $seo_val .'</a>'."\n\n";
+									
 								} else {
+									
 									$seo_content .= $seo_val ."\n\n";
+									
 								}
 							}
 							

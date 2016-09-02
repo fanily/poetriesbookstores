@@ -56,7 +56,7 @@ class MFN_Options_tabs extends MFN_Options{
 						echo '<input type="text" name="'. $name .'[title][]" value="'. htmlspecialchars(stripslashes($value['title'])) .'" />';
 						
 						echo '<label>'. __('Content','mfn-opts') .'</label>';
-						echo '<textarea name="'. $name .'[content][]" value="" >'. $value['content'] .'</textarea>';
+						echo '<textarea name="'. $name .'[content][]" value="" >'. esc_attr( $value['content'] ) .'</textarea>';
 						
 						echo '<a href="" class="mfn-btn-close mfn-remove-tab"><em>delete</em></a>';
 						

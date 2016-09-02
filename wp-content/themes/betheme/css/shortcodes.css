@@ -1,6 +1,7 @@
 /* Dropcaps -------------------------------------------------------------------------- */
 .dropcap{display:inline-block;float:left;width:35px;height:35px;line-height:35px;font-size:20px;margin:0 10px 5px 0;text-align:center;-webkit-border-radius:5px;border-radius:5px;background-image:url(../images/stripes/stripes_10_w.png)}
 .dropcap_circle{-webkit-border-radius:100%;border-radius:100%}
+.dropcap.transparent{background:none!important}
 .dropcap.size-2{width:50px;height:50px;line-height:50px;font-size:35px}
 .dropcap.size-3{width:60px;height:60px;line-height:60px;font-size:40px}
 
@@ -19,7 +20,7 @@
 .wpml-languages:not(.disabled) .tooltip:hover:after,.wpml-languages:not(.disabled) .tooltip.hover:after{display:none!important}
 
 /* Blockquote ------------------------------------------------------------------------ */
-blockquote{font-size:17px;line-height:31px;font-family:Patua One;display:block;height:auto;margin:0 0 35px 25px;top:15px;position:relative;background:url(../images/stripes/textline.png) repeat-y}
+blockquote{font-size:17px;line-height:31px;display:block;height:auto;margin:0 0 35px 25px;top:15px;position:relative;background:url(../images/stripes/textline.png) repeat-y}
 blockquote:before{content:""}
 blockquote:after{content:"";width:55px;height:40px;background:url(../images/blockquote.png);position:absolute;left:-25px;top:-15px}
 .blockquote{margin-bottom:20px}
@@ -29,14 +30,8 @@ blockquote:after{content:"";width:55px;height:40px;background:url(../images/bloc
 	
 /* Button Item ----------------------------------------------------------------------- */
 .column_button .button{margin:0!important}
-.column_button .align_center{text-align:center}
-.column_button .align_right{text-align:right}
-	
-/* Alignments ------------------------------------------------------------------------ */
-.alignleft{float:left;margin:15px 15px 15px 0}
-.alignright{float:right;margin:15px 0 15px 15px}
-.aligncenter{text-align:center;margin:0 auto;display:block}
-.aligncenter img{display:inline}
+.button_align.align_center{text-align:center}
+.button_align.align_right{text-align:right}
 	
 /* Image frames ---------------------------------------------------------------------- */
 .column_image{line-height:0}
@@ -75,6 +70,12 @@ blockquote:after{content:"";width:55px;height:40px;background:url(../images/bloc
 .image_frame .image_wrapper .image_links.triple a:last-child{-webkit-box-shadow:0 0 0;box-shadow:0 0 0;width:34%}
 .image_frame .image_wrapper .image_links.hover-title a{font-size:15px;text-decoration:none}
 .image_frame.no_border{border-width:0}
+
+/* Alignments ------------------------------------------------------------------------ */
+.alignleft{float:left;margin:15px 15px 15px 0}
+.alignright{float:right;margin:15px 0 15px 15px}
+.aligncenter{text-align:center;margin:0 auto;display:block}
+.aligncenter img{display:inline}
 		
 /* Animation */
 .image_frame .image_wrapper img,.image_frame .image_wrapper .mask:after,.image_frame .image_wrapper .image_links{-webkit-transition:all .3s ease-in-out;-moz-transition:all .3s ease-in-out;-o-transition:all .3s ease-in-out;transition:all .3s ease-in-out}
@@ -184,7 +185,7 @@ hr.no_line{height:0}
 .fancy-divider svg{display:block}
 .fancy-divider svg:not(:root){overflow:hidden}
 
-/* Divider | Section */
+/* Decoration SVG */
 .section .section-divider{display:block;width:50px;height:50px;position:absolute;left:50%;margin-left:-25px;background-color:inherit;z-index:1}
 .section-divider.triangle.up,.section-divider.triangle.down{-moz-transform:rotate(45deg);-webkit-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}
 .section-divider.triangle.up{top:-25px}
@@ -203,6 +204,11 @@ hr.no_line{height:0}
 .section-divider.circle.up,.section-divider.circle.down{width:70px;height:70px;margin-left:-35px;-webkit-border-radius:100%;border-radius:100%}
 .section-divider.circle.up{top:-25px}
 .section-divider.circle.down{bottom:-25px}
+
+/* Decoration Image | height:100px - fallback */
+.section .section-decoration{width:100%;height:100px;position:absolute;left:0;background-repeat:repeat-x;z-index:0;}
+.section .section-decoration.top{top:0;background-position:center top;}
+.section .section-decoration.bottom{bottom:0;background-position:center bottom;}
 
 /* Idea box -------------------------------------------------------------------------- */
 .idea_box{padding:25px 25px 25px 70px;position:relative;border-top-width:1px;border-style:solid;background:rgba(0,0,0,.02);clear:both}
@@ -362,10 +368,10 @@ a.mfn-link-2 span,a:hover.mfn-link-2 span:before,a.hover.mfn-link-2 span:before,
 
 /* FAQ ------------------------------------------------------------------------------- */
 .faq .question{margin-bottom:5px;overflow:hidden;position:relative;background:rgba(0,0,0,.02)}
-.faq .question:before{content:"";width:60px;height:100%;border-width:0 1px 0 0;border-style:solid;border-color:rgba(0,0,0,.1);position:absolute;left:0;top:0;z-index:2}
+.faq .question:before{content:"";width:60px;height:100%;border-width:0 1px 0 0;border-style:solid;border-color:rgba(0,0,0,.1);position:absolute;left:0;top:0;z-index:1}
 .faq .question:after{content:"";width:60px;height:100%;background:rgba(0,0,0,.03);position:absolute;left:0;top:0;z-index:1}
 .faq .question:last-child{margin-bottom:0}
-.faq .question .title{padding:20px 40px 20px 80px;font-size:15px;position:relative;cursor:pointer}
+.faq .question .title{padding:20px 40px 20px 80px;font-size:15px;position:relative;cursor:pointer;z-index:2}
 .faq .question .title > .acc-icon-plus,.faq .question .title > .acc-icon-minus{font-size:17px;line-height:17px;display:block;position:absolute;right:15px;top:21px;width:20px;height:20px;text-align:center;color:rgba(0,0,0,.25)}
 .faq .question .title > .acc-icon-plus:before,.faq .question .title > .acc-icon-minus:before{margin:0!important}
 .faq .question .title > .acc-icon-plus{display:block}
@@ -380,6 +386,7 @@ a.mfn-link-2 span,a:hover.mfn-link-2 span:before,a.hover.mfn-link-2 span:before,
 .wpb_wrapper .faq .question .title.wpb_toggle{background-position:23px}
 .wpb_wrapper .faq .question .answer.wpb_toggle_content{margin:0}
 .wpb_wrapper .faq .question .last_toggle_el_margin{margin-bottom:0}
+.wpb_wrapper .faq .question .title > .acc-icon-plus,.wpb_wrapper .faq .question .title > .acc-icon-minus{left:20px;right:auto;color:rgba(0,0,0,.5)}
 
 /* Table ----------------------------------------------------------------------------- */
 table{width:100%;margin-bottom:15px;border-collapse:collapse;border-spacing:0;-webkit-border-radius:5px;border-radius:5px}
@@ -446,7 +453,7 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .pricing-box .plan-header{text-align:center;padding:20px 15px 0}
 .pricing-box .plan-header .image{text-align:center;margin-bottom:15px}
 .pricing-box .plan-header h2{margin:0 0 20px;font-size:30px;line-height:30px}
-.pricing-box .plan-header .price{margin:0 0 20px;font-family:Patua One}
+.pricing-box .plan-header .price{margin:0 0 20px}
 .pricing-box .plan-header .price > span{font-size:45px;line-height:45px;margin:0 5px}
 .pricing-box .plan-header .price sup.currency{font-size:20px;line-height:20px;top:-10px;position:relative}
 .pricing-box.cp-right .plan-header .price sup.currency{margin-right:5px}
@@ -524,11 +531,21 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .offer .offer_li{display:block;float:left}
 .offer .offer_li .image_wrapper{float:left;width:50%;line-height:0}
 .offer .offer_li .image_wrapper img{float:right}
-.offer .offer_li .desc_wrapper{float:left;width:570px;margin:30px 12px 30px 30px}
+.offer .offer_li .desc_wrapper{float:left;width:570px;width:calc(50% - 42px);margin:30px 12px 30px 30px}
 .offer .offer_li .desc_wrapper .title{margin-bottom:30px;position:relative;min-height:43px;padding-right:160px}
+.offer .offer_li .desc_wrapper.no-link .title{padding:0}
 .offer .offer_li .desc_wrapper .title h3{margin:0;font-size:35px;line-height:35px;padding-top:3px}
 .offer .offer_li .desc_wrapper .title h3 em{color:rgba(0,0,0,.1);font-style:normal}
 .offer .offer_li .desc_wrapper .title a.button{margin:0;position:absolute;right:0;top:0}
+
+.offer .offer_li .desc_wrapper.align_left{text-align:left}
+.offer .offer_li .desc_wrapper.align_right{text-align:right}
+.offer .offer_li .desc_wrapper.align_center{text-align:center}
+.offer .offer_li .desc_wrapper.align_justify{text-align:justify}
+
+.offer .offer_li .desc_wrapper.align_right.has-link .title{padding-left:160px;padding-right:0}
+.offer .offer_li .desc_wrapper.align_right .title a.button{left:0;right:auto;}
+.offer .offer_li .desc_wrapper.align_center.has-link .title{text-align:left}
 
 .offer_li ul{list-style:disc inside none;margin-bottom:10px}
 .offer_li ol{list-style:decimal inside none;margin-bottom:10px}
@@ -553,9 +570,19 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .offer_thumb_ul li.offer_thumb_li{float:left;display:block;padding-left:30px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 .offer_thumb_ul li.offer_thumb_li .image_wrapper{float:right;width:57%}
 .offer_thumb_ul li.offer_thumb_li .desc_wrapper{float:left;width:39%;margin-right:4%;padding-top:20px}
-.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title{margin-bottom:30px;position:relative;min-height:43px;padding-right:160px}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper .title{margin-bottom:15px;position:relative;min-height:43px;padding-right:160px}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.no-link .title{padding:0}
 .offer_thumb_ul li.offer_thumb_li .desc_wrapper .title h3{margin:0;font-size:35px;line-height:35px;padding-top:3px}
 .offer_thumb_ul li.offer_thumb_li .desc_wrapper .title a.button{margin:0;position:absolute;right:0;top:0}
+
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_left{text-align:left}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_right{text-align:right}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_center{text-align:center}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_justify{text-align:justify}
+
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_right.has-link .title{padding-left:160px;padding-right:0}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_right .title a.button{left:0;right:auto;}
+.offer_thumb_ul li.offer_thumb_li .desc_wrapper.align_center.has-link .title{text-align:left}
 	
 /* Animation */
 .offer_thumb .slider_pagination a img{-webkit-transition:all .4s ease-in-out;-moz-transition:all .4s ease-in-out;-o-transition:all .4s ease-in-out;transition:all .4s ease-in-out}
@@ -587,13 +614,14 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .offer_thumb.bottom .slider_pagination a:after{left:50%;right:auto;top:-5px;margin-left:-4px}
 
 /* Latest news ----------------------------------------------------------------------- */
-.Latest_news ul{margin:0;font-size:100%;line-height:normal}
-.Latest_news ul li{margin:0 0 15px;list-style:none;position:relative;overflow:hidden}
+.Latest_news ul{float:left;width:100%;margin:0}
+.Latest_news ul li{margin:0 0 20px;list-style:none;position:relative;overflow:hidden}
 .Latest_news ul li .photo{width:30%;border-right-width:3px;border-style:solid;float:left;line-height:0}
-.Latest_news ul li .desc{width:100%;padding:3px 12px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-.Latest_news ul li .desc h5{margin:0 0 9px}
-.Latest_news ul li.has-post-thumbnail .desc{margin-left:30%;width:70%}
-.Latest_news ul li .desc_footer{overflow:hidden;border-top-width:1px;border-style:solid;padding-top:8px;color:#a8a8a8}
+.Latest_news ul li .desc{width:100%;padding:3px 12px 3px 0;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.Latest_news ul li.has-post-thumbnail .desc{margin-left:30%;width:70%;padding-left:12px;}
+.Latest_news ul li .desc h5{margin:0 0 7px}
+.Latest_news ul li .desc .post-excerpt{margin:10px 0 5px}
+.Latest_news ul li .desc_footer{overflow:hidden;border-top-width:1px;border-style:solid;padding-top:5px;color:#a8a8a8}
 .Latest_news ul li .desc_footer .date{float:left;margin-right:5px}
 .Latest_news ul li .desc_footer .button-love{float:left;margin-right:5px}
 .Latest_news ul li .desc_footer .button-love a.mfn-love{display:inline-block;position:relative;padding-left:24px;margin-left:5px}
@@ -601,6 +629,28 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .Latest_news ul li .desc_footer .button-love a.mfn-love:hover{text-decoration:none}
 .Latest_news ul li .desc_footer .button-love a.mfn-love i:last-child{opacity:0;filter:alpha(opacity=0);-webkit-transition:all .3s ease-in-out;-moz-transition:all .3s ease-in-out;-o-transition:all .3s ease-in-out;-ms-transition:all .3s ease-in-out;transition:all .3s ease-in-out}
 .Latest_news ul li .desc_footer .button-love a:hover.mfn-love i:last-child,.Latest_news ul li .desc_footer .button-love a.loved.mfn-love i:last-child{opacity:1;filter:alpha(opacity=100)}
+.Latest_news .button{float:left;clear:both;}
+	
+.Latest_news.featured ul{float:left;width:49%;}	
+.Latest_news.featured ul.ul-first{margin-right:1%;}	
+.Latest_news.featured ul.ul-second{margin-left:1%;}	
+.Latest_news.featured ul.ul-first li .photo{width:100%;float:left;margin-bottom:10px;border-right-width:0;border-bottom-width:3px;border-bottom-style:solid;}	
+.Latest_news.featured ul.ul-first li .desc{width:100%;margin:0;padding:0;float:left;}	
+.Latest_news.featured ul.ul-first li .desc h4{margin:0 0 7px;}
+
+.column.two-fifth .Latest_news.featured ul,
+.column.one-third .Latest_news.featured ul,
+.column.one-fourth .Latest_news.featured ul{width:100%}
+
+.wrap.three-fifth .column.one-second .Latest_news.featured ul,
+.wrap.one-second .column.one-second .Latest_news.featured ul,
+.wrap.one-second .column.three-fifth .Latest_news.featured ul,
+.wrap.two-fifth .column.three-fourth .Latest_news.featured ul,
+.wrap.two-fifth .column.one-second .Latest_news.featured ul,
+.wrap.two-fifth .column.three-fifth .Latest_news.featured ul,
+.wrap.one-fourth .Latest_news.featured ul,
+.wrap.one-fifth .Latest_news.featured ul,
+.wrap.one-sixth .Latest_news.featured ul{width:100%}
 	
 /* Helper ---------------------------------------------------------------------------- */
 .helper{overflow:hidden}
@@ -706,7 +756,7 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .counter .icon_wrapper{margin-bottom:15px;line-height:0;width:100%}
 .counter .icon_wrapper i:before{margin:0}
 .counter .icon_wrapper i{display:inline-block;width:50px;height:50px;line-height:50px;font-size:50px}
-.counter .desc_wrapper .number-wrapper{font-size:50px;line-height:50px;font-family:Patua One;margin-bottom:5px}
+.counter .desc_wrapper .number-wrapper{font-size:50px;line-height:50px;margin-bottom:5px}
 .counter .desc_wrapper .number-wrapper .label{font-size:70%;line-height:100%}
 .counter .desc_wrapper .title{font-size:15px;line-height:20px;margin:0}
 .counter.counter_horizontal{text-align:left;min-height:75px}
@@ -722,7 +772,7 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .chart_box .chart .icon{font-size:45px}
 .chart_box .chart .icon i:before{margin:0}
 .chart_box .chart .image img{vertical-align:middle}
-.chart_box .chart .num{position:absolute;left:0;top:45px;z-index:3;width:100%;font-family:Patua One;font-size:50px;line-height:50px}
+.chart_box .chart .num{position:absolute;left:0;top:45px;z-index:3;width:100%;font-size:50px;line-height:50px}
 .chart_box p{margin-bottom:0}
 
 /* Progress bars --------------------------------------------------------------------- */
@@ -768,7 +818,9 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 
 /* Quick facts ----------------------------------------------------------------------- */
 .quick_fact{text-align:center}
-.quick_fact .number-wrapper{font-size:90px;line-height:90px;font-family:Patua One}
+.quick_fact.align_left{text-align:left}
+.quick_fact.align_right{text-align:right}
+.quick_fact .number-wrapper{font-size:90px;line-height:90px}
 .quick_fact .number-wrapper .label{font-size:70%;line-height:100%}
 .quick_fact hr{width:40%}
 	
@@ -785,9 +837,10 @@ body.table-hover:not(.woocommerce-page) table tr:hover td{-webkit-transition:all
 .flat_box .photo_wrapper{margin-bottom:15px;position:relative;line-height:0;overflow:hidden}
 .flat_box .photo_wrapper .icon{position:absolute;left:0;top:0;height:100%;width:90px;text-align:center;color:#fff;z-index:2}
 .flat_box .photo_wrapper .icon i{display:block;width:100%;height:60px;line-height:60px;font-size:55px;vertical-align:middle;position:absolute;top:50%;margin-top:-30px}
+.flat_box .photo_wrapper .icon img{position:absolute;left:50%;top:50%;max-width:calc(100% - 16px)!important;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);}
 .flat_box:hover .photo_wrapper .icon,.flat_box a:hover .photo_wrapper .icon{-webkit-transform:translateX(-90px);transform:translateX(-90px)}
-.flat_box .photo_wrapper img{position:relative;display:block;z-index:1;-webkit-transform:translateX(15px);transform:translateX(15px)}
-.flat_box:hover .photo_wrapper img,.flat_box a:hover .photo_wrapper img{-webkit-transform:translateX(0px);transform:translateX(0px)}
+.flat_box .photo_wrapper img.photo{position:relative;display:block;z-index:1;-webkit-transform:translateX(15px);transform:translateX(15px)}
+.flat_box:hover .photo_wrapper img.photo,.flat_box a:hover .photo_wrapper img.photo{-webkit-transform:translateX(0px);transform:translateX(0px)}
 .flat_box .desc_wrapper{margin-left:90px}
 
 @media only screen and (min-width: 960px) {
@@ -911,7 +964,7 @@ a.icon_bar_dribbble span.b{background:#ec4a89;color:#fff}
 .how_it_works.has_border:after{content:"";display:block;width:12%;height:4px;background:rgba(0,0,0,.03);-webkit-border-radius:2px;border-radius:2px;position:absolute;right:-10.5%;top:100px}
 .how_it_works .image{width:200px;height:200px;line-height:200px;text-align:center;position:relative;margin:0 auto 15px;background:#fff;border-width:2px;border-style:solid;-webkit-border-radius:100%;border-radius:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 .how_it_works .image img{max-width:116px!important;max-height:116px!important;vertical-align:middle}
-.how_it_works .image .number{position:absolute;right:10px;bottom:10px;width:35px;height:35px;line-height:35px;font-size:15px;font-family:Patua One;text-align:center;-webkit-border-radius:100%;border-radius:100%;-webkit-box-shadow:inset 0 0 0 2px rgba(0,0,0,.1);box-shadow:inset 0 0 0 2px rgba(0,0,0,.1)}
+.how_it_works .image .number{position:absolute;right:10px;bottom:10px;width:35px;height:35px;line-height:35px;font-size:15px;text-align:center;-webkit-border-radius:100%;border-radius:100%;-webkit-box-shadow:inset 0 0 0 2px rgba(0,0,0,.1);box-shadow:inset 0 0 0 2px rgba(0,0,0,.1)}
 .with_aside .how_it_works .image{width:150px;height:150px;line-height:150px}
 .with_aside .how_it_works .image .number{bottom:4px;right:4px}
 .with_aside .how_it_works.has_border:after{top:75px}
@@ -1008,6 +1061,11 @@ ul.clients li .client_wrapper,ul.clients li .client_wrapper img{-webkit-transiti
 .blog_slider .blog_slider_ul li.format-quote .item_wrapper blockquote{margin-top:70px;margin-left:40px}
 .blog_slider .blog_slider_ul li.format-link .item_wrapper .image_frame{height:180px;background-color:rgba(255,255,255,.5);background-image:url(../images/link.png);background-position:center center;background-repeat:no-repeat}
 
+.blog_slider.hide-dots .slider_pagination{display:none!important}
+.blog_slider.hide-arrows .blog_slider_header a.button{display:none!important}
+.blog_slider.hide-nav .slider_pagination,
+.blog_slider.hide-nav .blog_slider_header a.button{display:none!important}
+
 /* Blog slider - flat */
 .blog_slider.flat .blog_slider_ul li .item_wrapper .image_frame{margin-left:0;border:0}
 .blog_slider.flat .blog_slider_ul li .item_wrapper .date_label{position:static;background-color:transparent!important;background-image:none;display:inline-block;padding:0}
@@ -1016,7 +1074,6 @@ ul.clients li .client_wrapper,ul.clients li .client_wrapper img{-webkit-transiti
 .blog_slider.flat .blog_slider_ul li .item_wrapper:hover .desc hr{width:100px}
 .blog_slider.flat .blog_slider_ul li .item_wrapper .image_wrapper img,.blog_slider.flat .blog_slider_ul li .item_wrapper .image_wrapper img{filter:alpha(opacity=90);opacity:.9}
 .blog_slider.flat .blog_slider_ul li .item_wrapper:hover .image_wrapper img,.blog_slider.flat .blog_slider_ul li .item_wrapper:hover .image_wrapper img{top:0;filter:alpha(opacity=100);opacity:1}
-.blog_slider.flat .slider_pagination{display:none!important}
 	
 /* Arrows */
 .blog_slider.flat{position:relative}
