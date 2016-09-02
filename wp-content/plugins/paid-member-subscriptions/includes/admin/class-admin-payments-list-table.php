@@ -12,10 +12,28 @@ if( ! class_exists( 'WP_List_Table' ) ) {
  */
 Class PMS_Payments_List_Table extends WP_List_Table {
 
+    /**
+     * Payments per page
+     *
+     * @access public
+     * @var int
+     */
     public $items_per_page;
 
+    /**
+     * Payments table data
+     *
+     * @access public
+     * @var array
+     */
     public $data;
 
+    /**
+     * Payments table views count
+     *
+     * @access public
+     * @var array
+     */
     public $views_count = array();
 
     /*
@@ -262,7 +280,7 @@ Class PMS_Payments_List_Table extends WP_List_Table {
      */
     public function column_default( $item, $column_name ) {
 
-        return $item[ $column_name ];
+        return !empty( $item[ $column_name ] ) ? $item[ $column_name ] : '-';
 
     }
 

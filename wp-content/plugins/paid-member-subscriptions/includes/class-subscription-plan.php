@@ -2,22 +2,76 @@
 
 Class PMS_Subscription_Plan {
 
+    /**
+     * Subscription plan id
+     *
+     * @access public
+     * @var int
+     */
     public $id;
 
+    /**
+     * Subscription plan name
+     *
+     * @access public
+     * @var string
+     */
     public $name;
 
+    /**
+     * Subscription plan description
+     *
+     * @access public
+     * @var string
+     */
     public $description;
 
+    /**
+     * Subscription plan price
+     *
+     * @access public
+     * @var int
+     */
     public $price;
 
+    /**
+     * Subscription plan status
+     *
+     * @access public
+     * @var string
+     */
     public $status;
 
+    /**
+     * Subscription plan duration
+     *
+     * @access public
+     * @var int
+     */
     public $duration;
 
+    /**
+     * Subscription plan duration unit
+     *
+     * @access public
+     * @var string
+     */
     public $duration_unit;
 
+    /**
+     * Subscription plan user role
+     *
+     * @access public
+     * @var string
+     */
     public $user_role;
 
+    /**
+     * Parent subscription plan
+     *
+     * @access public
+     * @var string
+     */
     public $top_parent;
 
 

@@ -744,13 +744,13 @@
 
 
 
-/*
- * Function that returns the current user id or the current user that is edited in front-end
- * edit profile when an admin is editing
- *
- * @return int
- *
- */
+    /*
+     * Function that returns the current user id or the current user that is edited in front-end
+     * edit profile when an admin is editing
+     *
+     * @return int
+     *
+     */
     function pms_get_current_user_id() {
         if( isset( $_GET['edit_user'] ) && !empty( $_GET['edit_user'] ) && current_user_can('edit_users') )
             return trim( $_GET['edit_user'] );

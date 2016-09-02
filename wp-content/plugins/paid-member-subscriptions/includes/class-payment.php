@@ -6,22 +6,75 @@
 
 Class PMS_Payment {
 
+    /**
+     * Payment id
+     *
+     * @access public
+     * @var int
+     */
     public $id;
 
+    /**
+     * User id
+     *
+     * @access public
+     * @var int
+     */
     public $user_id;
 
+    /**
+     * Payment status
+     *
+     * @access public
+     * @var string
+     */
     public $status;
 
+    /**
+     * Payment date
+     *
+     * @access public
+     * @var date
+     */
     public $date;
 
+    /**
+     * Payment amount
+     *
+     * @access public
+     * @var int
+     */
     public $amount;
 
+    /**
+     * Subscription id
+     *
+     * @access public
+     * @var int
+     */
     public $subscription_id;
 
+    /**
+     * User IP address
+     *
+     * @access public
+     * @var string
+     */
     public $ip_address;
 
+    /**
+     * Discount code
+     *
+     * @access public
+     * @var int
+     */
     public $discount_code;
 
+
+    /*
+     * Constructor
+     *
+     */
     public function __construct( $id = 0 ) {
 
         // Return if no id provided

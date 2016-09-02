@@ -2,7 +2,12 @@
 
 class PMS_Success {
 
-
+    /**
+     * Success messages
+     *
+     * @access public
+     * @var array
+     */
     public $messages = array();
 
 

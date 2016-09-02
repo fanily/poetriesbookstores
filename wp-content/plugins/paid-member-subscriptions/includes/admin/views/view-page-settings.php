@@ -219,7 +219,7 @@
 	                    <?php wp_editor( ( isset($this->options['emails']['register_sub']) ? $this->options['emails']['register_sub'] : $email_content['register_sub'] ), 'emails_register_sub', array( 'textarea_name' => $this->settings_slug . '[emails][register_sub]', 'editor_height' => 250 ) ); ?>
 	                </div>
 	            <?php }else{ ?>
-		            <?php printf( __( 'You can customize this email with Profile Builder Email Customizer %1$shere%2$s', 'pmstext' ), '<a href="'. admin_url( 'admin.php?page=user-email-customizer' ) .'">', '</a>' )?>
+		            <?php printf( __( 'You can <a href="%s">customize this email</a> with Profile Builder Email Customizer', 'pmstext' ), admin_url( 'admin.php?page=user-email-customizer' ) )?>
 	            <?php } ?>
 
 	            <?php if( ( $key = array_search( 'register', $email_actions)) !== false) unset($email_actions[$key]); ?>

@@ -7,6 +7,12 @@
  */
 Class PMS_Custom_Post_Type_Subscription extends PMS_Custom_Post_Type {
 
+    /**
+     * Custom post type instance
+     *
+     * @access private
+     * @var object
+     */
     private static $instance;
 
     /*

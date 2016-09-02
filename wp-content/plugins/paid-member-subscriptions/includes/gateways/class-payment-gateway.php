@@ -6,16 +6,92 @@
 
 Class PMS_Payment_Gateway {
 
+    /**
+     * Payment id
+     *
+     * @access public
+     * @var int
+     */
     public $payment_id;
+
+    /**
+     * User id
+     *
+     * @access public
+     * @var int
+     */
     public $user_id;
+
+    /**
+     * User email
+     *
+     * @access public
+     * @var string
+     */
     public $user_email;
+
+    /**
+     * Subscription plan
+     *
+     * @access public
+     * @var object
+     */
     public $subscription_plan;
+
+    /**
+     * Subscription plan price currency
+     *
+     * @access public
+     * @var string
+     */
     public $currency;
+
+    /**
+     * Subscription plan price
+     *
+     * @access public
+     * @var int
+     */
     public $amount;
+
+    /**
+     * Sign up amount
+     *
+     * @access public
+     * @var int
+     */
     public $sign_up_amount;
+
+    /**
+     * Recurring payment
+     *
+     * @access public
+     * @var string
+     */
     public $recurring;
+
+    /**
+     * Redirect URL
+     *
+     * @access public
+     * @var string
+     */
     public $redirect_url;
+
+    /**
+     * Form location
+     *
+     * @access public
+     * @var string
+     */
     public $form_location;
+
+    /**
+     * If test mode
+     *
+     * @access public
+     * @var bool
+     */
     public $test_mode;
 
 
@@ -38,6 +114,8 @@ Class PMS_Payment_Gateway {
         }
 
         $this->init();
+
+        do_action( 'pms_payment_gateway_initialised', $this );
 
     }
 

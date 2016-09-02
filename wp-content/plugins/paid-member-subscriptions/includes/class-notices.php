@@ -7,10 +7,45 @@
  * @return void
  */
 class PMS_Add_General_Notices{
+
+    /**
+     * Notification id
+     *
+     * @access public
+     * @var string
+     */
     public $notificationId = '';
+
+    /**
+     * Notification message
+     *
+     * @access public
+     * @var string
+     */
     public $notificationMessage = '';
+
+    /**
+     * Notification class
+     *
+     * @access public
+     * @var string
+     */
     public $notificationClass = '';
+
+    /**
+     * Start date
+     *
+     * @access public
+     * @var string
+     */
     public $startDate = '';
+
+    /**
+     * End date
+     *
+     * @access public
+     * @var string
+     */
     public $endDate = '';
 
     function __construct( $notificationId, $notificationMessage, $notificationClass = 'updated' , $startDate = '', $endDate = '' ){

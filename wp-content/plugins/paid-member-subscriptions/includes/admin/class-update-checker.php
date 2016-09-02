@@ -10,11 +10,46 @@ if ( !class_exists( 'pms_PluginUpdateChecker' ) ):
      * @access public
      */
     class pms_PluginUpdateChecker {
-        public $metadataUrl = ''; //The URL of the plugin's metadata file.
-        public $pluginFile = '';  //Plugin filename relative to the plugins directory.
-        public $slug = '';        //Plugin slug.
-        public $checkPeriod = 12; //How often to check for updates (in hours).
-        public $optionName = '';  //Where to store the update info.
+
+        /**
+         * The URL of the plugin's metadata file
+         *
+         * @access public
+         * @var string
+         */
+        public $metadataUrl = '';
+
+        /**
+         * Plugin filename relative to the plugins directory
+         *
+         * @access public
+         * @var string
+         */
+        public $pluginFile = '';
+
+        /**
+         * Plugin slug
+         *
+         * @access public
+         * @var string
+         */
+        public $slug = '';
+
+        /**
+         * How often to check for updates (in hours)
+         *
+         * @access public
+         * @var int
+         */
+        public $checkPeriod = 12;
+
+        /**
+         * Where to store the update info
+         *
+         * @access public
+         * @var int
+         */
+        public $optionName = '';
 
         /**
          * Class constructor.

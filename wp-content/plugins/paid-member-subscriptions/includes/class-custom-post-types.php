@@ -6,23 +6,35 @@
  */
 Class PMS_Custom_Post_Type {
 
-    /*
+    /**
      * Custom post type slug
+     *
+     * @access public
+     * @var string
      */
     public $post_type;
 
-    /*
+    /**
      * Custom post type singular name
+     *
+     * @access public
+     * @var string
      */
     public $singular_name;
 
-    /*
+    /**
      * Custom post type plural name
+     *
+     * @access public
+     * @var string
      */
     public $plural_name;
 
-    /*
+    /**
      * Custom post type arguments
+     *
+     * @access public
+     * @var array
      */
     public $args;
 

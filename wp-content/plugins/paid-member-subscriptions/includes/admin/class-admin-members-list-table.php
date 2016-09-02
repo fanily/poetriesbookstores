@@ -12,10 +12,28 @@ if( ! class_exists( 'WP_List_Table' ) ) {
  */
 Class PMS_Members_List_Table extends WP_List_Table {
 
+    /**
+     * Members per page
+     *
+     * @access public
+     * @var int
+     */
     public $items_per_page;
 
+    /**
+     * Members table data
+     *
+     * @access public
+     * @var array
+     */
     public $data;
 
+    /**
+     * Members table views count
+     *
+     * @access public
+     * @var array
+     */
     public $views_count = array();
 
     /*

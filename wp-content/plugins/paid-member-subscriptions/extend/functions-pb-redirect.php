@@ -3,6 +3,45 @@
  * PB redirects
  */
 
+    /*
+     * Because validation and redirects in PB happen much later than in PMS we need to make some of the data available for later
+     * and we're going to create a global variable that will store information
+     *
+     * @param object $gateway_object
+     *
+     */
+    function pms_pb_set_gateway_details( $gateway_object ) {
+
+        if( empty( $gateway_object->payment_id ) )
+            return;
+
+        // Do this only when PB is found
+        if( !defined( 'PROFILE_BUILDER_VERSION' ) )
+            return;
+
+        global $pms_gateway_data;
+        $pms_gateway_data = array();
+
+        // Add the payment id
+        $pms_gateway_data['payment_id'] = $gateway_object->payment_id;
+
+        // Add the payment gateway slug
+        $gateways = pms_get_payment_gateways();
+
+        foreach( $gateways as $gateway_slug => $gateway ) {
+            if( $gateway['class_name'] == get_class( $gateway_object ) )
+                $pms_gateway_data['payment_gateway_slug'] = $gateway_slug;
+        }
+
+    }
+    add_action( 'pms_payment_gateway_initialised', 'pms_pb_set_gateway_details', 10, 1 );
+
+
+    /*
+     * Handle the redirect to PayPal from the saved transients
+     * Also, we change the default
+     *
+     */
     function pms_pb_payment_redirect_link() {
 
         if( !isset( $_GET['pmstkn'] ) || !wp_verify_nonce( $_GET['pmstkn'], 'pms_payment_redirect_link') )
@@ -25,7 +64,7 @@
         $current_part = 1;
         foreach( $redirect_to_parts as $redirect_to_part ) {
 
-            if( strpos( $redirect_to_part, 'return' ) === 0 ) {
+            if( strpos( $redirect_to_part, 'return' ) === 0 && !empty( $redirect_back ) ) {
                 $redirect_to_part = 'return=' . $redirect_back;
             }
 
@@ -43,6 +82,12 @@
     add_action('init', 'pms_pb_payment_redirect_link');
 
 
+    /*
+     * Because redirects happen later and are handled with JS we will save the PayPal link in a transient
+     * for security reasons. In the end we will refresh the current page and handle the redirect to PayPal on init
+     * with the value we save in this transient
+     *
+     */
     function pms_pb_before_paypal_redirect( $paypal_link, $gateway_object, $settings ) {
 
         if( !isset( $gateway_object->payment_id ) )
@@ -50,22 +95,53 @@
 
         set_transient( 'pms_pb_pp_redirect_' . $gateway_object->payment_id, $paypal_link, DAY_IN_SECONDS );
 
-        // save payment ID as global to use when getting the redirect back link (on 'wppb_register_redirect')
-        global $payment_data_id;
-        $payment_data_id = $gateway_object->payment_id;
-
     }
     add_action( 'pms_before_paypal_redirect', 'pms_pb_before_paypal_redirect', 99, 3 );
 
 
+    /*
+     * Change PB's default success message with a custom one when a payment has been made
+     *
+     */
     function pms_pb_register_redirect_link( $redirect_link ){
 
-        global $payment_data_id;
+        global $pms_gateway_data;
 
-        if( !isset( $payment_data_id ) )
+        if( !isset( $pms_gateway_data['payment_id'] ) || ( isset( $pms_gateway_data['payment_gateway_slug'] ) && $pms_gateway_data['payment_gateway_slug'] != 'paypal_standard' ) )
             return $redirect_link;
 
-        $link ='';
+        // Scrap the redirect URL from the whole redirect message
+        $link = pms_pb_scrap_register_redirect_link( $redirect_link );
+
+        if ( empty( $redirect_link ) || !empty($link) ) {
+
+            // save in transient
+            set_transient('pms_pb_pp_redirect_back_' . $pms_gateway_data['payment_id'], $link, DAY_IN_SECONDS );
+
+            $redirect_link = sprintf(
+                '<p class="redirect_message">%1$s <meta http-equiv="Refresh" content="5;url=%2$s" /></p>',
+                __( 'You will soon be redirected to complete the payment.', 'paid-member-subscriptions' ),
+                wp_nonce_url( add_query_arg( array( 'pms_payment_id' => $pms_gateway_data['payment_id'] ), pms_get_current_page_url() ), 'pms_payment_redirect_link', 'pmstkn' )
+            );
+
+            return $redirect_link;
+        }
+
+        return $redirect_link;
+
+    }
+    add_filter( 'wppb_register_redirect', 'pms_pb_register_redirect_link', 100 );
+
+
+    /*
+     * When redirecting after successful registration, PB inserts a redirection message instead of the register form
+     * We need to scrap this message and return only the URL. This is used in cases where this URL does not exist and
+     * we need to redirect the user to the Register Success message from PMS
+     *
+     */
+    function pms_pb_scrap_register_redirect_link( $redirect_link ) {
+
+        $link = '';
         $redirect_link_parts = explode("'", $redirect_link);
 
         if ( strpos($redirect_link, '<script>') !== false ) { // happens when login after register is true
@@ -91,17 +167,6 @@
 
         }
 
-        if ( empty( $redirect_link ) || !empty($link) ) {
-
-            // save in transient
-            set_transient('pms_pb_pp_redirect_back_' . $payment_data_id, $link, DAY_IN_SECONDS );
-
-            $redirect_link = '<p class="redirect_message">' . sprintf( __( 'You will soon be redirected to complete the payment. %1$s', 'paid-member-subscriptions' ), '<meta http-equiv="Refresh" content="5;url=' . wp_nonce_url( add_query_arg( array( 'pms_payment_id' => $payment_data_id ), pms_get_current_page_url() ), 'pms_payment_redirect_link', 'pmstkn' ) .  '" />' ) . '</p>';
-
-            return $redirect_link;
-        }
-
-        return $redirect_link;
+        return $link;
 
     }
-    add_filter( 'wppb_register_redirect', 'pms_pb_register_redirect_link', 100 );

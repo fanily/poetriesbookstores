@@ -38,6 +38,53 @@
     box-shadow: none;
 }
 
+
+/**************************************************/
+/* WP Dashboard Payments Summary meta-box
+/**************************************************/
+#pms-payments-summary h4 {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+#pms-payments-summary .pms-month-income {
+    float: left;
+    width: 48%;
+    margin-bottom: 15px;
+}
+
+#pms-payments-summary .pms-today-income {
+    float: right;
+    width: 48%;
+    margin-bottom: 15px;
+}
+
+#pms-payments-summary p > span {
+    display: inline-block;
+    min-width: 75px;
+}
+
+#pms-payments-summary .pms-recent-payment {
+    padding: 0 0 5px 0;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #e8e8e8;
+    clear: both;
+}
+
+#pms-payments-summary .pms-recent-payments-amount {
+    float: right;
+    display: inline-block;
+    padding: 2px 5px;
+    background: #e7e7e7;
+    border-radius: 3px;
+}
+
+#pms-payments-summary .pms-recent-payments > a:last-of-type {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+
 /**************************************************/
 /* Basic Information Page
 /**************************************************/
@@ -87,32 +134,62 @@
     font-style: italic;
 }
 
-.pms-addons h3 {
-    min-height: 36px
+.pms-addons h4 {
+    text-transform: uppercase;
+    min-height: 32px;
 }
 
-.pms-badge{
+.pms-badge {
     float:right;
     display: inline-block;
     width: 150px;
-    height: 30px;
+    height: 150px;
     margin-bottom:25px;
-    padding-top: 120px;
     text-align: center;
     text-rendering: optimizelegibility;
 }
 
-.pms-badge{
+.pms-badge {
     background:url(../images/pms_logo.png) center no-repeat #d54e21;
+    background-size: cover;
+}
+
+.pms-badge span {
+    display: inline-block;
+    text-transform: uppercase;
+    color: #fff;
+    margin-top: 110px;
+    font-size: 90%;
 }
 
 .pms-addon-image {
     width:100%;
 }
 
+.pms-info-wrap .button-primary.pms-cta {
+    background: #e14d43;
+    border-color: #d02c21 #ba281e #ba281e;
+    color: #fff;
+    -webkit-box-shadow: 0 1px 0 #ba281e;
+    box-shadow: 0 1px 0 #ba281e;
+    text-shadow: 0 -1px 1px #ba281e,1px 0 1px #ba281e,0 1px 1px #ba281e,-1px 0 1px #ba281e;
+}
+
 /* Columns :) */
 .pms-row{
     overflow:hidden;
+}
+
+.pms-4-col > div {
+    float:left;
+    width: 23%;
+    margin-right: 2%;
+}
+
+@media screen and ( max-width: 820px ) {
+    .pms-4-col > div {
+        width: 48%;
+    }
 }
 
 .pms-3-col > div {
@@ -800,6 +877,10 @@ body.post-type-pms-subscription #delete-action {
 
 .pms-add-on-user-messages{ display: none; }
 
+.pms-add-ons-wrap .plugin-card-bottom {
+    padding: 12px;
+}
+
 .pms-add-on-wrap .plugin-card-bottom:after {
     display: block;
     content: '';
@@ -827,12 +908,13 @@ body.post-type-pms-subscription #delete-action {
 }
 
 .pms-add-on .pms-add-on-price {
-    font-size: 1.1em;
+    font-size: 1.15em;
     letter-spacing: -0.7px;
     margin: 14px 0 7px 0;
     padding-bottom: 7px;
     line-height: 23px;
     height: 28px;
+    opacity: 0.8;
 }
 
 .pms-add-on .pms-add-on-serial-number {
@@ -941,6 +1023,35 @@ body.post-type-pms-subscription #delete-action {
 .pms-confirmation-error {
     color: #c0392b;
 }
+
+
+/**************************************************/
+/* Uninstall Page
+/**************************************************/
+.pms-wrap.pms-uninstall-wrap {
+    max-width: 750px;
+}
+
+.pms-wrap.pms-uninstall-wrap .pms-admin-notice {
+    margin: 25px 0;
+}
+
+.pms-admin-notice.pms-error {
+    background: #fff;
+    border-left: 4px solid #fff;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    margin: 5px 15px 2px;
+    padding: 1px 12px;
+    border-left-color: #dc3232;
+}
+
+.pms-uninstall-thickbox-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e1e1e1;
+}
+
 
 /* Add-On Bundle */
 .pms-add-on-bundle { padding: 3px; }

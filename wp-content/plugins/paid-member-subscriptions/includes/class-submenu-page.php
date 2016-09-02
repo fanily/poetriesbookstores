@@ -2,33 +2,61 @@
 
 Class PMS_Submenu_Page {
 
-
+    /**
+     * Parent page slug
+     *
+     * @access public
+     * @var string
+     */
     public $parent_slug;
 
+    /**
+     * Page title
+     *
+     * @access public
+     * @var string
+     */
     public $page_title;
 
+    /**
+     * Menu title
+     *
+     * @access public
+     * @var string
+     */
     public $menu_title;
 
-    /*
+    /**
      * User capability that will be able to view/edit this page
+     *
+     * @access public
+     * @var string
      */
     public $capability;
 
-
-    /*
+    /**
      * Hook priority
+     *
+     * @access public
+     * @var int
      */
     public $priority;
 
-
-    /*
-     * Option name for the options/settings page
+    /**
+     * Options/settings page slug
+     *
+     * @access public
+     * @var string
      */
     public $settings_slug;
 
-
-    /*
+    /**
+	 * Option values
+	 *
      * Holds the settings option values, used for options/settings pages
+     *
+     * @access protected
+     * @var string
      */
     protected $options;
 

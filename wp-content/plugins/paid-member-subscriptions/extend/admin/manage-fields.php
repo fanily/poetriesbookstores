@@ -23,7 +23,7 @@
 
         // Append field properties
         if ( empty($subscription_plans) )
-            $manage_fields[] = array( 'type' => 'checkbox', 'slug' => 'subscription-plans', 'title' => __( 'Subscription Plans on Register Form', 'paid-member-subscriptions' ), 'options' => $subscription_plans, 'description' => sprintf( __( 'It looks like there are no active subscriptions. %1$sCreate one here%2$s.', 'paid-member-subscriptions' ),'<a href="edit.php?post_type=pms-subscription">', '</a>') );
+            $manage_fields[] = array( 'type' => 'checkbox', 'slug' => 'subscription-plans', 'title' => __( 'Subscription Plans on Register Form', 'paid-member-subscriptions' ), 'options' => $subscription_plans, 'description' => sprintf( __( 'It looks like there are no active subscriptions. <a href="%s">Create one here</a>.', 'paid-member-subscriptions' ), 'edit.php?post_type=pms-subscription' ) );
         else
             $manage_fields[] = array( 'type' => 'checkbox', 'slug' => 'subscription-plans', 'title' => __( 'Subscription Plans on Register Form', 'paid-member-subscriptions' ), 'options' => $subscription_plans, 'description' => __( "Select which Subscription Plans to show to the user on the register forms ( drag and drop to re-order )", 'paid-member-subscriptions' ) );
         $manage_fields[] = array( 'type' => 'text', 'slug' => 'subscription-plans-sort-order', 'title' => __( 'Subscription Plans Order', 'paid-member-subscriptions' ), 'description' => __( "Save the subscription plan order from the subscription plans checkboxes", 'paid-member-subscriptions' ) );

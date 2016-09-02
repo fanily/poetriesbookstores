@@ -17,6 +17,12 @@ function pms_get_payment_gateways( $only_slugs = false ) {
 
     $payment_gateways = apply_filters( 'pms_payment_gateways', array(
 
+        'manual'          => array(
+            'display_name_user'  => __( 'Manual/Offline', 'paid-member-subscriptions' ),
+            'display_name_admin' => __( 'Manual/Offline', 'paid-member-subscriptions' ),
+            'class_name'         => 'PMS_Payment_Gateway_Manual'
+        ),
+
         'paypal_standard' => array(
             'display_name_user'  => __( 'PayPal', 'paid-member-subscriptions' ),
             'display_name_admin' => __( 'PayPal Standard', 'paid-member-subscriptions' ),
@@ -32,6 +38,37 @@ function pms_get_payment_gateways( $only_slugs = false ) {
     return $payment_gateways;
 
 }
+
+
+/*
+ * The purpose of this function is to add filters for the display name of the payment gateways. The display names appear in the admin panel
+ * and also on the front-end when selecting a Payment Method.
+ *
+ * This filters are added simply to avoid hooking into the main filter ( "pms_payment_gateways" ) for changing the names that get displayed
+ *
+ * @param array $payment_gateways
+ *
+ * @return array
+ *
+ */
+function _pms_get_payment_gateways_hooks( $payment_gateways = array() ) {
+
+    if( empty( $payment_gateways ) )
+        return $payment_gateways;
+
+    foreach( $payment_gateways as $slug => $payment_gateway ) {
+
+        if( !isset( $payment_gateway['display_name_user'] ) || !isset( $payment_gateway['display_name_user'] ) )
+            continue;
+
+        $payment_gateways[$slug]['display_name_user']  = apply_filters( 'pms_payment_gateway_' . $slug . '_display_name_user', $payment_gateway['display_name_user'] );
+        $payment_gateways[$slug]['display_name_admin'] = apply_filters( 'pms_payment_gateway_' . $slug . '_display_name_admin', $payment_gateway['display_name_admin'] );
+    }
+
+    return $payment_gateways;
+
+}
+add_filter( 'pms_payment_gateways', '_pms_get_payment_gateways_hooks', 100 );
 
 
 /*

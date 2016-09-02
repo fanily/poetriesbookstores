@@ -32,9 +32,11 @@
             'orderby'       => 'id',
             'number'        => '',
             'offset'        => '',
+            'status'        => '',
             'type'          => '',
             'user_id'       => '',
             'profile_id'    => '',
+            'date'          => '',
             'search'        => ''
         );
 
@@ -55,37 +57,65 @@
             $query_where    = $query_where . " AND " . "  pms_payments.transaction_id LIKE '%s' OR users.user_nicename LIKE '%%%s%%' OR posts.post_title LIKE '%%%s%%'  ". " ";
         }
 
+        // Filter by status
+        if( !empty( $args['status'] ) ) {
+            $status = trim( $args['status'] );
+            $query_where    = $query_where . " AND " . " pms_payments.status LIKE '{$status}'";
+        }
+
+        /*
+         * Filter by date
+         * Can be filtered by - a single date that will return payments from that date
+         *                    - an array with two dates that will return payments between the two dates
+         */
+        if( !empty( $args['date'] ) ) {
+
+            if( is_array( $args['date'] ) && !empty( $args['date'][0] ) && !empty( $args['date'][1] ) ) {
+
+                $args['date'][0] = trim( $args['date'][0] );
+                $args['date'][1] = trim( $args['date'][1] );
+
+                $query_where = $query_where . " AND " . " ( pms_payments.date BETWEEN '{$args['date'][0]}' AND '{$args['date'][1]}' )";
+
+            } elseif( is_string( $args['date'] ) ) {
+
+                $query_where = $query_where . " AND " . " pms_payments.date LIKE '%%{$args['date']}%%'";
+
+            }
+
+        }
+
         // Filter by type
         if( !empty( $args['type'] ) ) {
-            $type = $args['type'];
+            $type = trim( $args['type'] );
             $query_where    = $query_where . " AND " . " pms_payments.type LIKE '{$type}'";
         }
 
         // Filter by profile_id
         if( !empty( $args['profile_id'] ) ) {
-            $profile_id = $args['profile_id'];
+            $profile_id = trim( $args['profile_id'] );
             $query_where    = $query_where . " AND " . " pms_payments.profile_id LIKE '{$profile_id}'";
         }
 
         // Filter by profile id
         if( !empty( $args['user_id'] ) ) {
-            $user_id = $args['user_id'];
-            $query_where    = $query_where . " AND " . " pms_payments.user_id LIKE '{$user_id}'";
+            $user_id = (int)trim( $args['user_id'] );
+            $query_where    = $query_where . " AND " . " pms_payments.user_id = {$user_id}";
         }
 
         $query_order_by = '';
         if ( !empty($args['orderby']) )
-            $query_order_by = "ORDER BY pms_payments." . $args['orderby'] . ' ';
+            $query_order_by = " ORDER BY pms_payments." . trim( $args['orderby'] ) . ' ';
 
         $query_order = $args['order'] . ' ';
 
         $query_limit        = '';
         if( $args['number'] )
-            $query_limit    = 'LIMIT ' . $args['number'] . ' ';
+            $query_limit    = 'LIMIT ' . (int)trim( $args['number'] ) . ' ';
 
         $query_offset       = '';
         if( $args['offset'] )
-            $query_offset   = 'OFFSET ' . $args['offset'] . ' ';
+            $query_offset   = 'OFFSET ' . (int)trim( $args['offset'] ) . ' ';
 
         // Concatenate query string
         $query_string .= $query_from . $query_inner_join . $query_where . $query_order_by . $query_order . $query_limit . $query_offset;
@@ -99,8 +129,10 @@
 
         $payments = array();
 
-        foreach( $ids as $key => $id ) {
-            $payments[] = pms_get_payment( $id[0] );
+        if( !empty( $ids ) ) {
+            foreach( $ids as $key => $id ) {
+                $payments[] = pms_get_payment( $id[0] );
+            }
         }
 
         return apply_filters( 'pms_get_payments', $payments, $args );
@@ -158,6 +190,7 @@
     function pms_get_payment_types() {
 
         return apply_filters( 'pms_payment_types', array(
+            'manual_payment'             => __( 'Manual Payment', 'paid-member-subscriptions' ),
             'web_accept_paypal_standard' => __( 'PayPal Standard - One-Time Payment', 'paid-member-subscriptions' )
         ));
 

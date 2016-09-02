@@ -44,8 +44,6 @@ jQuery(function(){
         var pms_serial_value = input.attr('value');
         jQuery.post( ajaxurl, { action: 'pms_add_on_save_serial', pms_add_on_slug: pms_add_on_slug, pms_add_on_unique_name:pms_add_on_unique_name, pms_serial_value: pms_serial_value }, function( response ) {
 
-            console.log( response );
-
             if( response != 'found' ){
                 input.removeClass( 'pms-found' );
                 input.addClass( 'pms-error' );

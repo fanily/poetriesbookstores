@@ -288,7 +288,7 @@
             // Get subscription plan
             $subscription_plan = pms_get_subscription_plan( trim( $_REQUEST['subscription_plan'] ) );
 
-            $output .= apply_filters( 'pms_cancel_subscription_confirmation_message', '<p>' . sprintf( __( 'Are you sure you want to cancel your %1$s subscription? This action will remove the subscription.', 'paid-member-subscriptions' ) . '</p>', $subscription_plan->name ), $subscription_plan );
+            $output .= apply_filters( 'pms_cancel_subscription_confirmation_message', '<p>' . sprintf( __( 'Are you sure you want to cancel your %s subscription? This action will remove the subscription.', 'paid-member-subscriptions' ) . '</p>', $subscription_plan->name ), $subscription_plan );
 
             // Hidden subscription plan field
             $output .= '<input type="hidden" name="subscription_plans" value="' . esc_attr( $subscription_plan->id ) . '" />';

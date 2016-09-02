@@ -362,7 +362,7 @@
                                 // Get plan upgrades
                                 $plan_upgrades = pms_get_subscription_plan_upgrades( $subscription_plan->id );
                                 if( !empty($plan_upgrades) )
-                                    $output .= apply_filters( 'pms_output_subscription_plan_action_upgrade', '<a href="' . esc_url( wp_nonce_url( add_query_arg( array( 'pms-action' => 'upgrade_subscription', 'subscription_plan' => $subscription_plan->id ) ), 'pms_member_nonce', 'pmstkn' ) ) . '">' . __( 'Upgrade', 'paid-member-subscriptions' ) . '</a>' );
+                                    $output .= apply_filters( 'pms_output_subscription_plan_action_upgrade', '<a href="' . esc_url( wp_nonce_url( add_query_arg( array( 'pms-action' => 'upgrade_subscription', 'subscription_plan' => $subscription_plan->id ) ), 'pms_member_nonce', 'pmstkn' ) ) . '">' . __( 'Upgrade', 'paid-member-subscriptions' ) . '</a>', $subscription_plan, $member_subscription, $member->user_id );
 
                                 // Number of days before expiration to show the renewal action
                                 $renewal_display_time = apply_filters( 'pms_output_subscription_plan_action_renewal_time', 15 );

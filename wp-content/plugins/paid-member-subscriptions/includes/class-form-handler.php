@@ -867,24 +867,12 @@ Class PMS_Form_Handler {
                 break;
 
             case 'upgrade_subscription':
-                $url = pms_get_current_page_url( true );
-
-                // Add success message
-                $url = add_query_arg( array( 'pms_gateway_payment_action' => base64_encode('upgrade_subscription') ), $url );
-                break;
-
             case 'renew_subscription':
-                $url = pms_get_current_page_url( true );
-
-                // Add success message
-                $url = add_query_arg( array( 'pms_gateway_payment_action' => base64_encode('renew_subscription') ), $url );
-                break;
-
             case 'new_subscription':
                 $url = pms_get_current_page_url( true );
 
                 // Add success message
-                $url = add_query_arg( array( 'pms_gateway_payment_action' => base64_encode('new_subscription') ), $url );
+                $url = add_query_arg( array( 'pms_gateway_payment_action' => base64_encode( $location ) ), $url );
                 break;
 
         }
@@ -951,7 +939,7 @@ Class PMS_Form_Handler {
                     $recoveruserMailMessage1 = apply_filters('pms_recover_password_message_content_sent_to_user1', $recoveruserMailMessage1, $requestedUserID, $requestedUserLogin, $requestedUserEmail);
 
                     //Confirmation link email title
-                    $recoveruserMailMessageTitle1 = sprintf(__('Password Reset from "%1$s"', 'paid-member-subscriptions'), $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES));
+                    $recoveruserMailMessageTitle1 = sprintf(__('Password Reset from "%s"', 'paid-member-subscriptions'), $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES));
                     $recoveruserMailMessageTitle1 = apply_filters('pms_recover_password_message_title_sent_to_user1', $recoveruserMailMessageTitle1, $requestedUserLogin);
 
                     //we add this filter to enable html encoding
@@ -979,7 +967,7 @@ Class PMS_Form_Handler {
 
 
         // If the user clicked the email confirmation link, make the verifications and change password
-        if ( isset($_GET['loginName']) && isset($_GET['key']) ) {
+        if ( !empty($_GET['loginName']) && !empty($_GET['key']) ) {
 
             //Check new password form nonce;
             if( !isset( $_POST['pmstkn'] ) || ( !wp_verify_nonce( $_POST['pmstkn'], 'pms_new_password_form_nonce') ) )

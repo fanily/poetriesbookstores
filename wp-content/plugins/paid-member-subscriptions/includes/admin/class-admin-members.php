@@ -7,7 +7,12 @@
  */
 Class PMS_Submenu_Page_Members extends PMS_Submenu_Page {
 
-
+    /**
+     * Request data
+     *
+     * @access public
+     * @var array
+     */
     public $request_data = array();
 
 

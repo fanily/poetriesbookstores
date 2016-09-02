@@ -2,29 +2,43 @@
 
 Class PMS_Meta_Box {
 
-    /*
-     * Meta id of the box
+    /**
+     * Meta box id
+     *
+     * @access public
+     * @var string
      */
     public $id;
 
-    /*
+    /**
      * Meta box title
+     *
+     * @access public
+     * @var string
      */
     public $title;
 
-    /*
+    /**
      * Post type to assign
+     *
+     * @access public
+     * @var string
      */
     public $post_type;
 
-    /*
-     * Context, position of the meta box
+    /**
+     * Meta box position
+     *
+     * @access public
+     * @var string
      */
     public $context;
 
-    /*
-     * Array with the meta fields keys and a set of default values
+    /**
+     * Meta fields keys and a set of default values
      *
+     * @access public
+     * @var array
      */
     public $meta_default_values = array();
 

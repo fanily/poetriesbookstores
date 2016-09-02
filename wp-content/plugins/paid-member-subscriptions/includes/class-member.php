@@ -6,12 +6,36 @@
  */
 Class PMS_Member {
 
+    /**
+     * User ID
+     *
+     * @access public
+     * @var int
+     */
     public $user_id;
 
+    /**
+     * User name
+     *
+     * @access public
+     * @var string
+     */
     public $username;
 
+    /**
+     * User email
+     *
+     * @access public
+     * @var string
+     */
     public $email;
 
+    /**
+     * Member subscriptions data
+     *
+     * @access public
+     * @var array
+     */
     public $subscriptions;
 
 

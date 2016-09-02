@@ -1,11 +1,11 @@
-=== Paid Member Subscriptions - membership & content restriction ===
+=== Membership & Content Restriction - Paid Member Subscriptions ===
 Contributors: cozmoslabs, iova.mihai, madalin.ungureanu, adispiac, sareiodata, reflectionmedia
 Donate link: http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/
 Tags: membership, paid membership, membership plan, membership level, member, members, subscription plans, user payments, paying users, paid users, restrict content, restrict access, content protection, content restriction, recurring payments
 
 Requires at least: 3.1
-Tested up to: 4.5.2
-Stable tag: 1.2.2
+Tested up to: 4.6.0
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ It offers a complete membership solution, allowing you to accept member payments
 To start simply create a new page and give it an intuitive name(e.g. Member Registration) and add the following shortcode: [pms-register].
 Publish the page and you are done!
 
-= Shortcodes for Member Registration, Login, Restrict Content and managing Membership Plans =
+= Shortcodes for Member Registration, Login, Content Restriction and managing Membership Plans =
 You can use one of the following shortcodes:
 
 * **[pms-register]** - adds a front-end user registration form where members can sign-up for a membership level
@@ -35,11 +35,11 @@ You can use one of the following shortcodes:
 
 Please browse our [plugin description page](http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) for more information regarding shortcode parameters and plugin modules.
 
-[youtube https://www.youtube.com/watch?v=6AEIvvCOZHM&start=0&autoplay=1]
+https://www.youtube.com/watch?v=6AEIvvCOZHM&start=0&autoplay=1
 
 = Membership Modules: =
 
-= Restrict Content =
+= Content Restriction =
  You'll find it quite simple to restrict entire posts, pages or custom post types or just portions of them.
 
  Restrict Content offers you options to:
@@ -66,26 +66,31 @@ Customize default member emails and setup member messages sent/displayed on cert
 
 = Powerful Add-ons =
 
-Paid Member Subscriptions has a range of premium [Add-ons](http://www.cozmoslabs.com/paid-member-subscriptions-add-ons/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) that allow you to extend the power of the plugin:
+Paid Member Subscriptions has a range of premium [Add-ons](http://www.cozmoslabs.com/paid-member-subscriptions-add-ons/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) that allow you to extend the power of the membership plugin:
+
+**Basic Add-ons** (available in the [PRO or Hobbyist](http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) version)
+
+* [Global Content Restriction](http://www.cozmoslabs.com/add-ons/global-content-restriction/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - add global content restriction rules to subscription plans, based on post type, taxonomy and terms
+* [Discount Codes](http://www.cozmoslabs.com/add-ons/discount-codes/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - create an unlimited number of discount codes and offer percentage or flat rate based discounts
+* [Email Reminders](http://www.cozmoslabs.com/add-ons/email-reminders/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - create multiple automated email reminders that are sent to members before or after certain events take place (subscription expires, subscription activated etc.)
+* [Navigation Menu Filtering](http://www.cozmoslabs.com/add-ons/navigation-menu-filtering/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - dynamically display menu items based on logged-in status as well as selected subscription plans
+
+**Pro Add-ons** (available in the [PRO version](http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) only)
 
 * [Recurring Payments for PayPal Standard](http://www.cozmoslabs.com/add-ons/recurring-payments-paypal-standard/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - accept recurring payments from your members through PayPal Standard
 * [PayPal Pro & PayPal Express](http://www.cozmoslabs.com/add-ons/paypal-pro-paypal-express/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - accept one-time or recurring payments through PayPal Pro (credit card) and PayPal Express Checkout
 * [Stripe Gateway](http://www.cozmoslabs.com/add-ons/stripe/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - accept credit card payments, both one-time and recurring, directly on your website via Stripe
-* [Email Reminders](http://www.cozmoslabs.com/add-ons/email-reminders/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - create multiple automated email reminders that are sent to members before or after certain events take place (subscription expires, subscription activated etc.)
-* [Global Content Restriction](http://www.cozmoslabs.com/add-ons/global-content-restriction/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - add global content restriction rules to subscription plans, based on post type, taxonomy and terms
-* [Discount Codes](http://www.cozmoslabs.com/add-ons/discount-codes/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - create an unlimited number of discount codes and offer percentage or flat rate based discounts
+* [Content Dripping](http://www.cozmoslabs.com/add-ons/content-dripping/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - create schedules for your content, making posts or categories available for your members only after a certain time has passed since they signed up for a subscription plan
 * [Multiple Subscriptions per User](http://www.cozmoslabs.com/add-ons/multiple-subscriptions-per-user/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - setup multiple subscription level groups (e.g. Physics, Math) and allow members to sign up for more than one subscription plan, one per group (e.g. Physics Beginner and Math Advanced)
-* [Navigation Menu Filtering](http://www.cozmoslabs.com/add-ons/navigation-menu-filtering/?utm_source=wp.org&utm_medium=pms-description-page&utm_campaign=PMSFree) - dynamically display menu items based on logged-in status as well as selected subscription plans
 
-Get all add-ons at a heavily discounted price with [Paid Member Subscriptions Add-ons Bundle](http://www.cozmoslabs.com/paid-member-subscriptions-add-ons/bundle/).
-
-= Documentation =
-
-http://www.cozmoslabs.com/docs/paid-member-subscriptions/
 
 = Website =
 
 http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/
+
+= Documentation =
+
+http://www.cozmoslabs.com/docs/paid-member-subscriptions/
 
 = Addons =
 
@@ -121,8 +126,8 @@ For more information please check out [Paid Member Subscriptions documentation](
 
 
 == Screenshots ==
-1. Basic Information page for Paid Member Subscriptions, membership plugin
-2. Subscription Plans listing from Paid Member Subscriptions, membership plugin
+1. Basic Information page for Paid Member Subscriptions - membership plugin
+2. Subscription Plans listing from Paid Member Subscriptions - membership plugin
 3. Adding a New Membership Plan
 4. Member Registration Page - front-end membership plans listing
 5. Member Login Page - front-end user login form
@@ -139,6 +144,24 @@ For more information please check out [Paid Member Subscriptions documentation](
 
 
 == Changelog ==
+= 1.2.7 =
+* New: Added manual payment gateway
+* Misc: Small text formatting fixes
+
+= 1.2.6 =
+* New: Added an Uninstall tool that removes all custom data saved by the plugin in the database
+
+= 1.2.5 =
+* New: Added a WP Dashboard payments summary box, with a brief income report for the current month, current day and also a list of the latest completed payments
+* Misc: Small refactoring to the redirect to success page from Profile Builder forms
+* Misc: Small code clean-up and new comments added to certain class properties and methods
+
+= 1.2.4 =
+* Misc: Code clean-up and small refactoring
+
+= 1.2.3 =
+* Fixed: Password Reset security issue
+
 = 1.2.2 =
 * New: Added a Recent Payments table in the edit screen of the member for a quick view of the member's latest payments
 * New: Added new developer hooks in the pms_get_payments(), pms_get_members() and pms_get_users_non_members() functions

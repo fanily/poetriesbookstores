@@ -207,10 +207,10 @@ Class PMS_Shortcodes {
 
             if ( !empty($atts['login_url']) ) {
                 $atts['login_url'] = pms_add_missing_http( $atts['login_url'] );
-                return apply_filters('pms_member_account_not_logged_in', '<p>' . sprintf( __('You must be logged in to view this information. %1$sLog in%2$s', 'paid-member-subscriptions'), '<a href="'.$atts["login_url"].'">' , '</a>') . '</p>', $atts);
+                return apply_filters( 'pms_member_account_not_logged_in', '<p>' . __( 'You must be logged in to view this information.', 'paid-member-subscriptions' ) . ' <a href="' . $atts["login_url"] . '">' . __( 'Log in', 'paid-member-subscriptions' ) . '</a></p>', $atts );
             }
             else
-                return apply_filters( 'pms_member_account_not_logged_in', '<p>' . __( 'You must be logged in to view this information.', 'paid-member-subscriptions' ) . '</p>' , $atts);
+                return apply_filters( 'pms_member_account_not_logged_in', '<p>' . __( 'You must be logged in to view this information.', 'paid-member-subscriptions' ) . '</p>' , $atts );
 
         }
 
@@ -313,7 +313,7 @@ Class PMS_Shortcodes {
 
             $logout_url = '<a href="' . wp_logout_url( pms_get_current_page_url() ) . '" title="' . __( 'Log out of this account', 'paid-member-subscriptions' ) . '">' . __( 'Log out', 'paid-member-subscriptions' ) . '</a>';
 
-            $output .= apply_filters( 'pms_login_form_logged_in_message', '<p class="pms-alert">' . sprintf( __( 'You are currently logged in as %1$s. %2$s', 'paid-member-subscriptions' ), $user->display_name, $logout_url ) . '</p>', $user->ID, $user->display_name );
+            $output .= apply_filters( 'pms_login_form_logged_in_message', '<p class="pms-alert">' . sprintf( __( 'You are currently logged in as %s.', 'paid-member-subscriptions' ), $user->display_name ) . ' ' . $logout_url . '</p>', $user->ID, $user->display_name );
 
         }
 
@@ -369,7 +369,7 @@ Class PMS_Shortcodes {
 
         } else {
 
-            if ( isset($_GET['loginName']) && isset($_GET['key']) ) {
+            if ( !empty($_GET['loginName']) && !empty($_GET['key']) ) {
                 // The user clicked the email confirmation link
                 if ( !empty($_POST['pms_new_password']) && !empty($_POST['pms_repeat_password']) && ( count( pms_errors()->get_error_codes() ) == 0 )) {
 

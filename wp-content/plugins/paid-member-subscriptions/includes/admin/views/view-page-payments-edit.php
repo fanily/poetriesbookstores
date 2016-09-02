@@ -18,7 +18,7 @@
 
 <div class="wrap">
 
-    <h2><?php echo sprintf( __( 'Payment #%1$s', 'paid-member-subscriptions' ), $payment_id ); ?></h2>
+    <h2><?php printf( __( 'Payment #%s', 'paid-member-subscriptions' ), $payment_id ); ?></h2>
 
     <form id="pms-form-edit-payment" class="pms-form" method="POST" action="<?php echo admin_url( 'admin.php?page=pms-payments-page' ); ?>">
 
@@ -58,7 +58,7 @@
 
             <?php $currency_symbol = pms_get_currency_symbol( $settings['payments']['currency'] ); ?>
 
-            <label for="pms-payment-amount" class="pms-form-field-label"><?php echo sprintf( __( 'Amount (%1$s)', 'paid-member-subscriptions' ), $currency_symbol ); ?></label>
+            <label for="pms-payment-amount" class="pms-form-field-label"><?php printf( __( 'Amount (%s)', 'paid-member-subscriptions' ), $currency_symbol ); ?></label>
             <input type="text" id="pms-payment-amount" name="pms-payment-amount" class="medium" value="<?php echo $payment->amount; ?>" />
 
         </div>

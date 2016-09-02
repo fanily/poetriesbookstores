@@ -1,6 +1,5 @@
 jQuery( function($) {
 
-
     if( window.history.replaceState ) {
 
         currentURL = window.location.href;
@@ -45,6 +44,26 @@ jQuery( function($) {
         return rtn;
     }
 
+
+    /*
+     * Hide "automatically renew subscription" checkbox for manual payment gateway
+     *
+     */
+    jQuery(document).ready( function() {
+
+        if( $('[name=pay_gate]').val() == 'manual' )
+            jQuery('.pms-subscription-plan-auto-renew').hide();
+
+
+        $('[name=pay_gate]').click( function() {
+            if( $(this).val() == 'manual' )
+                jQuery('.pms-subscription-plan-auto-renew').hide();
+            else
+                jQuery('.pms-subscription-plan-auto-renew').show();
+        });
+
+    });
+
     /*
      * Hide "automatically renew subscription" checkbox for free/one time payments
      *
@@ -61,7 +80,8 @@ jQuery( function($) {
                 jQuery('.pms-subscription-plan-auto-renew').hide();
             }
             else {
-                jQuery('.pms-subscription-plan-auto-renew').show();
+                if( $('[name=pay_gate]').val() != 'manual' || $('[name=pay_gate]:checked').val() != 'manual' )
+                    jQuery('.pms-subscription-plan-auto-renew').show();
             }
         });
 

@@ -3,7 +3,7 @@
  * Plugin Name: Paid Member Subscriptions
  * Plugin URI: http://www.cozmoslabs.com/
  * Description: Accept payments, create subscription plans and restrict content on your membership website.
- * Version: 1.2.2
+ * Version: 1.2.7
  * Author: Cozmoslabs, Mihai Iova, Madalin Ungureanu, Adrian Spiac, Cristian Antohe
  * Author URI: http://www.cozmoslabs.com/
  * Text Domain: paid-member-subscriptions
@@ -183,7 +183,8 @@ Class Paid_Member_Subscriptions {
      *
      */
     public function define_constants() {
-        define( 'PMS_VERSION', '1.2.2' );
+
+        define( 'PMS_VERSION', '1.2.7' );
         define( 'PMS_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
         define( 'PMS_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
         define( 'PMS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -255,6 +256,7 @@ Class Paid_Member_Subscriptions {
         update_option( 'pms_settings', $settings );
 
     }
+
 
     /*
      * Function to include the files needed
@@ -389,6 +391,10 @@ Class Paid_Member_Subscriptions {
          * Payments
          */
 
+        // Recent payments WP Dashboard meta-box
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/admin/meta-boxes/class-meta-box-admin-dashboard-payments.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH . 'includes/admin/meta-boxes/class-meta-box-admin-dashboard-payments.php';
+
         // Payment object class
         if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/class-payment.php' ) )
             include_once PMS_PLUGIN_DIR_PATH . 'includes/class-payment.php';
@@ -434,8 +440,11 @@ Class Paid_Member_Subscriptions {
         if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/gateways/class-payment-gateway.php' ) )
             include_once PMS_PLUGIN_DIR_PATH . 'includes/gateways/class-payment-gateway.php';
 
-        if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/gateways/class-payment-gateway-paypal-standard.php' ) )
-            include_once PMS_PLUGIN_DIR_PATH . 'includes/gateways/class-payment-gateway-paypal-standard.php';
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/gateways/manual/class-payment-gateway-manual.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH . 'includes/gateways/manual/class-payment-gateway-manual.php';
+        
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/gateways/paypal_standard/class-payment-gateway-paypal-standard.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH . 'includes/gateways/paypal_standard/class-payment-gateway-paypal-standard.php';
 
         // Gateway functions
         if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/gateways/functions-payment-gateways.php' ) )
@@ -464,6 +473,13 @@ Class Paid_Member_Subscriptions {
         // Meta box with content restriction options on pages
         if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/admin/meta-boxes/class-meta-box-single-content-restriction.php' ) )
             include_once PMS_PLUGIN_DIR_PATH . 'includes/admin/meta-boxes/class-meta-box-single-content-restriction.php';
+
+
+        /*
+         * Uninstall plugin
+         */
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'includes/admin/class-admin-uninstall.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH .  'includes/admin/class-admin-uninstall.php';
 
 
         /*
@@ -566,12 +582,15 @@ Class Paid_Member_Subscriptions {
         // Hook to be executed on a daily interval, by the cron job (wp_schedule_event); used to remove the user activation key from the db (make it expire) every 24 hours
         add_action('pms_remove_activation_key','pms_remove_expired_activation_key');
 
+        // Add new actions besides the activate/deactivate ones from the Plugins page
+        add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( $this, 'add_plugin_action_links' ) );
+
     }
 
 
     public function add_menu_page() {
 
-        add_menu_page( __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), 'manage_options', 'paid-member-subscriptions', null, plugin_dir_url( __FILE__ ).'/assets/images/pms_ico.png', '71.1' );
+        add_menu_page( __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), 'manage_options', 'paid-member-subscriptions', null, plugin_dir_url( __FILE__ ).'/assets/images/pms-menu-icon.png', '71.1' );
 
     }
 
@@ -579,6 +598,18 @@ Class Paid_Member_Subscriptions {
     public function remove_submenu_page() {
 
         remove_submenu_page( 'paid-member-subscriptions', 'paid-member-subscriptions' );
+
+    }
+
+
+    public function add_plugin_action_links( $links ) {
+
+        $new_links = array();
+
+        if( current_user_can( 'manage_options' ) )
+            $new_links[] = '<span class="delete"><a href="' . wp_nonce_url( add_query_arg( array( 'page' => 'pms-uninstall-page' ) , admin_url( 'admin.php' ) ), 'pms_uninstall_page_nonce' ) . '">' . __( 'Uninstall', 'paid-member-subscriptions' ) . '</a></span>';
+
+        return array_merge( $links, $new_links );
 
     }
 
@@ -614,17 +645,19 @@ Class Paid_Member_Subscriptions {
 
     }
 
+
     /**
      * Show row meta on the plugin screen. (Used to add links like Documentation, Support etc.)
      *
      * @param	mixed $links Plugin Row Meta
      * @param	mixed $file  Plugin Base file
      * @return	array
+     *
      */
     public static function plugin_row_meta( $links, $file ) {
         if ( $file == PMS_PLUGIN_BASENAME ) {
             $row_meta = array(
-                'documentation'    => '<a href="' . esc_url( apply_filters( 'pms_docs_url', 'http://www.cozmoslabs.com/docs/paid-member-subscriptions/' ) ) . '" title="' . esc_attr( __( 'View Documentation', 'woocommerce' ) ) . '">' . __( 'Documentation', 'paid-member-subscriptions' ) . '</a>',
+                'documentation'    => '<a href="' . esc_url( apply_filters( 'pms_docs_url', 'http://www.cozmoslabs.com/docs/paid-member-subscriptions/' ) ) . '" title="' . esc_attr( __( 'View Documentation', 'paid-member-subscriptions' ) ) . '">' . __( 'Documentation', 'paid-member-subscriptions' ) . '</a>',
             );
 
             return array_merge( $links, $row_meta );

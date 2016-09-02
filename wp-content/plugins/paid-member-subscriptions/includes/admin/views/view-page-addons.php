@@ -28,6 +28,7 @@
 
     <div id="the-list">
 
+        <?php /* ?>
         <div class="plugin-card pms-add-on pms-add-on-bundle">
             <div class="plugin-card-top">
                 <a href="http://www.cozmoslabs.com/paid-member-subscriptions-add-ons/bundle/?utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page-bundle-button&utm_campaign=PMS" target="_blank">
@@ -40,6 +41,7 @@
 
             </div>
         </div>
+        <?php */ ?>
 
         <?php
         $pms_add_ons = PMS_Submenu_Page_Addons::add_ons_get_remote_content();
@@ -79,18 +81,22 @@
                 echo '<div class="plugin-card-top">';
 
                 echo '<a target="_blank" href="' . $pms_add_on['url'] . '?utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page&utm_campaign=PMS' . $version . '">';
-                echo '<img src="' . $pms_add_on['thumbnail_url'] . '" />';
+                    echo '<img src="' . $pms_add_on['thumbnail_url'] . '" />';
                 echo '</a>';
 
                 echo '<h3 class="pms-add-on-title">';
-                echo '<a target="_blank" href="' . $pms_add_on['url'] . '?utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page&utm_campaign=PMS' . $version . '">';
-                echo $pms_add_on['name'];
-                echo '</a>';
+                    echo '<a target="_blank" href="' . $pms_add_on['url'] . '?utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page&utm_campaign=PMS' . $version . '">';
+                        echo $pms_add_on['name'];
+                    echo '</a>';
                 echo '</h3>';
 
-                if( !( $pms_add_on['paid'] && $pms_add_on_exists ) )
-                    echo '<h3 class="pms-add-on-price">' . $pms_add_on['price'] . '</h3>';
-                else {
+                if( !( $pms_add_on['paid'] && $pms_add_on_exists ) ) {
+
+                    $bundle_name = ( in_array( 'pro', $pms_add_on['product_version_type'] ) ? 'Pro' : 'Hobbyist' ); 
+
+                    echo '<h3 class="pms-add-on-price">' . __( 'Available in: ', 'paid-member-subscriptions' ) . $bundle_name . ' ' . __( 'version', 'paid-member-subscriptions' ) . '</h3>';
+
+                } else {
                     $serial_number = get_option( $pms_add_on['slug'] . '_serial_number', '' );
                     $serial_status = get_option( 'pms_add_on_'. $pms_add_on['slug'] .'_serial_status', '');
                     $serial_status_class = '';
@@ -140,16 +146,18 @@
                                 echo '<span class="dashicons dashicons-yes"></span><span class="pms-add-on-message">' . __('Add-On is <strong>active</strong>', 'paid-member-subscriptions') . '</span>';
                             }
 
+                            echo '<div class="spinner"></div>';
+
                         } else {
 
                             // If we're on a multisite don't add the wpp-add-on-download class to the button so we don't fire the js that
                             // handles the in-page download
                             if (is_multisite()) {
                                 ($pms_add_on['paid']) ? $pms_paid_link_class = 'button-primary' : $pms_paid_link_class = 'button-secondary';
-                                ($pms_add_on['paid']) ? $pms_paid_link_text = __('Buy Now', 'paid-member-subscriptions') : $pms_paid_link_text = __('Download Now', 'paid-member-subscriptions');
+                                ($pms_add_on['paid']) ? $pms_paid_link_text = __('Learn More', 'paid-member-subscriptions') : $pms_paid_link_text = __('Download Now', 'paid-member-subscriptions');
                             } else {
                                 ($pms_add_on['paid']) ? $pms_paid_link_class = 'button-primary' : $pms_paid_link_class = 'button-secondary pms-add-on-download';
-                                ($pms_add_on['paid']) ? $pms_paid_link_text = __('Buy Now', 'paid-member-subscriptions') : $pms_paid_link_text = __('Install Now', 'paid-member-subscriptions');
+                                ($pms_add_on['paid']) ? $pms_paid_link_text = __('Learn More', 'paid-member-subscriptions') : $pms_paid_link_text = __('Install Now', 'paid-member-subscriptions');
                             }
 
                             ($pms_add_on['paid']) ? $pms_paid_href_utm_text = '?utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page-buy-button&utm_campaign=PMS' . $version : $pms_paid_href_utm_text = '&utm_source=wpbackend&utm_medium=clientsite&utm_content=add-on-page&utm_campaign=PMS' . $version;
@@ -158,8 +166,6 @@
                             echo '<span class="dashicons dashicons-yes"></span><span class="pms-add-on-message">' . __('Compatible with your version of Paid Member Subscriptions.', 'paid-member-subscriptions') . '</span>';
 
                         }
-
-                        echo '<div class="spinner"></div>';
 
                         // PB version type does not match
                     } else {
