@@ -3,7 +3,7 @@ Contributors: nosilver4u
 Tags: images, image, attachments, attachment, optimize, optimization, lossless, photos, photo, picture, pictures, seo, compression, image editor, gmagick, cloud, wp-cli
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 2.9.6
+Stable tag: 2.9.9
 License: GPLv3
 
 Reduce image sizes for images within WordPress including NextGEN, GRAND FlAGallery, FooGallery and more via paid cloud service.
@@ -28,6 +28,10 @@ EWWW Image Optimizer Cloud offloads all optimization to designated servers which
 1. **Optimize everything** With the wp_image_editor class extension, and the ability to specify your own folders for scanning, any image in Wordpress can be optimized.
 
 If you want to optimize images on your own server without using the cloud, see the [EWWW Image Optimizer](http://wordpress.org/plugins/ewww-image-optimizer/).
+
+= Support =
+
+If you need assistance using the plugin, please visit our [Support Page](https://ewww.io/contact-us/). The forums are community supported only.
 
 = Bulk Optimize = 
 
@@ -90,6 +94,8 @@ Huge thanks to all our translators! If you would like to help translate this plu
 1. *Optional* Visit the settings page to enable/disable specific tools and turn on advanced optimization features.
 1. Done!
 
+If you need further assistance using the plugin, please visit our [Support Page](https://ewww.io/contact-us/). The forums are community supported only.
+
 EWWW IO - Cloud API Walkthrough
 [youtube https://www.youtube.com/watch?v=U78FFkM582E]
 EWWW IO - Converting Images
@@ -131,6 +137,37 @@ https://developers.google.com/speed/docs/insights/OptimizeImages
 == Changelog ==
 
 * If you would like to help translate this plugin in your language, get started here: https://translate.wordpress.org/projects/wp-plugins/ewww-image-optimizer-cloud/
+
+= 2.9.9 =
+* fixed: broken uploads with W3TC CDN option enabled
+* fixed: warning when scanning Meta Slider metadata for images
+* fixed: wp-cli command skipping pdf files
+* added: ability to view API history at https://history.exactlywww.com/
+* added: abiltiy to disable set_time_limit() function with EWWW_IMAGE_OPTIMIZER_DISABLE_STL constant
+* added: core plugin now on GitHub https://github.com/nosilver4u/ewww-image-optimizer
+* changed: removed baseline JPG encoding trial, since progressive compression is almost always smaller, and is always more desirable from a UX perspective
+* updated: cwebp version 0.5.1
+
+= 2.9.8 =
+* fixed: also disable parallel mode iternally if background testing is not successful
+* fixed: fatal error when WP Retina 2x is enabled with EWWW's parallel mode
+* fixed: parallel opt would hang if resizes were missing
+* fixed: prevent background test from accidentally spawning more tests
+* fixed: background test stuck in queue indefinitely if it didn't succeed
+
+= 2.9.7 =
+* fixed: cached value for multisite uploads directory incorrect on some sites
+* fixed: retina/hidpi images required separate async task with parallel optimization
+* fixed: retina function would try to run an async optimization even if the file didn't exist
+* fixed: one-time convert links (like JPG2PNG) from Media Library not working when Parallel mode enabled
+* fixed: mime-type meta for resizes updated on conversion and restoration
+* fixed: resizes were being checked, even if no filename was available
+* added: thread limit for parallel optimization, set to 5, can be modified by filter
+* added: filter to modify timeout for parallel optimization
+* added: filter to disable (or modify) the suffix added to converted images
+* added: debugging page to view and clear background optimization queues (must have EWWW's debug setting enabled) - under Media menu
+* changed: file types with disabled optimization no longer included in unoptimized image counts
+* changed: background mode only enabled if background test succeeds (on plugin upgrade)
 
 = 2.9.6 =
 * fixed: set_time_limit() was still being called in a couple spots even if set_time_limit() is disabled by PHP
