@@ -16,6 +16,7 @@
  * @since 1.0.0
  */
 define( 'WPINC', 'wp-includes' );
+define('DISALLOW_FILE_MODS',true);
 
 // Include files required for initialization.
 require( ABSPATH . WPINC . '/load.php' );
