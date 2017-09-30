@@ -4,8 +4,8 @@ Donate link: http://www.cozmoslabs.com/wordpress-paid-member-subscriptions/
 Tags: membership, paid membership, membership plan, membership level, member, members, subscription plans, user payments, paying users, paid users, restrict content, restrict access, content protection, content restriction, recurring payments
 
 Requires at least: 3.1
-Tested up to: 4.6.0
-Stable tag: 1.2.7
+Tested up to: 4.6.1
+Stable tag: 1.2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,6 +144,13 @@ For more information please check out [Paid Member Subscriptions documentation](
 
 
 == Changelog ==
+= 1.2.9 =
+* New: Added option to display a preview of the restricted posts to users that are logged-out or that are not subscribed to a plan
+* Fixed: Plugin is no longer displayed in the admin menu for users that are not administrators
+
+= 1.2.8 =
+* New: Paid Member Subscriptions and Profile Builder are now compatible when using Profile Builder's E-mail Confirmation feature
+
 = 1.2.7 =
 * New: Added manual payment gateway
 * Misc: Small text formatting fixes

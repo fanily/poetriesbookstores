@@ -100,6 +100,73 @@
 
 
     /*
+     * Formats the error messages to display accordingly to the WYSIWYG editor
+     * 
+     * @param string $message
+     *
+     * @return string
+     *
+     */
+    function pms_restriction_message_wpautop( $message = '' ) {
+
+        if( !empty( $message ) )
+            $message = wpautop( $message );
+
+        return $message;
+
+    }
+    add_filter( 'pms_restriction_message_non_members', 'pms_restriction_message_wpautop', 30, 1 );
+    add_filter( 'pms_restriction_message_logged_out', 'pms_restriction_message_wpautop', 30, 1 );
+
+
+    /*
+     * Adds a preview of the restricted post before the default restriction messages
+     *
+     * @param string $message
+     * @param string $content
+     * @param WP_Post $post
+     * @param int $user_ID
+     *
+     * @return string
+     *
+     */
+    function pms_add_restricted_post_preview( $message, $content, $post, $user_ID ) {
+        
+        $preview        = '';
+        $settings       = get_option( 'pms_settings' );
+        $preview_option = ( !empty( $settings['general']['restricted_post_preview']['option'] ) ? $settings['general']['restricted_post_preview']['option'] : '' );
+
+        if( empty( $preview_option ) || $preview_option == 'none' )
+            return $message;
+
+        $post_content = $post->post_content;
+
+        // Trim the content
+        if( $preview_option == 'trim-content' ) {
+
+            $length  = ( !empty( $settings['general']['restricted_post_preview']['trim_content_length'] ) ? (int)$settings['general']['restricted_post_preview']['trim_content_length'] : 0 );
+
+            if( $length !== 0 )
+                $preview = wp_trim_words( $post_content, $length, apply_filters( 'pms_restricted_post_preview_more', __( '&hellip;' ) ) );
+
+        }
+
+        // More tag
+        if( $preview_option == 'more-tag' ) {
+
+            $content_parts = get_extended( $post_content );
+            $preview       = $content_parts['main'];
+
+        }
+        
+        return wpautop( $preview ) . $message;
+
+    }
+    add_filter( 'pms_restriction_message_non_members', 'pms_add_restricted_post_preview', 30, 4 );
+    add_filter( 'pms_restriction_message_logged_out', 'pms_add_restricted_post_preview', 30, 4 );
+
+
+    /*
      * Hijack the content when a member wants to upgrade to a higher subscription plan
      *
      */

@@ -3,7 +3,7 @@
  * Plugin Name: Paid Member Subscriptions
  * Plugin URI: http://www.cozmoslabs.com/
  * Description: Accept payments, create subscription plans and restrict content on your membership website.
- * Version: 1.2.7
+ * Version: 1.2.9
  * Author: Cozmoslabs, Mihai Iova, Madalin Ungureanu, Adrian Spiac, Cristian Antohe
  * Author URI: http://www.cozmoslabs.com/
  * Text Domain: paid-member-subscriptions
@@ -184,7 +184,7 @@ Class Paid_Member_Subscriptions {
      */
     public function define_constants() {
 
-        define( 'PMS_VERSION', '1.2.7' );
+        define( 'PMS_VERSION', '1.2.9' );
         define( 'PMS_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
         define( 'PMS_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
         define( 'PMS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -489,18 +489,17 @@ Class Paid_Member_Subscriptions {
         if( file_exists( PMS_PLUGIN_DIR_PATH . 'extend/admin/manage-fields.php' ) )
             include_once PMS_PLUGIN_DIR_PATH . 'extend/admin/manage-fields.php';
 
-        /* for the time being the PB field is not compatible when Email Confirmation or Admin Approval are on */
-        $wppb_generalSettings = get_option( 'wppb_general_settings' );
-        if( ! ( ( !empty( $wppb_generalSettings['emailConfirmation'] ) && $wppb_generalSettings['emailConfirmation'] == 'yes' ) || ( !empty( $wppb_generalSettings['adminApproval'] ) && $wppb_generalSettings['adminApproval'] == 'yes' ) ) ) {
-            if( file_exists( PMS_PLUGIN_DIR_PATH . 'extend/functions.php' ) )
-                include_once PMS_PLUGIN_DIR_PATH . 'extend/functions.php';
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'extend/functions.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH . 'extend/functions.php';
 
-            if (file_exists(PMS_PLUGIN_DIR_PATH . 'extend/front-end/subscription-plans-field.php'))
-                include_once PMS_PLUGIN_DIR_PATH . 'extend/front-end/subscription-plans-field.php';
+        if (file_exists(PMS_PLUGIN_DIR_PATH . 'extend/front-end/subscription-plans-field.php'))
+            include_once PMS_PLUGIN_DIR_PATH . 'extend/front-end/subscription-plans-field.php';
 
-            if (file_exists(PMS_PLUGIN_DIR_PATH . 'extend/functions-pb-redirect.php'))
-                include_once PMS_PLUGIN_DIR_PATH . 'extend/functions-pb-redirect.php';
-        }
+        if( file_exists( PMS_PLUGIN_DIR_PATH . 'extend/functions-email-confirmation.php' ) )
+            include_once PMS_PLUGIN_DIR_PATH . 'extend/functions-email-confirmation.php';
+
+        if (file_exists(PMS_PLUGIN_DIR_PATH . 'extend/functions-pb-redirect.php'))
+            include_once PMS_PLUGIN_DIR_PATH . 'extend/functions-pb-redirect.php';
 
 
     }
@@ -588,13 +587,22 @@ Class Paid_Member_Subscriptions {
     }
 
 
+    /*
+     * Add the main menu page of the plugin
+     *
+     */
     public function add_menu_page() {
 
-        add_menu_page( __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), 'manage_options', 'paid-member-subscriptions', null, plugin_dir_url( __FILE__ ).'/assets/images/pms-menu-icon.png', '71.1' );
+        if( current_user_can( 'manage_options' ) )
+            add_menu_page( __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), __( 'Paid Member Subscriptions', 'paid-member-subscriptions' ), 'manage_options', 'paid-member-subscriptions', null, plugin_dir_url( __FILE__ ).'/assets/images/pms-menu-icon.png', '71.1' );
 
     }
 
 
+    /*
+     * Remove the main menu page of the plugin, as we are using only sub-menu pages
+     *
+     */
     public function remove_submenu_page() {
 
         remove_submenu_page( 'paid-member-subscriptions', 'paid-member-subscriptions' );

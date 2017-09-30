@@ -23,6 +23,8 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 		//Admin hooks
         add_action( 'admin_notices', array( $this, 'admin_notices'));
 
+        add_action( 'admin_head', array( $this, 'on_admin_head'));
+
 		add_filter( 'woocommerce_coupon_data_tabs', array( $this, 'admin_coupon_options_tabs' ), 10, 1);
 		add_action( 'woocommerce_coupon_data_panels', array( $this, 'admin_coupon_options_panels' ), 10, 0 );
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );		
@@ -31,6 +33,10 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 		add_action( 'wjecf_coupon_metabox_checkout', array( $this, 'admin_coupon_metabox_checkout' ), 10, 2 );
 		add_action( 'wjecf_coupon_metabox_customer', array( $this, 'admin_coupon_metabox_customer' ), 10, 2 );
 		add_action( 'wjecf_coupon_metabox_misc', array( $this, 'admin_coupon_metabox_misc' ), 10, 2 );
+
+		WJECF_ADMIN()->add_inline_style( '
+			#woocommerce-coupon-data .wjecf-not-wide { width:50% }
+		');		
 	}
 
 // ===========================================================================
@@ -88,6 +94,30 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
         
     }   
 */ 
+
+	//2.3.6 Inline css
+	private $admin_css = '';
+
+	/**
+	 * 2.3.6
+	 * @return void
+	 */
+	function on_admin_head() {
+	 	//Output inline style for the admin pages
+		if ( ! empty( $this->admin_css ) ) {
+			echo '<style type="text/css">' . $this->admin_css . '</style>';
+			$this->admin_css = '';
+		}
+
+		//Enqueue scripts
+		wp_enqueue_script( "wjecf-admin", WJECF()->plugin_url . "assets/js/wjecf-admin.js", array( 'jquery' ), WJECF()->version );
+		wp_localize_script( 'wjecf-admin', 'wjecf_admin_i18n', array(
+			'label_and' => __( '(AND)', 'woocommerce-jos-autocoupon' ),
+			'label_or' => __( '(OR)',  'woocommerce-jos-autocoupon' )
+		) );
+
+	}
+
 
 	//Add tabs to the coupon option page
 	public function admin_coupon_options_tabs( $tabs ) {
@@ -174,48 +204,31 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 		echo "<h3>" . esc_html( __( 'Matching products', 'woocommerce-jos-autocoupon' ) ). "</h3>\n";
 		//=============================
 		// AND instead of OR the products
-		woocommerce_wp_checkbox( array( 
+		$this->render_select_with_default( array(
 			'id' => '_wjecf_products_and', 
-			'label' => __( 'AND Products (not OR)', 'woocommerce-jos-autocoupon' ), 
-			'description' => __( 'Check this box if ALL of the products (see tab \'usage restriction\') must be in the cart to use this coupon (instead of only one of the products).', 'woocommerce-jos-autocoupon' )
-		) );
+			'label' => __( 'Products Operator', 'woocommerce-jos-autocoupon' ), 
+			'options' => array( 'no' => __( 'OR', 'woocommerce-jos-autocoupon' ), 'yes' => __( 'AND', 'woocommerce-jos-autocoupon' ) ),
+			'default_value' => 'no',
+			'class' => 'wjecf-not-wide',
+			/* translators: OLD TEXT:  'Check this box if ALL of the products (see tab \'usage restriction\') must be in the cart to use this coupon (instead of only one of the products).' */
+			'description' => __( 'Use AND if ALL of the products must be in the cart to use this coupon (instead of only one of the products).', 'woocommerce-jos-autocoupon' ),
+			'desc_tip' => true
+		) );		
 
 		//=============================
 		// 2.2.3.1 AND instead of OR the categories
-		woocommerce_wp_checkbox( array( 
+		$this->render_select_with_default( array(
 			'id' => '_wjecf_categories_and', 
-			'label' => __( 'AND Categories (not OR)', 'woocommerce-jos-autocoupon' ), 
-			'description' => __( 'Check this box if products from ALL of the categories (see tab \'usage restriction\') must be in the cart to use this coupon (instead of only one from one of the categories).', 'woocommerce-jos-autocoupon' )
-		) );
+			'label' => __( 'Categories Operator', 'woocommerce-jos-autocoupon' ), 
+			'options' => array( 'no' => __( 'OR', 'woocommerce-jos-autocoupon' ), 'yes' => __( 'AND', 'woocommerce-jos-autocoupon' ) ),
+			'default_value' => 'no',
+			'class' => 'wjecf-not-wide',
+			/* translators: OLD TEXT:  'Check this box if products from ALL of the categories (see tab \'usage restriction\') must be in the cart to use this coupon (instead of only one from one of the categories).' */
+			'description' => __( 'Use AND if products from ALL of the categories must be in the cart to use this coupon (instead of only one from one of the categories).', 'woocommerce-jos-autocoupon' ),
+			'desc_tip' => true
+		) );		
 
-		//=============================
-		//Trick to show AND or OR next to the product_ids field 		
-		$label_and = __( '(AND)', 'woocommerce-jos-autocoupon' );
-		$label_or  = __( '(OR)',  'woocommerce-jos-autocoupon' );
-		$label_prods = get_post_meta( $thepostid, '_wjecf_products_and', true ) == 'yes' ? $label_and : $label_or;
-		$label_cats = get_post_meta( $thepostid, '_wjecf_categories_and', true ) == 'yes' ? $label_and : $label_or;
-		?>		
-		<script type="text/javascript">
-			//Update AND or OR in product_ids label when checkbox value changes
-			jQuery("#_wjecf_products_and").click( 
-				function() { 
-					jQuery("#wjecf_products_and_label").html( 
-						jQuery("#_wjecf_products_and").attr('checked') ? '<?php echo esc_js( $label_and ); ?>' : '<?php echo esc_js( $label_or ); ?>'
-					);
-			} );
-			//Append AND/OR to the product_ids label
-			jQuery(".form-field:has('[name=\"product_ids\"]') label").append( ' <strong><span id="wjecf_products_and_label"><?php echo esc_html( $label_prods ); ?></span></strong>' );
 
-			jQuery("#_wjecf_categories_and").click( 
-				function() { 
-					jQuery("#wjecf_categories_and_label").html( 
-						jQuery("#_wjecf_categories_and").attr('checked') ? '<?php echo esc_js( $label_and ); ?>' : '<?php echo esc_js( $label_or ); ?>'
-					);
-			} );
-			//Append AND/OR to the product_ids label
-			jQuery(".form-field:has('[name=\"product_categories[]\"]') label").append( ' <strong><span id="wjecf_categories_and_label"><?php echo esc_html( $label_cats ); ?></span></strong>' );
-		</script>
-		<?php //End of the AND/OR trick		
 
 		// Minimum quantity of matching products (product/category)
 		woocommerce_wp_text_input( array( 
@@ -394,11 +407,11 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 		$wjecf_max_matching_product_subtotal = isset( $_POST['_wjecf_max_matching_product_subtotal'] ) ? $_POST['_wjecf_max_matching_product_subtotal'] : '';
 		update_post_meta( $post_id, '_wjecf_max_matching_product_subtotal', $wjecf_max_matching_product_subtotal );
 
-		$wjecf_products_and = isset( $_POST['_wjecf_products_and'] ) ? 'yes' : 'no';
+		$wjecf_products_and = $_POST['_wjecf_products_and'] == 'yes' ? 'yes' : 'no';
 		update_post_meta( $post_id, '_wjecf_products_and', $wjecf_products_and );
 
 		//2.2.3.1
-		$wjecf_categories_and = isset( $_POST['_wjecf_categories_and'] ) ? 'yes' : 'no';
+		$wjecf_categories_and = $_POST['_wjecf_categories_and'] == 'yes' ? 'yes' : 'no';
 		update_post_meta( $post_id, '_wjecf_categories_and', $wjecf_categories_and );
 		
 		//2.2.2
@@ -423,6 +436,17 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 	}
 
 	/**
+	 * 2.3.6
+	 * Add inline style (css) to the admin page. Must be called BEFORE admin_head !
+	 * @param string $css 
+	 * @return void
+	 */
+	public function add_inline_style( $css ) {
+		$this->admin_css .= $css;
+	}
+
+
+	/**
 	 * 2.3.4
 	 * Parse an array or comma separated string; make sure they are valid ints and return as comma separated string
 	 * @param array|string $int_array 
@@ -434,6 +458,38 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 			$int_array = explode( ',', $int_array );
 		}
         return implode( ',', array_filter( array_map( 'intval', $int_array ) ) );
+	}
+
+	/**
+	 * 2.3.6
+	 * Renders a <SELECT> that has a default value. Relies on woocommerce_wp_select
+	 * 
+	 * field['default_value']:  The default value (if omitted the first option will be default)
+	 * field['append_default_label']: If true or omitted the text '(DEFAULT)' will be appended to the default option caption
+	 * 
+	 * @param array $field see wc-meta-box-functions.php:woocommerce_wp_select
+	 * @return void
+	 */
+	public function render_select_with_default( $field ) {
+		global $thepostid, $post;
+		$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
+
+		reset( $field['options'] ); //move to first for key()
+		$default_value = isset( $field['default_value'] ) ? $field['default_value'] : key( $field['options'] );
+		$append_default_label = isset( $field['append_default_label'] ) ? $field['append_default_label'] : true;
+
+		if ( $append_default_label ) {
+			$field['options'][$default_value] = sprintf( __( '%s (Default)', 'woocommerce-jos-autocoupon' ), $field['options'][$default_value] );
+		}
+
+		if ( ! isset( $field['value'] ) ) {
+			$field['value'] = get_post_meta( $thepostid, $field['id'], true );
+		}
+		if ( empty( $field['value'] ) ) {
+			$field['value'] = $default_value;
+		}
+
+		woocommerce_wp_select( $field );
 	}
 
 	public function render_admin_cat_selector( $dom_id, $field_name, $selected_ids, $placeholder = null ) {
@@ -493,7 +549,7 @@ class WJECF_Admin extends Abstract_WJECF_Plugin {
 	    . esc_attr( $placeholder ) . '" data-action="woocommerce_json_search_products_and_variations" data-selected="' 
 	    . $json_encoded . '" value="' . implode( ',', array_keys( $selected_keys_and_values ) ) . '" />';
 
-	}		
+	}	
 
 	public static function get_donate_url() {
 		return "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted";

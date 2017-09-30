@@ -3,8 +3,8 @@ Contributors: josk79
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: woocommerce, coupons, discount
 Requires at least: 4.0.0
-Tested up to: 4.5.3
-Stable tag: 2.3.4
+Tested up to: 4.6.1
+Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,7 +15,7 @@ Additional functionality for WooCommerce Coupons: Allow discounts to be automati
 "WooCommerce Extended Coupon Features" adds functionality to the WooCommerce coupons and allows for automatic discount rules. 
 Very easy to use, the functionality is conveniently integrated to the WooCommerce Edit Coupon panel.
 
-Compatible with WooCommerce 2.6.1. Backwards compatible with older WooCommerce versions (2.3.0 confirmed).
+Compatible with WooCommerce 2.6.4. Backwards compatible with older WooCommerce versions (2.3.0 confirmed).
 
 Full documentation is available at [www.soft79.nl](http://www.soft79.nl/documentation/wjecf).
 
@@ -105,6 +105,15 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 4. Additionals restrictions based on shipping or payment method or the customer
 
 == Changelog ==
+
+= 2.3.6 =
+* FIX: Compatibility with WooCommerce < 2.3.0 for coupon by url
+* COSMETIC: On the admin page, moved AND/OR selector near the product/categories input
+* (PRO) Filter matching products by custom field.
+
+= 2.3.5 =
+* (PRO) FIX: Workaround for missing WooCommerce 2.6.3 constant WC_ROUNDING_PRECISION
+* (PRO) FIX: Refresh the cart when a coupon is applied/removed by AJAX (to add/remove free products)
 
 = 2.3.4 =
 * FIX: WooCommerce 2.6 and UPS / USPS Shipping method compatibility ( those plugins use : as separator )

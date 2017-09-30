@@ -37,14 +37,16 @@
 
                 <?php do_action( $this->menu_slug . '_tab_general_before_content', $this->options ); ?>
 
+                <!-- Load CSS -->
                 <div class="pms-form-field-wrapper">
-                    <label class="pms-form-field-label" for="use-pms-css"><?php echo __( 'Load CSS' , 'pmstxt' ) ?></label>
+                    <label class="pms-form-field-label" for="use-pms-css"><?php echo __( 'Load CSS' , 'paid-member-subscriptions' ) ?></label>
 
-                    <p class="description"><input type="checkbox" id="use-pms-css" name="pms_settings[general][use_pms_css]" value="1" <?php echo ( isset( $this->options['general']['use_pms_css'] ) ? 'checked' : '' ); ?> /><?php echo __( 'Use Paid Member Subscriptions\'s own CSS in the front-end.', 'pmstxt' ); ?></p>
+                    <p class="description"><input type="checkbox" id="use-pms-css" name="pms_settings[general][use_pms_css]" value="1" <?php echo ( isset( $this->options['general']['use_pms_css'] ) ? 'checked' : '' ); ?> /><?php echo __( 'Use Paid Member Subscriptions\'s own CSS in the front-end.', 'paid-member-subscriptions' ); ?></p>
                 </div>
 
+                <!-- Register Success Page -->
                 <div class="pms-form-field-wrapper">
-                    <label class="pms-form-field-label" for="register-success-page"><?php echo __( 'Register Success Page', 'pmstxt' ) ?></label>
+                    <label class="pms-form-field-label" for="register-success-page"><?php echo __( 'Register Success Page', 'paid-member-subscriptions' ) ?></label>
 
                     <select id="register-success-page" name="pms_settings[general][register_success_page]" class="widefat">
                         <option value="-1"><?php echo __( 'Choose...', 'paid-member-subscriptions' ) ?></option>
@@ -56,7 +58,35 @@
                         ?>
                     </select>
 
-                    <p class="description"><?php echo __( 'Select the page where you wish to redirect your newly registered members.', 'pmstxt' ); ?></p>
+                    <p class="description"><?php echo __( 'Select the page where you wish to redirect your newly registered members.', 'paid-member-subscriptions' ); ?></p>
+                </div>
+
+                <!-- Premium Posts Preview -->
+                <div class="pms-form-field-wrapper">
+                    <label class="pms-form-field-label" for="restricted-posts-preview"><?php echo __( 'Restricted Posts Preview', 'paid-member-subscriptions' ) ?></label>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="pms_settings[general][restricted_post_preview][option]" value="none" <?php echo ( !isset( $this->options['general']['restricted_post_preview']['option'] ) || $this->options['general']['restricted_post_preview']['option'] == 'none' ? 'checked' : '' ); ?> />
+                            <span><?php echo __( 'None', 'paid-member-subscriptions' ); ?></span>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="radio" name="pms_settings[general][restricted_post_preview][option]" value="trim-content" <?php echo ( isset( $this->options['general']['restricted_post_preview']['option'] ) && $this->options['general']['restricted_post_preview']['option'] == 'trim-content' ? 'checked' : '' ); ?> />
+                            <span>
+                                <?php echo sprintf( __( 'Show the first %s words of the post\'s content', 'paid-member-subscriptions' ), '<input name="pms_settings[general][restricted_post_preview][trim_content_length]" type="text" value="' . ( isset( $this->options['general']['restricted_post_preview']['trim_content_length'] ) ? $this->options['general']['restricted_post_preview']['trim_content_length'] : 20 ) . '" style="width: 50px;" />' ); ?>
+                            </span>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="radio" name="pms_settings[general][restricted_post_preview][option]" value="more-tag" <?php echo ( isset( $this->options['general']['restricted_post_preview']['option'] ) && $this->options['general']['restricted_post_preview']['option'] == 'more-tag' ? 'checked' : '' ); ?> />
+                            <span><?php echo __( 'Show the content before the "more" tag', 'paid-member-subscriptions' ); ?></span>
+                        </label>
+                    </div>
+
+                    <p class="description"><?php echo __( 'Show a portion of the restricted post to logged-out users or users that are not subscribed to a plan.', 'paid-member-subscriptions' ); ?></p>
                 </div>
 
                 <?php do_action( $this->menu_slug . '_tab_general_after_content', $this->options ); ?>

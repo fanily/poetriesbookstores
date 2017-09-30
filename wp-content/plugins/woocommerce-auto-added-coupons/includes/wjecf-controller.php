@@ -21,6 +21,11 @@ class WJECF_Controller {
 	protected $log = array();
 	public $options = false;
 
+	//Plugin data
+	public $plugin_path; // Has trailing slash
+	public $plugin_url; // Has trailing slash
+	public $version; // Use for js
+
 	/**
 	 * Singleton Instance
 	 *
@@ -36,7 +41,15 @@ class WJECF_Controller {
 	protected static $_instance = null;
 
 	
-	public function __construct() {    
+	public function __construct() {   
+		//Paths
+		$this->plugin_path = plugin_dir_path( dirname(__FILE__) );
+		$this->plugin_url = plugins_url( '/', dirname( __FILE__ ) );
+		//Version
+		$filename = $this->is_pro() ? "woocommerce-jos-autocoupon-pro.php" : "woocommerce-jos-autocoupon.php" ;
+		$plugin_data = get_plugin_data( $this->plugin_path . $filename, false, false );
+		$this->version = $plugin_data['Version'];
+
 		add_action('init', array( &$this, 'controller_init' ));
 	}
 
@@ -44,7 +57,7 @@ class WJECF_Controller {
 		if ( ! class_exists('WC_Coupon') ) {
 			return;
 		}
-		$this->debug_mode = false; //defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$this->debug_mode = false && defined( 'WP_DEBUG' ) && WP_DEBUG;
 		$this->log( "INIT " . ( is_ajax() ? "AJAX" : is_admin() ? "ADMIN" : "FRONTEND" ) . "  " . $_SERVER['REQUEST_URI'] );
 		
 		$this->init_options();
@@ -363,6 +376,10 @@ class WJECF_Controller {
 				throw new Exception( self::E_WC_COUPON_NOT_FOR_THIS_USER );
 			}
 		}
+
+		//We use our own filter (instead of woocommerce_coupon_is_valid) for easier compatibility management
+		//e.g. WC prior to 2.3.0 can't handle Exceptions; while 2.3.0 and above require exceptions
+		do_action( 'wjecf_assert_coupon_is_valid', $coupon );
 
 		if ( $coupon->minimum_amount ) {
 			 $multiplier = self::min_value( floor( WC()->cart->subtotal / $coupon->minimum_amount ), $multiplier );

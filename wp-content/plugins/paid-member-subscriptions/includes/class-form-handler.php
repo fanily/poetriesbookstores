@@ -285,7 +285,7 @@ Class PMS_Form_Handler {
         }
 
         // Do nothing if we have errors
-        if( count( pms_errors()->get_error_messages('subscription_plans') ) > 0 )
+        if( count( pms_errors()->get_error_messages() ) > 0 )
             return false;
 
 

@@ -120,3 +120,46 @@ jQuery( function($) {
     };
 
 });
+
+
+/*
+ * Profile Builder Compatibility
+ *
+ */
+jQuery( function($) {
+
+    $(document).ready( function() {
+
+        // Handle on document ready
+        if ( $('.pms-subscription-plan input[type=radio][data-price="0"]').is(':checked') || $('.pms-subscription-plan input[type=hidden]').attr( 'data-price' ) == '0' ) {
+            $('.pms-email-confirmation-payment-message').hide();
+        }
+
+        if( $('.pms-subscription-plan input[type=radio]').length > 0 ) {
+
+            var has_paid_subscription = false;
+
+            $('.pms-subscription-plan input[type=radio]').each( function() {
+                if( $(this).data('price') != 0 )
+                    has_paid_subscription = true;
+            });
+
+            if( !has_paid_subscription )
+                $('.pms-email-confirmation-payment-message').hide();
+
+        }
+
+        // Handle clicking on the subscription plans
+        $('.pms-subscription-plan input[type=radio]').click(function(){
+
+            if ($('.pms-subscription-plan input[type=radio][data-price="0"]').is(':checked')) {
+                $('.pms-email-confirmation-payment-message').hide();
+            }
+            else {
+                $('.pms-email-confirmation-payment-message').show();
+            }
+        });
+
+    });
+
+});

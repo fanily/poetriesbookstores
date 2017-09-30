@@ -222,7 +222,7 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 			$cart = WC()->cart;
 			foreach ( $split as $coupon_code ) {
 				$coupon = WJECF()->get_coupon( $coupon_code );
-				if ( ! $coupon->exists ) {
+				if ( WJECF()->check_woocommerce_version('2.3.0') && ! $coupon->exists ) {
 					wc_add_notice( $coupon->get_coupon_error( WC_Coupon::E_WC_COUPON_NOT_EXIST ), 'error' );
 				} else {
 					$valid = $coupon->is_valid();
@@ -238,7 +238,13 @@ class WJECF_AutoCoupon extends Abstract_WJECF_Plugin {
 			$requested_url  = is_ssl() ? 'https://' : 'http://';
 			$requested_url .= $_SERVER['HTTP_HOST'];		   
 			$requested_url .= $_SERVER['REQUEST_URI'];
-			wp_safe_redirect( remove_query_arg( array( 'apply_coupon', 'add-to-cart' ), ( $requested_url ) ) );
+
+			//2.3.6: Since WC2.3.0 the moment of handling add-to-cart has changed
+			if ( WJECF()->check_woocommerce_version('2.3.0')) {
+				wp_safe_redirect( remove_query_arg( array( 'apply_coupon' ), ( $requested_url ) ) );
+			} else {
+				wp_safe_redirect( remove_query_arg( array( 'apply_coupon', 'add-to-cart' ), ( $requested_url ) ) );
+			}
 			exit;
 		}
 	}

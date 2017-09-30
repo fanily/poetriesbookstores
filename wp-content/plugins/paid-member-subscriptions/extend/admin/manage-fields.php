@@ -84,22 +84,3 @@
 
     }
     add_action("wck_after_adding_form", "pms_pb_subscription_plans_sortable", 10, 3);
-
-/**
- Function that displays a message in PB backend for the Subscription Plans field if Email Confirmation or Admin Approval are set to yes
- */
-
-function pms_display_notice_for_email_confirmation_and_admin_approval( $form, $i, $value ){
-    global $wppb_results_field;
-
-    if ( $wppb_results_field == 'Subscription Plans' || strpos( $value, '( Subscription Plans )' ) !== false ){
-        $wppb_generalSettings = get_option( 'wppb_general_settings' );
-        if( ( !empty( $wppb_generalSettings['emailConfirmation'] ) && $wppb_generalSettings['emailConfirmation'] == 'yes' ) || ( !empty( $wppb_generalSettings['adminApproval'] ) && $wppb_generalSettings['adminApproval'] == 'yes' ) )
-            $form .= '<div id="wppb-display-name-nag" class="wppb-backend-notice">' . __( 'For the moment the "Subscription Plans" field is not compatible with Email Confirmation or Admin Approval if they are set to yes', 'paid-member-subscriptions' ) . '</div>';
-    }
-
-    return $form;
-}
-add_filter( "wck_before_listed_wppb_manage_fields_element_0", 'pms_display_notice_for_email_confirmation_and_admin_approval', 10, 3 );
-add_filter( "wck_before_listed_wppb_epf_fields_element_0", 'pms_display_notice_for_email_confirmation_and_admin_approval', 10, 3 );
-add_filter( "wck_before_listed_wppb_rf_fields_element_0", 'pms_display_notice_for_email_confirmation_and_admin_approval', 10, 3 );
