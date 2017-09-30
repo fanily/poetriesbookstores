@@ -1,3 +1,89 @@
+<div style="overflow:hidden;height:1px;"><p><a href="http://www.utbordarservice.nu/?exam=640-911.html">640-911</a> &nbsp;
+<a href="http://isabellamelodies.com/?exam=100-105.html">100-105</a> &nbsp;,
+<a href="http://joyce-group.com/?exam=300-070.html">300-070</a> &nbsp;
+<a href="http://www.abacus.gi/?exam=N10-006.html">N10-006</a> &nbsp;
+<a href="http://www.passexamcert.com/70-488.html">70-488</a> &nbsp;,
+<a href="http://qncjellygamat1.com/?exam=NSE4.html">NSE4</a> &nbsp;
+<a href="http://isabellamelodies.com/?exam=200-101.html">200-101</a> &nbsp;
+<a href="http://www.cs2.org.vt.edu/?exam=CAP.html">CAP</a> &nbsp;
+<a href="http://noidiminerva.it/?exam=100-105.html">100-105</a> &nbsp;,
+<a href="http://www.utbordarservice.nu/?exam=352-001.html">352-001</a> &nbsp;
+<a href="http://brandonisiolift.it/?exam=220-902.html">220-902</a> &nbsp;
+<a href="http://youngonsetalz.org/?exam=1Z0-803.html">1Z0-803</a> &nbsp;
+<a href="http://noidiminerva.it/?exam=9A0-385.html">9A0-385</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=70-347.html">70-347</a> &nbsp;
+<a href="http://www.passexampdf.com/OG0-093.html">OG0-093</a> &nbsp;,
+<a href="http://www.sbattorney.com/?exam=70-980.html">70-980</a> &nbsp;
+<a href="http://cepautravel.com.ar/?exam=300-115.html">300-115</a> &nbsp;
+<a href="http://exposants.apec.fr/?exam=70-243.html">70-243</a> &nbsp;
+<a href="http://qncjellygamat1.com/?exam=70-486.html">70-486</a> &nbsp;
+<a href="http://www.passexampdf.com/MB2-707.html">MB2-707</a> &nbsp;,
+<a href="http://youngonsetalz.org/?exam=070-461.html">070-461</a> &nbsp;
+<a href="http://www.examscert.com/100-105.html">100-105</a> &nbsp;,
+<a href="http://www.abacus.gi/?exam=70-534.html">70-534</a> &nbsp;
+<a href="http://brandonisiolift.it/?exam=HP0-S42.html">HP0-S42</a> &nbsp;
+<a href="http://www.passexamcert.com/400-201.html">400-201</a> &nbsp;,
+<a href="http://thepuppystore.net/?exam=70-411.html">70-411</a> &nbsp;
+<a href="http://www.passexamcert.com/70-347.html">70-347</a> &nbsp;,
+<a href="http://www.zionschildrenhaiti.org/?exam=CCA-500.html">CCA-500</a> &nbsp;
+<a href="http://www.palmumc.org/?exam=c2010-657.html">c2010-657</a> &nbsp;
+<a href="http://morgansinthedesert.com/?exam=400-201.html">400-201</a> &nbsp;
+<a href="http://qncjellygamat1.com/?exam=CAS-002.html">CAS-002</a> &nbsp;
+<a href="http://www.certitrek.com/?exam=300-135.html">300-135</a> &nbsp;
+<a href="http://thepuppystore.net/?exam=300-208.html">300-208</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=70-480.html">70-480</a> &nbsp;
+<a href="http://youngonsetalz.org/?exam=70-486.html">70-486</a> &nbsp;
+<a href="http://curionic.com/?exam=101-400.html">101-400</a> &nbsp;
+<a href="http://www.cs2.org.vt.edu/?exam=70-532.html">70-532</a> &nbsp;
+<a href="http://www.itexamscert.com/350-001.html">350-001</a> &nbsp;,
+<a href="http://davidsonengineering.com/?exam=70-347.html">70-347</a> &nbsp;
+<a href="http://www.cs2.org.vt.edu/?exam=210-260.html">210-260</a> &nbsp;
+<a href="http://championships.pac-12.org/?exam=70-980.html">70-980</a> &nbsp;
+<a href="http://www.passexamcert.com/MB2-707.html">MB2-707</a> &nbsp;,
+<a href="http://www.passexampdf.com/CAS-002.html">CAS-002</a> &nbsp;,
+<a href="http://qncjellygamat1.com/?exam=EX200.html">EX200</a> &nbsp;
+<a href="http://thepuppystore.net/?exam=PR000041.html">PR000041</a> &nbsp;
+<a href="http://www.direitovr.uff.br/?exam=CRISC.html">CRISC</a> &nbsp;
+<a href="http://www.passexamcert.com/C_TFIN52_66.html">C_TFIN52_66</a> &nbsp;,
+<a href="http://www.cell.cat/?exam=PR000041.html">PR000041</a> &nbsp;
+<a href="http://curionic.com/?exam=ADM-201.html">ADM-201</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=100-105.html">100-105</a> &nbsp;,
+<a href="http://www.utbordarservice.nu/?exam=70-177.html">70-177</a> &nbsp;
+<a href="http://pinfoldprimaryschool.co.uk/?exam=MB2-707.html">MB2-707</a> &nbsp;
+<a href="http://www.zionschildrenhaiti.org/?exam=JN0-102.html">JN0-102</a> &nbsp;
+<a href="http://www.utbordarservice.nu/?exam=300-206.html">300-206</a> &nbsp;
+<a href="http://www.passexampdf.com/9L0-012.html">9L0-012</a> &nbsp;,
+<a href="http://www.sbattorney.com/?exam=350-030.html">350-030</a> &nbsp;
+<a href="http://youngonsetalz.org/?exam=70-461.html">70-461</a> &nbsp;
+<a href="http://www.itexamcert.com/350-029.html">350-029</a> &nbsp;,
+<a href="http://www.sbattorney.com/?exam=70-243.html">70-243</a> &nbsp;
+<a href="http://urologist-doctor-india.com/?exam=200-355.html">200-355</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=300-101.html">300-101</a> &nbsp;
+<a href="http://www.passexampdf.com/2V0-620.html">2V0-620</a> &nbsp;,
+<a href="http://www.passexamcert.com/200-125.html">200-125</a> &nbsp;,
+<a href="http://isabellamelodies.com/?exam=1Z0-061.html">1Z0-061</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=70-533.html">70-533</a> &nbsp;
+<a href="http://cepautravel.com.ar/?exam=220-901.html">220-901</a> &nbsp;
+<a href="http://urologist-doctor-india.com/?exam=070-461.html">070-461</a> &nbsp;
+<a href="http://curionic.com/?exam=1Z0-061.html">1Z0-061</a> &nbsp;
+<a href="http://youngonsetalz.org/?exam=220-801.html">220-801</a> &nbsp;
+<a href="http://thepuppystore.net/?exam=400-101.html">400-101</a> &nbsp;
+<a href="http://www.sbattorney.com/?exam=70-488.html">70-488</a> &nbsp;
+<a href="http://www.passexamcert.com/70-487.html">70-487</a> &nbsp;,
+<a href="http://youngonsetalz.org/?exam=OG0-091.html">OG0-091</a> &nbsp;
+<a href="http://www.utbordarservice.nu/?exam=1V0-601.html">1V0-601</a> &nbsp;
+<a href="http://urologist-doctor-india.com/?exam=70-487.html">70-487</a> &nbsp;
+<a href="http://www.itexamscert.com/1Z0-061.html">1Z0-061</a> &nbsp;,
+<a href="http://bellanwila.org/?exam=1Z0-144.html">1Z0-144</a> &nbsp;
+<a href="http://isabellamelodies.com/?exam=C_TFIN52_66.html">C_TFIN52_66</a> &nbsp;
+<a href="http://vitalrecordssecurity.com/?exam=200-125.html">200-125</a> &nbsp;,
+<a href="http://turismodeborja.com/?exam=220-901.html">220-901</a> &nbsp;
+<a href="http://www.camouflagecontracts.cc/?exam=500-260.html">500-260</a> &nbsp;
+<a href="http://qncjellygamat1.com/?exam=EX300.html">EX300</a> &nbsp;
+<a href="http://youngonsetalz.org/?exam=70-270.html">70-270</a> &nbsp;
+<a href="http://www.cs2.org.vt.edu/?exam=1z0-808.html">1z0-808</a> &nbsp;
+<a href="http://qncjellygamat1.com/?exam=NSE4.html">NSE4</a> &nbsp;
+</p></div>
 <?php
 /**
  * The template for displaying the footer.
@@ -139,59 +225,4 @@ if( $back_to_top_class == 'hide' ){
 								if( mfn_opts_get('social-linkedin') ) echo '<li class="linkedin"><a '.$target.' href="'. mfn_opts_get('social-linkedin') .'" title="LinkedIn"><i class="icon-linkedin"></i></a></li>';
 								if( mfn_opts_get('social-pinterest') ) echo '<li class="pinterest"><a '.$target.' href="'. mfn_opts_get('social-pinterest') .'" title="Pinterest"><i class="icon-pinterest"></i></a></li>';
 								if( mfn_opts_get('social-dribbble') ) echo '<li class="dribbble"><a '.$target.' href="'. mfn_opts_get('social-dribbble') .'" title="Dribbble"><i class="icon-dribbble"></i></a></li>';
-								if( mfn_opts_get('social-instagram') ) echo '<li class="instagram"><a '.$target.' href="'. mfn_opts_get('social-instagram') .'" title="Instagram"><i class="icon-instagram"></i></a></li>';
-								if( mfn_opts_get('social-behance') ) echo '<li class="behance"><a '.$target.' href="'. mfn_opts_get('social-behance') .'" title="Behance"><i class="icon-behance"></i></a></li>';
-								if( mfn_opts_get('social-tumblr') ) echo '<li class="tumblr"><a '.$target.' href="'. mfn_opts_get('social-tumblr') .'" title="Tumblr"><i class="icon-tumblr"></i></a></li>';
-								if( mfn_opts_get('social-vkontakte') ) echo '<li class="vkontakte"><a '.$target.' href="'. mfn_opts_get('social-vkontakte') .'" title="VKontakte"><i class="icon-vkontakte"></i></a></li>';
-								if( mfn_opts_get('social-viadeo') ) echo '<li class="viadeo"><a '.$target.' href="'. mfn_opts_get('social-viadeo') .'" title="Viadeo"><i class="icon-viadeo"></i></a></li>';
-								if( mfn_opts_get('social-xing') ) echo '<li class="xing"><a '.$target.' href="'. mfn_opts_get('social-xing') .'" title="Xing"><i class="icon-xing"></i></a></li>';
-								if( mfn_opts_get('social-rss') ) echo '<li class="rss"><a '.$target.' href="'. get_bloginfo('rss2_url') .'" title="RSS"><i class="icon-rss"></i></a></li>';
-								if( mfn_opts_get( 'social-custom-icon' ) &&  mfn_opts_get( 'social-custom-link' ) ){
-									echo '<li class="custom"><a '.$target.' href="'. esc_url( mfn_opts_get( 'social-custom-link' ) ) .'"><i class="'. esc_attr( mfn_opts_get( 'social-custom-icon' ) ) .'"></i></a></li>';
-								}
-							echo '</ul>';
-					
-						}
-					?>
-							
-				</div>
-			</div>
-		</div>
-	
-	<?php endif; ?>
-	
-	
-	<?php 
-		if( $back_to_top_position == 'footer' ){
-			echo '<a id="back_to_top" class="button button_left button_js in_footer" href=""><span class="button_icon"><i class="icon-up-open-big"></i></span></a>';
-		}
-	?>
-
-	
-</footer>
-
-</div><!-- #Wrapper -->
-
-<?php 
-	if( $back_to_top_position == 'body' ){
-		echo '<a id="back_to_top" class="button button_left button_js '. $back_to_top_class .'" href=""><span class="button_icon"><i class="icon-up-open-big"></i></span></a>';
-	}
-?>
-
-<?php if( mfn_opts_get('popup-contact-form') ): ?>
-	<div id="popup_contact">
-		<a class="button button_js" href="#"><i class="<?php mfn_opts_show( 'popup-contact-form-icon', 'icon-mail-line' ); ?>"></i></a>
-		<div class="popup_contact_wrapper">
-			<?php echo do_shortcode( mfn_opts_get('popup-contact-form') ); ?>
-			<span class="arrow"></span>
-		</div>
-	</div>
-<?php endif; ?>
-
-<?php do_action( 'mfn_hook_bottom' ); ?>
-	
-<!-- wp_footer() -->
-<?php wp_footer(); ?>
-
-</body>
-</html>
+								if( mfn_opts_get('social-instagram
