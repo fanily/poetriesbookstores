@@ -66,10 +66,11 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$mt_og = array();
 
 			if ( $this->p->debug->enabled ) {
-				$this->p->debug->log( 'WP_LANG = '.SucomUtil::get_const( 'WP_LANG' ) );
-				$this->p->debug->log( 'default locale = '.SucomUtil::get_locale( 'default' ) );
-				$this->p->debug->log( 'current locale = '.SucomUtil::get_locale( 'current' ) );
-				$this->p->debug->log( 'mod locale = '.SucomUtil::get_locale( $mod ) );
+				$this->p->debug->log( 'home_url option = '.get_option( 'home' ) );
+				$this->p->debug->log( 'WP_LANG constant = '.SucomUtil::get_const( 'WP_LANG' ) );
+				$this->p->debug->log( 'locale default = '.SucomUtil::get_locale( 'default' ) );
+				$this->p->debug->log( 'locale current = '.SucomUtil::get_locale( 'current' ) );
+				$this->p->debug->log( 'locale mod = '.SucomUtil::get_locale( $mod ) );
 				$this->p->util->log_is_functions();
 			}
 
@@ -131,14 +132,10 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 					case 'property-og:description':
 					case 'property-article:author:name':
 					case ( strpos( $mt_match, 'name-schema:' ) === 0 ? true : false ):
-
 						if ( ! isset( $head_info[$mt[3]] ) )	// only save the first meta tag value
 							$head_info[$mt[3]] = $mt[5];
 						break;
-
-					case ( preg_match( '/^property-((og|pinterest):(image|video))(:secure_url|:url)?$/',
-						$mt_match, $m ) ? true : false ):
-
+					case ( preg_match( '/^property-((og|pinterest):(image|video))(:secure_url|:url)?$/', $mt_match, $m ) ? true : false ):
 						if ( ! empty( $mt[5] ) )
 							$has_media[$m[1]] = true;	// optimize media loop
 						break;
@@ -179,7 +176,6 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 								$is_first = true;
 							}
 							break;
-
 						case ( preg_match( '/^property-'.$prefix.':(width|height|cropped|id|title|description)$/', $mt_match, $m ) ? true : false ):
 							if ( $is_first !== true )		// only save for first media found
 								continue 2;			// get the next meta tag
@@ -289,6 +285,11 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			$mt_og = $this->p->og->get_array( $use_post, $mod, $mt_og, $crawler_name );
 
 			/*
+			 * Weibo
+			 */
+			$mt_weibo = $this->p->weibo->get_array( $use_post, $mod, $mt_og, $crawler_name );
+
+			/*
 			 * Twitter Cards
 			 */
 			$mt_tc = $this->p->tc->get_array( $use_post, $mod, $mt_og, $crawler_name );
@@ -382,6 +383,7 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 				$this->get_mt_array( 'meta', 'name', $mt_gen, $mod ),
 				$this->get_mt_array( 'link', 'rel', $link_rel, $mod ),
 				$this->get_mt_array( 'meta', 'property', $mt_og, $mod ),
+				$this->get_mt_array( 'meta', 'name', $mt_weibo, $mod ),
 				$this->get_mt_array( 'meta', 'name', $mt_tc, $mod ),
 				$this->get_mt_array( 'meta', 'itemprop', $mt_schema, $mod ),
 				$this->get_mt_array( 'meta', 'name', $mt_name, $mod ),		// seo description is last
@@ -492,14 +494,12 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 			if ( $tag === 'meta' && $type === 'property' ) {
 				switch ( $name ) {
 					// optimize by matching known values first
-					case ( strpos( $name, 'og:' ) === 0 ||
-						strpos( $name, 'article:' ) === 0 ? true : false ):
-						// $type is already property
-						break;
+					case ( strpos( $name, 'og:' ) === 0 ? true : false ):
+					case ( strpos( $name, 'article:' ) === 0 ? true : false ):
+						break;	// $type is already property
 					case ( strpos( $name, ':' ) === false ? true : false ):
-					// schema is an internal set of meta tags
-					case ( strpos( $name, 'twitter:' ) === 0 ||
-						strpos( $name, 'schema:' ) === 0 ? true : false ):
+					case ( strpos( $name, 'twitter:' ) === 0 ? true : false ):
+					case ( strpos( $name, 'schema:' ) === 0 ? true : false ):	// internal meta tags
 						$type = 'name';
 						break;
 				}
@@ -525,22 +525,9 @@ if ( ! class_exists( 'NgfbHead' ) ) {
 				$value = $this->p->util->replace_inline_vars( $value, $mod );
 
 			switch ( $name ) {
-				case 'og:image':
-				case 'og:image:url':
-				case 'og:video':
-				case 'og:video:url':
-					// add secure_url for open graph images and videos
-					if ( strpos( $value, 'https:' ) === 0 ) {
-						if ( $this->p->debug->enabled )
-							$this->p->debug->log( $log_prefix.' adding secure_url for '.$value );
-						$ret[] = array( '', $tag, $type, preg_replace( '/:url$/', '', $name ).':secure_url',
-							$attr, $value, $cmt );
-						$value = preg_replace( '/^https:/', 'http:', $value );
-					}
-					break;
 				case 'og:image:secure_url':
 				case 'og:video:secure_url':
-					if ( strpos( $value, 'https:' ) !== 0 ) {
+					if ( strpos( $value, 'https:' ) !== 0 ) {	// just in case
 						if ( $this->p->debug->enabled )
 							$this->p->debug->log( $log_prefix.' is not https (skipped)' );
 						return $ret;

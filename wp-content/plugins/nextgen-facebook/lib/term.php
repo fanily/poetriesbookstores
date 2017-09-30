@@ -219,6 +219,9 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 				// check for missing open graph image and issue warning
 				if ( empty( NgfbMeta::$head_meta_info['og:image'] ) )
 					$this->p->notice->err( $this->p->msgs->get( 'notice-missing-og-image' ) );
+
+				if ( empty( NgfbMeta::$head_meta_info['og:description'] ) )
+					$this->p->notice->err( $this->p->msgs->get( 'notice-missing-og-description' ) );
 			}
 
 			$action_query = $lca.'-action';
@@ -322,7 +325,7 @@ if ( ! class_exists( 'NgfbTerm' ) ) {
 
 			if ( ! empty( $this->p->options['plugin_cache_info'] ) && $deleted > 0 )
 				$this->p->notice->inf( $deleted.' items removed from the WordPress object and transient caches.',
-					true, true, __FUNCTION__.'_items_removed', true );
+					true, __FUNCTION__.'_items_removed', true );
 
 			return $term_id;
 		}

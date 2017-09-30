@@ -334,7 +334,8 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						 * 'WP / Theme Integration' settings
 						 */
 						case 'tooltip-plugin_check_head':
-							$text = $info['short'].' can check the front-end webpage head section for duplicate HTML tags when editing Posts and Pages. You may uncheck this option if you\'ve edited a few Posts and Pages without seeing any warning messages about duplicate HTML tags.';
+							$max_count = (int) SucomUtil::get_const( 'NGFB_CHECK_HEADER_COUNT', 6 );
+							$text = sprintf( __( 'When editing Posts and Pages, %1$s can check the head section of webpages for conflicting and/or duplicate HTML tags. After %2$d <em>successful</em> checks, no additional checks will be performed &mdash; until the theme and/or any plugin is updated, when another %2$d checks are performed.', 'nextgen-facebook' ), $info['short'], $max_count );
 							break;
 						case 'tooltip-plugin_html_attr_filter':
 							$text = $info['short'].' hooks the "language_attributes" filter by default to add / modify required Open Graph namespace prefix values. The "language_attributes" WordPress function and filter are used by most themes &mdash; if the namespace prefix values are missing from your &amp;lt;html&amp;gt; element, make sure your header template(s) use the language_attributes() function. Leaving this option blank disables the addition of Open Graph namespace values. Example template code: <pre><code>&amp;lt;html &amp;lt;?php language_attributes(); ?&amp;gt;&amp;gt;</code></pre>';
@@ -741,7 +742,10 @@ if ( ! class_exists( 'NgfbMessages' ) ) {
 						}
 						break;
 					case 'notice-missing-og-image':
-						$text = __( 'An Open Graph image meta tag could not be created from this webpage content and/or custom settings. Facebook and other social websites <em>require at least one image meta tag</em> to render shared content correctly.', 'nextgen-facebook' );
+						$text = __( 'An Open Graph image meta tag could not be created from this webpage content or its custom Social Settings. Facebook <em>requires at least one image meta tag</em> to render shared content correctly.', 'nextgen-facebook' );
+						break;
+					case 'notice-missing-og-description':
+						$text = __( 'An Open Graph description meta tag could not be created from this webpage content or its custom Social Settings. Facebook <em>requires a description meta tag</em> to render shared content correctly.', 'nextgen-facebook' );
 						break;
 					case 'notice-missing-schema-image':
 						$text = __( 'A Schema image property could not be created from this webpage content and/or custom settings. Google <em>requires at least one image property</em> for this Schema item type.', 'nextgen-facebook' );

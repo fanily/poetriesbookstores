@@ -3,9 +3,9 @@
 <table>
 <tr><th align="right" valign="top" nowrap>Plugin Name</th><td>NextGEN Facebook (NGFB)</td></tr>
 <tr><th align="right" valign="top" nowrap>Summary</th><td>Complete meta tags for the best looking shares on Facebook, Google, Pinterest, Twitter, etc - no matter how your webpage is shared!</td></tr>
-<tr><th align="right" valign="top" nowrap>Stable Version</th><td>8.34.3-1</td></tr>
+<tr><th align="right" valign="top" nowrap>Stable Version</th><td>8.35.2-1</td></tr>
 <tr><th align="right" valign="top" nowrap>Requires At Least</th><td>WordPress 3.1</td></tr>
-<tr><th align="right" valign="top" nowrap>Tested Up To</th><td>WordPress 4.6</td></tr>
+<tr><th align="right" valign="top" nowrap>Tested Up To</th><td>WordPress 4.6.1</td></tr>
 <tr><th align="right" valign="top" nowrap>Contributors</th><td>jsmoriss</td></tr>
 <tr><th align="right" valign="top" nowrap>Website URL</th><td><a href="https://surniaulula.com/extend/plugins/nextgen-facebook/?utm_source=ngfb-readme-donate">https://surniaulula.com/extend/plugins/nextgen-facebook/?utm_source=ngfb-readme-donate</a></td></tr>
 <tr><th align="right" valign="top" nowrap>License</th><td><a href="http://www.gnu.org/licenses/gpl.txt">GPLv3</a></td></tr>

@@ -216,7 +216,7 @@ if ( ! class_exists( 'NgfbOptionsUpgrade' ) && class_exists( 'NgfbOptions' ) ) {
 							$opts['og_img_width'].'x'.$opts['og_img_height'].', '.
 							( $opts['og_img_crop'] ? '' : 'un' ).'cropped to '.
 							$def_opts['og_img_width'].'x'.$def_opts['og_img_height'].', '.
-							( $def_opts['og_img_crop'] ? '' : 'un' ).'cropped.', true );
+							( $def_opts['og_img_crop'] ? '' : 'un' ).'cropped.' );
 
 						$opts['og_img_width'] = $def_opts['og_img_width'];
 						$opts['og_img_height'] = $def_opts['og_img_height'];
@@ -253,6 +253,17 @@ if ( ! class_exists( 'NgfbOptionsUpgrade' ) && class_exists( 'NgfbOptions' ) ) {
 					if ( ! empty( $opts['plugin_head_attr_filter_name'] ) &&
 						$opts['plugin_head_attr_filter_name'] === 'language_attributes' ) 
 							$opts['plugin_head_attr_filter_name'] = 'head_attributes';
+				}
+
+				if ( $opts_version && $opts_version <= 452 ) {
+					if ( ! empty( $opts['add_meta_property_og:image:secure_url'] ) ) {
+						$opts['add_meta_property_og:image:secure_url'] = 0;
+						$opts['add_meta_property_og:image'] = 1;
+					}
+					if ( ! empty( $opts['add_meta_property_og:video:secure_url'] ) ) {
+						$opts['add_meta_property_og:video:secure_url'] = 0;
+						$opts['add_meta_property_og:video:url'] = 1;
+					}
 				}
 
 			} elseif ( $options_name === constant( 'NGFB_SITE_OPTIONS_NAME' ) )

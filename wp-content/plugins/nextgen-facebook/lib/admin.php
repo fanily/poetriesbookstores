@@ -39,12 +39,18 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				load_plugin_textdomain( 'nextgen-facebook', false, 'nextgen-facebook/languages/' );
 
 				$this->set_objects();
-				$this->pro_req_notices();
-				$this->conflict_warnings();
 
 				add_action( 'admin_init', array( &$this, 'register_setting' ) );
 				add_action( 'admin_menu', array( &$this, 'add_admin_menus' ), NGFB_ADD_MENU_PRIORITY );
 				add_action( 'admin_menu', array( &$this, 'add_admin_submenus' ), NGFB_ADD_SUBMENU_PRIORITY );
+
+				// hook in_admin_header to allow for setting changes, plugin activation / loading, etc.
+				add_action( 'in_admin_header', array( &$this, 'conflict_warnings' ), 10 );
+				add_action( 'in_admin_header', array( &$this, 'pro_req_notices' ), 20 );
+
+				add_action( 'after_switch_theme', array( &$this, 'reset_check_header_exec_count' ) );
+				add_action( 'upgrader_process_complete', array( &$this, 'reset_check_header_exec_count' ) );
+
 				add_action( 'after_switch_theme', array( &$this, 'check_tmpl_head_elements' ) );
 				add_action( 'upgrader_process_complete', array( &$this, 'check_tmpl_head_elements' ) );
 
@@ -96,48 +102,6 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 								$menu_id, $menu_name, $menu_lib, $ext );
 						}
 					}
-				}
-			}
-		}
-
-		private function pro_req_notices() {
-			$lca = $this->p->cf['lca'];
-			$has_ext_tid = false;
-			$um_min_version = '1.4.1-1';
-
-			if ( $this->p->is_avail['aop'] === true && 
-				empty( $this->p->options['plugin_'.$lca.'_tid'] ) && 
-					( empty( $this->p->options['plugin_'.$lca.'_tid:is'] ) || 
-						$this->p->options['plugin_'.$lca.'_tid:is'] !== 'disabled' ) )
-							$this->p->notice->nag( $this->p->msgs->get( 'notice-pro-tid-missing' ) );
-
-			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
-				if ( ! empty( $this->p->options['plugin_'.$ext.'_tid'] ) &&
-					isset( $info['base'] ) && SucomUtil::active_plugins( $info['base'] ) ) {
-					$has_ext_tid = true;	// found at least one active plugin with an auth id
-					if ( ! $this->p->check->aop( $ext, false ) )
-						$this->p->notice->warn( $this->p->msgs->get( 'notice-pro-not-installed', 
-							array( 'lca' => $ext ) ) );
-				}
-			}
-
-			if ( $has_ext_tid === true ) {
-				if ( $this->p->is_avail['util']['um'] &&
-					isset( $this->p->cf['plugin']['ngfbum']['version'] ) ) {
-
-					if ( version_compare( $this->p->cf['plugin']['ngfbum']['version'], $um_min_version, '<' ) )
-						$this->p->notice->err( $this->p->msgs->get( 'notice-um-version-required', 
-							array( 'um_min_version' => $um_min_version ) ) );
-				} else {
-					if ( ! function_exists( 'get_plugins' ) )
-						require_once( ABSPATH.'wp-admin/includes/plugin.php' );
-
-					$installed_plugins = get_plugins();
-
-					if ( ! empty( $this->p->cf['plugin']['ngfbum']['base'] ) &&
-						is_array( $installed_plugins[$this->p->cf['plugin']['ngfbum']['base']] ) )
-							$this->p->notice->nag( $this->p->msgs->get( 'notice-um-activate-extension' ) );
-					else $this->p->notice->nag( $this->p->msgs->get( 'notice-um-extension-required' ) );
 				}
 			}
 		}
@@ -375,9 +339,9 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ).' '.
 					sprintf( __( 'Wait %1$d seconds for cache objects to expire or <a href="%2$s">%3$s</a> now.',
 						'nextgen-facebook' ), $this->p->options['plugin_object_cache_exp'], $clear_cache_link,
-							_x( 'Clear All Cache(s)', 'submit button', 'nextgen-facebook' ) ), true );
+							_x( 'Clear All Cache(s)', 'submit button', 'nextgen-facebook' ) ) );
 			} else {
-				$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
+				$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ) );
 				$this->p->util->clear_all_cache( true, __FUNCTION__, true );
 			}
 
@@ -400,12 +364,12 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				exit;
 			} elseif ( ! wp_verify_nonce( $_POST[ NGFB_NONCE ], NgfbAdmin::get_nonce() ) ) {
 				$this->p->notice->err( __( 'Nonce token validation failed for network options (update ignored).',
-					'nextgen-facebook' ), true );
+					'nextgen-facebook' ) );
 				wp_redirect( $this->p->util->get_admin_url( $page ) );
 				exit;
 			} elseif ( ! current_user_can( 'manage_network_options' ) ) {
 				$this->p->notice->err( __( 'Insufficient privileges to modify network options.',
-					'nextgen-facebook' ), true );
+					'nextgen-facebook' ) );
 				wp_redirect( $this->p->util->get_admin_url( $page ) );
 				exit;
 			}
@@ -418,7 +382,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 			$opts = $this->p->opt->sanitize( $opts, $def_opts, $network );
 			$opts = apply_filters( $this->p->cf['lca'].'_save_site_options', $opts, $def_opts, $network );
 			update_site_option( NGFB_SITE_OPTIONS_NAME, $opts );
-			$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ), true );
+			$this->p->notice->upd( __( 'Plugin settings have been saved.', 'nextgen-facebook' ) );
 			wp_redirect( $this->p->util->get_admin_url( $page ).'&settings-updated=true' );
 			exit;	// stop here
 		}
@@ -538,14 +502,6 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 					_x( 'Pro Version Features', 'metabox title (side)', 'nextgen-facebook' ), 
 						array( &$this, 'show_metabox_status_pro' ), $this->pagehook, 'side' );
 			}
-
-			// only show under in the plugin or network settings pages
-			// (don't show under the WordPress settings menu)
-			if ( $this->menu_lib === 'submenu' || $this->menu_lib === 'sitesubmenu' ) {
-				add_meta_box( $this->pagehook.'_version_info',
-					_x( 'Version Information', 'metabox title (side)', 'nextgen-facebook' ), 
-						array( &$this, 'show_metabox_version_info' ), $this->pagehook, 'side' );
-			}
 		}
 
 		protected function add_meta_boxes() {
@@ -616,7 +572,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				parse_str( parse_url( $location, PHP_URL_QUERY ), $parts );
 
 				if ( strpos( $parts['wp_http_referer'], $referer_match ) ) {
-					$this->p->notice->upd( __( 'Profile updated.' ), true );
+					$this->p->notice->upd( __( 'Profile updated.' ) );
 					return add_query_arg( 'updated', true, $parts['wp_http_referer'] );
 				}
 			}
@@ -677,9 +633,7 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				SucomUtil::sanitize_hookname( $this->menu_id ), $this->pagehook );
 
 			switch ( $this->menu_id ) {
-				case 'readme':
 				case 'setup':
-				case 'sitereadme':
 				case 'sitesetup':
 					break;
 				default:
@@ -750,8 +704,13 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 
 				$installed_version = $info['version'];	// static value from config
 				$installed_style = '';
-				$stable_version = __( 'N/A', 'nextgen-facebook' );
-				$latest_version = __( 'N/A', 'nextgen-facebook' );
+				if ( empty( $this->is_avail['cache']['transient'] ) ) {
+					$stable_version = __( 'Not Available (Cache Disabled)', 'nextgen-facebook' );
+					$latest_version = __( 'Not Available (Cache Disabled)', 'nextgen-facebook' );
+				} else {
+					$stable_version = __( 'Not Available', 'nextgen-facebook' );
+					$latest_version = __( 'Not Available', 'nextgen-facebook' );
+				}
 				$latest_notice = '';
 				$changelog_url = $info['url']['changelog'];
 
@@ -1372,6 +1331,53 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 			}
 		}
 
+		public function pro_req_notices() {
+			$lca = $this->p->cf['lca'];
+			$has_ext_tid = false;
+			$um_min_version = '1.4.1-1';
+
+			if ( $this->p->is_avail['aop'] === true && 
+				empty( $this->p->options['plugin_'.$lca.'_tid'] ) && 
+					( empty( $this->p->options['plugin_'.$lca.'_tid:is'] ) || 
+						$this->p->options['plugin_'.$lca.'_tid:is'] !== 'disabled' ) )
+							$this->p->notice->nag( $this->p->msgs->get( 'notice-pro-tid-missing' ) );
+
+			foreach ( $this->p->cf['plugin'] as $ext => $info ) {
+				if ( ! empty( $this->p->options['plugin_'.$ext.'_tid'] ) &&
+					isset( $info['base'] ) && SucomUtil::active_plugins( $info['base'] ) ) {
+					$has_ext_tid = true;	// found at least one active plugin with an auth id
+					if ( ! $this->p->check->aop( $ext, false ) )
+						$this->p->notice->warn( $this->p->msgs->get( 'notice-pro-not-installed', 
+							array( 'lca' => $ext ) ) );
+				}
+			}
+
+			if ( $has_ext_tid === true ) {
+				if ( $this->p->is_avail['util']['um'] &&
+					isset( $this->p->cf['plugin']['ngfbum']['version'] ) ) {
+
+					if ( version_compare( $this->p->cf['plugin']['ngfbum']['version'], $um_min_version, '<' ) )
+						$this->p->notice->err( $this->p->msgs->get( 'notice-um-version-required', 
+							array( 'um_min_version' => $um_min_version ) ) );
+				} else {
+					if ( ! function_exists( 'get_plugins' ) )
+						require_once( ABSPATH.'wp-admin/includes/plugin.php' );
+
+					$installed_plugins = get_plugins();
+
+					if ( ! empty( $this->p->cf['plugin']['ngfbum']['base'] ) &&
+						is_array( $installed_plugins[$this->p->cf['plugin']['ngfbum']['base']] ) )
+							$this->p->notice->nag( $this->p->msgs->get( 'notice-um-activate-extension' ) );
+					else $this->p->notice->nag( $this->p->msgs->get( 'notice-um-extension-required' ) );
+				}
+			}
+		}
+
+		public function reset_check_header_exec_count() {
+			$lca = $this->p->cf['lca'];
+			delete_option( $lca.'_post_header_count' );
+		}
+
 		public function check_tmpl_head_elements() {
 			if ( $this->p->debug->enabled )
 				$this->p->debug->mark();
@@ -1381,15 +1387,17 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				$this->p->options['plugin_head_attr_filter_name'] !== 'head_attributes' )
 					return;
 
-			$headers = glob( get_stylesheet_directory().'/header*.php' );
-			foreach ( $headers as $file ) {
-				if ( ( $html = SucomUtil::get_stripped_php( $file ) ) === false )
-					continue;
+			$headers = glob( get_stylesheet_directory().'/header*.php' );	// returns false on error
 
-				if ( strpos( $html, '<head>' ) !== false ) {
-					$this->p->notice->warn( $this->p->msgs->get( 'notice-header-tmpl-no-head-attr' ),
-						true, true, 'notice-header-tmpl-no-head-attr-'.SucomUtil::get_theme_slug_version(), true );
-					break;
+			if ( is_array( $headers ) ) {
+				foreach ( $headers as $file ) {
+					if ( ( $html = SucomUtil::get_stripped_php( $file ) ) === false )
+						continue;
+					elseif ( strpos( $html, '<head>' ) !== false ) {
+						$this->p->notice->warn( $this->p->msgs->get( 'notice-header-tmpl-no-head-attr' ),
+							true, true, 'notice-header-tmpl-no-head-attr-'.SucomUtil::get_theme_slug_version(), true );
+						break;
+					}
 				}
 			}
 		}
@@ -1407,14 +1415,14 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 				if ( ( $html = SucomUtil::get_stripped_php( $file ) ) === false ||
 					strpos( $html, '<head>' ) === false ) {
 					$this->p->notice->err( sprintf( __( '&lt;head&gt; element not found in %s.',
-						'nextgen-facebook' ), $file ), true );
+						'nextgen-facebook' ), $file ) );
 					continue;
 				}
 
 				// make a backup of the original
 				if ( ! copy( $file, $backup ) ) {
 					$this->p->notice->err( sprintf( __( 'Error copying %1$s to %2$s.',
-						'nextgen-facebook' ), 'header.php', $backup ), true );
+						'nextgen-facebook' ), 'header.php', $backup ) );
 					continue;
 				}
 
@@ -1423,13 +1431,13 @@ if ( ! class_exists( 'NgfbAdmin' ) ) {
 
 				if ( ! $fh = @fopen( $file, 'wb' ) ) {
 					$this->p->notice->err( sprintf( __( 'Failed to open file %s for writing.',
-						'nextgen-facebook' ), $file ), true );
+						'nextgen-facebook' ), $file ) );
 					continue;
 				}
 
 				if ( fwrite( $fh, $php ) ) {
 					fclose( $fh );
-					$this->p->notice->upd( sprintf( __( 'The %1$s template has been successfully updated and saved. A backup copy of the original template is available in %2$s.', 'nextgen-facebook' ), $base, $backup ), true );
+					$this->p->notice->upd( sprintf( __( 'The %1$s template has been successfully updated and saved. A backup copy of the original template is available in %2$s.', 'nextgen-facebook' ), $base, $backup ) );
 					$have_changes = true;
 				}
 			}

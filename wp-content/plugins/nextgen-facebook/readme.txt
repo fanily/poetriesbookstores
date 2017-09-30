@@ -10,8 +10,8 @@ Assets URI: https://surniaulula.github.io/nextgen-facebook/assets/
 Tags: amp, bbPress, buddypress, buttons, e-commerce, easy digital downloads, edd, facebook, g+, google, google plus, hashtags, like, linkedin, marketpress, meta tags, multilingual, multisite, nextgen gallery, open graph, pinterest, player card, polylang, rich pin, schema, schema.org, seo, share, shortcode, social, summary card, tumblr, twitter, twitter card, vimeo, widget, wistia, woocommerce, youtube, yotpo, yourls, whatsapp, the events calendar, social share, social sharing, social media, social engagement, click-through, sharing, facebook video, slideshare, video embed, social meta tags, seo meta tags, featured, json, json-ld, search engine optimization, seo meta, url, wordpress seo
 Contributors: jsmoriss
 Requires At Least: 3.1
-Tested Up To: 4.6
-Stable Tag: 8.34.3-1
+Tested Up To: 4.6.1
+Stable Tag: 8.35.2-1
 
 Complete meta tags for the best looking shares on Facebook, Google, Pinterest, Twitter, etc - no matter how your webpage is shared!
 
@@ -375,7 +375,39 @@ Follow Surnia Ulula on [Google+](https://plus.google.com/+SurniaUlula/?rel=autho
 
 = Changelog / Release Notes =
 
-**Version 8.34.4-dev1 (TBD)**
+**Version 8.35.3-dev2 (2016/09/25)**
+
+Official announcement: N/A
+
+* *New Features*
+	* None
+* *Improvements*
+	* Added a check for product get_width(), get_height(), get_length() and get_weight() for older WooCommerce versions (Pro version).
+	* Added a new SucomUtil::is_toplevel_edit() method to enqueue scripts / styles for editing posts in settings pages (required for Event Espresso plugin).
+	* Added a new SucomUtil::titleize() method to format post type names for display.
+* *Bugfixes*
+	* Fixed the "View Plugin Details" link in multisite settings pages.
+* *Developer Notes*
+	* None
+
+**Version 8.35.2-1 (2016/09/23)**
+
+Official announcement: N/A
+
+* *New Features*
+	* None
+* *Improvements*
+	* Added the 'weibo:article:create_at' and 'weibo:article:update_at' meta tags for Weibo.
+	* Added the 'twitter:player:stream' and 'twitter:player:stream:content_type' meta tags for Facebook (video/mp4) embedded videos.
+	* Changed 'article:published_time' and 'article:modified_time' values to GMT instead of the local timezone.
+	* The 'og:image:secure_url' and 'og:video:secure_url' are now disabled by default (https urls are used in the 'og:image' and 'og:video:url' meta tags instead).
+	* Updated the conflict / requirement hooks to execute later in the admin page load (to avoid false positives).
+* *Bugfixes*
+	* None
+* *Developer Notes*
+	* Updated minimum PHP version required from v5.1 to v5.2.
+
+**Version 8.35.1-1 (2016/09/15)**
 
 Official announcement: N/A
 
@@ -383,78 +415,35 @@ Official announcement: N/A
 	* None
 * *Improvements*
 	* None
+* *Bugfixes*
+	* Fixed an undefined og:image value when adding an og:image:secure_url meta tag.
+* *Developer Notes*
+	* None
+
+**Version 8.35.0-1 (2016/09/10)**
+
+Official announcement: N/A
+
+* *New Features*
+	* None
+* *Improvements*
+	* Refactored the SucomNotice class to improve performance.
+	* Changed from using the post permalink to a shortlink when checking for duplicate meta tags.
+	* Added a maximum (success) count of 6 when checking for duplicate meta tags.
+	* Added a notice for a missing Open Graph description meta tag.
+	* Moved the "Version Information" side box from all NGFB settings pages to only the NGFB Update Manager settings page.
 * *Bugfixes*
 	* None
 * *Developer Notes*
 	* Replaced the `register_uninstall_hook()` function call with an uninstall.php file.
 
-**Version 8.34.3-1 (2016/08/25)**
-
-Official announcement: N/A
-
-* *New Features*
-	* None
-* *Improvements*
-	* None
-* *Bugfixes*
-	* Added a warning for an empty webpage when checking for duplicate meta tags.  
-	* Fixed the transient cache id to clear the cache for retrieved permalinks.
-* *Developer Notes*
-	* None
-
-**Version 8.34.2-1 (2016/08/24)**
-
-Official announcement: N/A
-
-* *New Features*
-	* None
-* *Improvements*
-	* Added the "Twitter Card for Post / Page Images" and "Twitter Card Type by Default" options.
-* *Bugfixes*
-	* Fixed the email and whatsapp button SVG icon width value.
-* *Developer Notes*
-	* Updated the minimum PHP version required has from v4.1 to v5.1.
-	* Added `libxml_use_internal_errors()` when checking webpage for duplicates to avoid any HTML Parsing errors.
-
-**Version 8.34.1-1 (2016/08/20)**
-
-Official announcement: N/A
-
-* *New Features*
-	* None
-* *Improvements*
-	* Added a new "link rel shortlink" meta tag with the shortened sharing URL or post shortlink.
-* *Bugfixes*
-	* None
-* *Developer Notes*
-	* Added the post ID argument to `wp_get_shortlink()` for more reliable results.
-	* Added new SucomNoDebug and SucomNoNotice classes.
-	* Added new filters to manage auto-disabling of canonical and description meta tags when an SEO plugin is detected:
-		* 'ngfb_add_meta_name_canonical' ( $bool )
-		* 'ngfb_add_meta_name_description' ( $bool )
-
-**Version 8.34.0-1 (2016/08/18)**
-
-Official announcement: N/A
-
-* *New Features*
-	* Added support for Facebook embedded iframe videos (Pro version).
-* *Improvements*
-	* Removed the "Shorten URLs with" duplicate option from Twitter settings (see the Advanced settings page for shortening options).
-	* Added support for Schema http://schema.org/AutomotiveBusiness sub-types (AutoDealer, AutoRental, AutoRepair, etc.).
-	* Added Co-Authors Plus authors and guests (with Facebook URLs) to the Open Graph article:author meta tags.
-	* Added the first (top) Co-Authors Plus author ID as the post / page author (Pro version).
-	* Added a check and warnings for conflicting settings in the Squirrly SEO plugin.
-* *Bugfixes*
-	* None
-* *Developer Notes*
-	* Added a `$src_id` argument to the NgfbUtil `get_sharing_url()` method and its filters.
-	* Moved the `get_sharing_url()` call from the social website modules into the main NgfbSharing loop.
-	* Removed the '$use_post' argument in the json data filters.
-
 == Upgrade Notice ==
 
-= 8.34.3-1 =
+= 8.35.3-dev2 =
 
-(2016/08/25) Fixed the transient cache id to clear the cache for retrieved permalinks.
+(2016/09/25) Added a check for product methods for older WooCommerce versions (Pro version). Added a new method to enqueue scripts / styles for editing posts in settings pages (required for Event Espresso plugin). Fixed the "View Plugin Details" link in multisite settings pages.
+
+= 8.35.2-1 =
+
+(2016/09/23) Added new article create and update date meta tags for Weibo. Added player stream and stream:content_type meta tags for Facebook embedded videos.
 
