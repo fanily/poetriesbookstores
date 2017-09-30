@@ -1176,42 +1176,19 @@ function jr_mt_settings_page() {
 	Need Help?
 	</h3>
 	<p>
-	Need help with this plugin?
-	Check the
-	<a href="#" onClick="jrMtTabs( 4, 6 );">Theme Options</a>
-	and
-	<a href="#" onClick="jrMtTabs( 5, 6 );">System Information</a>
-	tabs above,
-	and the
-	<a target="_blank" href="http://wordpress.org/plugins/jonradio-multiple-themes/">Description</a>, 
-	<a target="_blank" href="http://wordpress.org/plugins/jonradio-multiple-themes/faq/">FAQ</a>, 
-	<a target="_blank" href="http://wordpress.org/plugins/jonradio-multiple-themes/installation/">Installation</a>
-	and 
-	<a target="_blank" href="http://wordpress.org/support/plugin/jonradio-multiple-themes">Support</a>
-	tabs
-	in the <a target="_blank" href="http://wordpress.org/plugins/jonradio-multiple-themes/">WordPress Directory entry for this plugin</a>.
-	All of this information is based on the many support questions that jonradio has answered both on-line and via e-mail since this plugin was first released in 2012.
+	Support has moved to the ZATZLabs site and is no longer provided on the WordPress.org forums. Please visit the new <A HREF=“http://zatzlabs.com/forums/“>ZATZLab Forums</a>. If you need a timely reply from the developer, please <a href=“http://zatzlabs.com/submit-ticket/“>open a ticket</a>.
+ Because this plugin was adopted and is being supported by a new developer, you may want to refer to the many support questions that the original author answered both online and via email since the plugin was first released in 2012. They can be found at the old <a href="http://wordpress.org/support/plugin/jonradio-multiple-themes">WordPress support forums</a>.
 	</p>
 	<p>
-	Please be sure to check them all out if you have any unanswered questions.
-	If you cannot find the answers to all of your questions there,
-	simply post your question in the
-	<a target="_blank" href="http://wordpress.org/support/plugin/jonradio-multiple-themes">Support Forum</a>
-	or
-	<a target="_blank" href="http://zatzlabs.com/contact-us/">contact jonradio directly</a>.
-	</p>
-	<p>
-	For information on other jonradio plugins,
-	including Contact and Donation information,
+	For information on other adopted jonradio plugins,
 	<a target="_blank" href="http://zatzlabs.com/plugins/">click here</a>.
 	</p>
 	<h3>
 	Want to Help?
 	</h3>
 	<p>
-	As well as <a target="_blank" href="http://zatzlabs.com/plugins/">Donations</a>,
-	you can also help by 
-	<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/jonradio-multiple-themes">Reviewing this plugin</a> 
+	You can help by 
+	<a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/jonradio-multiple-themes">reviewing this plugin</a> 
 	for the WordPress Plugin Directory,
 	and telling other people that it works for your particular combination of Plugin version and WordPress version
 	in the Compability section of the

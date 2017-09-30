@@ -3,8 +3,8 @@ Contributors: dgewirtz
 Donate link: http://zatzlabs.com/lab-notes/
 Tags: themes, theme, sections, style, template, stylesheet, accessibility
 Requires at least: 3.4
-Tested up to: 4.3
-Stable tag: 7.1
+Tested up to: 4.6
+Stable tag: 7.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,9 +12,7 @@ Select different Themes for one or more WordPress Pages, Posts or other non-Admi
 
 == Description ==
 
-**Version 7 adds exhaustive checking and correction of the plugin's Settings that may have become corrupted**
-
-*Formerly: "jonradio Multiple Themes"*
+**IMPORTANT: Support has moved to the ZATZLabs site and is no longer provided on the WordPress.org forums. Please visit the new [ZATZLabs Forums](http://zatzlabs.com/forums/). If you need a timely reply from the developer, please [open a ticket](http://zatzlabs.com/submit-ticket/).**
 
 Settings provide many different ways to Select which Theme should appear where on your WordPress web site:
 
@@ -48,6 +46,8 @@ Special thanks to Jon 'jonradio' Pearkins for creating the plugin and making ado
 
 == Installation ==
 
+**IMPORTANT: Support has moved to the ZATZLabs site and is no longer provided on the WordPress.org forums. Please visit the new [ZATZLabs Forums](http://zatzlabs.com/forums/). If you need a timely reply from the developer, please [open a ticket](http://zatzlabs.com/submit-ticket/).**
+
 This section describes how to install the *jonradio Multiple Themes* plugin and get it working.
 
 1. Use **Add Plugin** within the WordPress Admin panel to download and install this *jonradio Multiple Themes* plugin from the WordPress.org plugin repository (preferred method).  Or download and unzip this plugin, then upload the `/jonradio-multiple-themes/` directory to your WordPress web site's `/wp-content/plugins/` directory.
@@ -58,9 +58,11 @@ This section describes how to install the *jonradio Multiple Themes* plugin and 
 
 == Frequently Asked Questions ==
 
+**IMPORTANT: Support has moved to the ZATZLabs site and is no longer provided on the WordPress.org forums. Please visit the new [ZATZLabs Forums](http://zatzlabs.com/forums/). If you need a timely reply from the developer, please [open a ticket](http://zatzlabs.com/submit-ticket/).**
+
 = What if my Themes or other plugins don't seem to be working with the jonradio Multiple Themes plugin? =
 
-Please ask before giving up.  Either by [posting a Support question](http://wordpress.org/support/plugin/jonradio-multiple-themes "Support Forum") or contacting us directly by filling out this [Contact Form (click here)](http://zatzlabs.com/contact-us/ "Contact Form").
+Please visit the new [ZATZLabs Forums](http://zatzlabs.com/forums/). If you need a timely reply from the developer, please [open a ticket](http://zatzlabs.com/submit-ticket/).
 
 If we cannot solve the problem, please consider using a WordPress Network.  One install of WordPress allows you to have multiple separate Sites ("MultiSite"), each with a different Theme, without using the jonradio Multiple Themes plugin.  The sites can look to the outside world as if they are just one web site by using the Sub-directories option.  For example, Site 1 would be at example.com, and Site 2 could be at example.com/forum.
 
@@ -149,6 +151,9 @@ You will need to delete the entry and add it again, with the new Theme specified
 6. New in V5 tab on Plugin's Settings page
 
 == Changelog ==
+
+= 7.1.1 =
+* Minor support update
 
 = 7.1 =
 * Very Simple AJAX Support: select a theme whenever /wp-admin/admin-ajax.php is accessed by URL
